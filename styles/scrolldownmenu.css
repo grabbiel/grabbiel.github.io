@@ -1,0 +1,12 @@
+/* Header styles */
+.header {
+  top: -25vh;
+  left: 0;
+  right: 0;
+  transition: top 0.3s ease-in-out;
+  position: fixed;
+  width: 100vw;
+}
+.header.visible {
+  top: 0;
+}

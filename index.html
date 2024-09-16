@@ -2,21 +2,147 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loading Screen Prototype</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>
+      Responsive GIF Viewport with Buttons, Search Bar, and Category Icons
+    </title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/horizontalmenu.css" />
+    <link rel="stylesheet" href="styles/categorycontainer.css" />
+    <link rel="stylesheet" href="styles/overlay.css" />
+    <link rel="stylesheet" href="styles/gifcontainer.css" />
+    <link rel="stylesheet" href="styles/searchcontainer.css" />
+    <link rel="stylesheet" href="styles/searchmode.css" />
+    <link rel="stylesheet" href="styles/scrolldownmenu.css" />
   </head>
   <body>
-    <div id="loading-screen">
-      <div class="loading-content">
-        <h1>Loading...</h1>
-        <div class="spinner"></div>
+    <!-- New navbar -->
+    <div class="header">
+      <nav class="navbar">
+        <div class="search-bar">
+          <button id="home-button" aria-label="Home">
+            <i>house</i>
+          </button>
+          <input type="text" id="search-input" placeholder="Search..." />
+          <button id="info-button" aria-label="Information">
+            <i>info</i>
+          </button>
+        </div>
+      </nav>
+      <div class="menu">
+        <div class="menu--wrapper">
+          <!-- The menu items will be dynamically created by JavaScript -->
+        </div>
       </div>
     </div>
-    <div id="main-content" style="display: none">
-      <!-- Your main content goes here -->
-      <h1>Welcome to the Main Content!</h1>
+
+    <div class="gif-container">
+      <div class="gif-image-wrapper">
+        <img
+          src="https://mml.pstatic.net/www/mobile/edit/20240913_1095/upload_1726225306352AFTpw.gif"
+          class="gif-image"
+          alt="Car driving on road"
+        />
+        <div class="blur-overlay"></div>
+      </div>
+      <div class="button-container-left">
+        <button class="button">≡</button>
+        <button class="button">💸</button>
+        <button class="button">🛍️</button>
+      </div>
+      <div class="button-container-right">
+        <button class="button">💬</button>
+        <button class="button">🔔</button>
+        <button class="button">👱</button>
+      </div>
     </div>
-    <script src="script.js"></script>
+    <div class="search-container">
+      <div class="main-search-bar">
+        <svg
+          class="search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+          />
+        </svg>
+        <input type="text" class="search-input" placeholder="Search me" />
+        <button class="search-button"></button>
+      </div>
+    </div>
+    <div class="category-container">
+      <a href="#" class="category-button">
+        <div class="category-icon">📰</div>
+        <span>news</span>
+      </a>
+      <a href="#" class="category-button">
+        <div class="category-icon">🛒</div>
+        <span>wishlist</span>
+      </a>
+      <a href="#" class="category-button">
+        <div class="category-icon">📈</div>
+        <span>stats</span>
+      </a>
+      <a href="#" class="category-button">
+        <div class="category-icon">▶️</div>
+        <span>videos</span>
+      </a>
+      <a href="#" class="category-button">
+        <div class="category-icon">📧</div>
+        <span>write</span>
+      </a>
+      <a href="#" class="category-button">
+        <div class="category-icon">☕</div>
+        <span>leetcode</span>
+      </a>
+      <a href="#" class="category-button">
+        <div class="category-icon">📝</div>
+        <span>links</span>
+      </a>
+      <a href="/sections" class="category-button">
+        <div class="category-icon">⋯</div>
+        <span>other</span>
+      </a>
+    </div>
+
+    <div
+      class="content"
+      style="background-color: red; width: 100vw; height: 80vh"
+    ></div>
+    <div
+      class="content"
+      style="background-color: green; width: 100vw; height: 80vh"
+    ></div>
+
+    <div id="search-mode" class="search-mode">
+      <div class="search-mode-bar">
+        <button id="back-button" aria-label="Back">
+          <i>arrow_back</i>
+        </button>
+        <input type="text" id="search-mode-input" placeholder="Search..." />
+        <button id="search-button" aria-label="Search">
+          <i>search</i>
+        </button>
+      </div>
+    </div>
+    <div id="overlay" class="overlay">
+      <div class="popup">
+        <button id="close-popup" aria-label="Close">
+          <i>close</i>
+        </button>
+        <h2>by Francisco Cruzado</h2>
+        <p id="page-info"></p>
+      </div>
+    </div>
+
+    <script src="js/horizontalmenu.js"></script>
+    <script src="js/scrollnavbar.js"></script>
+    <script src="js/categories.js"></script>
+    <script src="js/infobutton.js"></script>
+    <script src="js/searchbar.js"></script>
   </body>
 </html>

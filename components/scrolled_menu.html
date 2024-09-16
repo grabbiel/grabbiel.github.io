@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Search Bar with Overlay</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .menu {
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        width: 100vw;
+        position: relative;
+        z-index: 1;
+        height: 7.5vh;
+        background-color: lightblue;
+      }
+      .menu--wrapper {
+        display: flex;
+        position: absolute;
+        z-index: 2;
+        height: 100%;
+        top: 0;
+        left: 0;
+        width: inherit;
+      }
+      .menu--item {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        width: fit-content;
+        height: 100%;
+        overflow: hidden;
+      }
+      .menu--item:hover {
+        cursor: pointer;
+      }
+      .menu--item-content {
+        width: fit-content;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #303038;
+        opacity: 50%;
+      }
+      .navbar {
+        width: 100vw;
+        background-color: #f8f8f8;
+        box-sizing: border-box;
+        padding: 0vh 7.5vw;
+      }
+      .search-bar {
+        display: flex;
+        width: 100%;
+        margin: 0;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #f8f8f8; /* Match the navbar background */
+      }
+
+      .search-bar input {
+        flex-grow: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: none; /* Remove the border */
+        background-color: transparent; /* Make background transparent */
+        margin: 0 10px;
+        min-width: 0;
+      }
+      .search-bar input::placeholder {
+        color: #888; /* Subtle color for placeholder text */
+      }
+      .search-bar input:focus {
+        outline: none;
+      }
+      .search-bar button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #333;
+        padding: 10px;
+        flex-shrink: 0; /* Prevents buttons from shrinking */
+      }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+      }
+
+      .popup {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 80%;
+        width: 300px;
+      }
+
+      #close-popup {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #333;
+        align-self: flex-end;
+      }
+
+      input[type="text"],
+      input[type="search"] {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+      .search-mode {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100%;
+        background-color: #f8f8f8;
+        z-index: 2000;
+      }
+      .search-mode-bar {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #f8f8f8;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .search-mode-bar input {
+        flex-grow: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        background-color: transparent;
+        margin: 0 10px;
+        min-width: 0;
+      }
+
+      .search-mode-bar button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #333;
+        padding: 10px;
+        flex-shrink: 0;
+      }
+      .search-bar input:focus,
+      .search-mode-bar input:focus {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      @media screen and (max-width: 480px) {
+        .search-mode-bar {
+          padding: 5px;
+        }
+
+        .search-mode-bar input {
+          margin: 0 5px;
+        }
+
+        .search-mode-bar button {
+          padding: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header" style="position: fixed; top: 0; left: 0; width: 100vw">
+      <nav class="navbar">
+        <div class="search-bar">
+          <button id="home-button" aria-label="Home">
+            <i>house</i>
+          </button>
+          <input type="text" id="search-input" placeholder="Search..." />
+          <button id="info-button" aria-label="Information">
+            <i>info</i>
+          </button>
+        </div>
+      </nav>
+      <div class="menu">
+        <div class="menu--wrapper">
+          <!-- The menu items will be dynamically created by JavaScript -->
+        </div>
+      </div>
+    </div>
+    <div
+      class="main"
+      style="background-color: red; width: 100vw; height: 500px"
+    ></div>
+    <div
+      class="main"
+      style="background-color: green; width: 100vw; height: 500px"
+    ></div>
+
+    <div id="search-mode" class="search-mode">
+      <div class="search-mode-bar">
+        <button id="back-button" aria-label="Back">
+          <i>arrow_back</i>
+        </button>
+        <input type="text" id="search-mode-input" placeholder="Search..." />
+        <button id="search-button" aria-label="Search">
+          <i>search</i>
+        </button>
+      </div>
+    </div>
+    <div id="overlay" class="overlay">
+      <div class="popup">
+        <button id="close-popup" aria-label="Close">
+          <i>close</i>
+        </button>
+        <h2>by Francisco Cruzado</h2>
+        <p id="page-info"></p>
+      </div>
+    </div>
+    <script alt="scrollmenu">
+      const menu = document.querySelector(".menu");
+      const wrapper = document.querySelector(".menu--wrapper");
+      const fragment = document.createDocumentFragment();
+      const itemCount = 20;
+      let items;
+      let menuWidth = menu.clientWidth;
+      let itemWidth = 100; // Fixed width for each item
+      let wrapWidth = itemCount * itemWidth;
+      let scrollY = 0;
+      let y = 0;
+      let oldScrollY = 0;
+      const arr = [
+        "photos",
+        "links",
+        "news",
+        "videos",
+        "read",
+        "github",
+        "food",
+        "music",
+        "anime",
+        "renders",
+        "writing",
+        "vynils",
+        "travel",
+        "fishing",
+        "scuba",
+        "foreign",
+        "leetcode",
+        "pretty",
+        "robots",
+        "stats",
+      ];
+
+      // Create menu items
+      for (let i = 0; i < itemCount; i++) {
+        const item = document.createElement("div");
+        item.className = "menu--item";
+        item.innerHTML = `<div class="menu--item-content">${arr[i]}</div>`;
+        fragment.appendChild(item);
+      }
+      wrapper.appendChild(fragment);
+      items = Array.from(wrapper.children);
+
+      function lerp(start, end, t) {
+        return start * (1 - t) + end * t;
+      }
+
+      function dispose(scroll) {
+        for (let i = 0; i < itemCount; ++i) {
+          let x = (i * itemWidth + scroll) % wrapWidth;
+          if (x < 0) x += wrapWidth;
+          if (x > wrapWidth - itemWidth) x -= wrapWidth;
+          items[i].style.transform = `translateX(${x}px)`;
+        }
+      }
+
+      function handleWheel(e) {
+        e.preventDefault();
+        // Use deltaX for horizontal scrolling, fall back to deltaY if deltaX is 0
+        const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+        scrollY -= delta * 0.9;
+      }
+
+      let touchStart = 0;
+      let touchX = 0;
+      let isDragging = false;
+
+      function handleTouchStart(e) {
+        touchStart = e.clientX || e.touches[0].clientX;
+        isDragging = true;
+        menu.classList.add("is-dragging");
+      }
+
+      function handleTouchMove(e) {
+        if (!isDragging) return;
+        touchX = e.clientX || e.touches[0].clientX;
+        scrollY += (touchX - touchStart) * 2.5;
+        touchStart = touchX;
+      }
+
+      function handleTouchEnd() {
+        isDragging = false;
+        menu.classList.remove("is-dragging");
+      }
+
+      menu.addEventListener("wheel", handleWheel, { passive: false });
+      menu.addEventListener("touchstart", handleTouchStart);
+      menu.addEventListener("touchmove", handleTouchMove);
+      menu.addEventListener("touchend", handleTouchEnd);
+      menu.addEventListener("mousedown", handleTouchStart);
+      menu.addEventListener("mousemove", handleTouchMove);
+      menu.addEventListener("mouseleave", handleTouchEnd);
+      menu.addEventListener("mouseup", handleTouchEnd);
+      menu.addEventListener("selectstart", () => false);
+
+      window.addEventListener("resize", () => {
+        menuWidth = menu.clientWidth;
+        wrapWidth = itemCount * itemWidth;
+      });
+
+      function focusItem(item) {
+        // Reset all items
+        for (let i = 0; i < itemCount; ++i) {
+          items[i].querySelector(".menu--item-content").style.color = "";
+          items[i].style.zIndex = "1";
+        }
+
+        // Focus the clicked item
+        const content = item.querySelector(".menu--item-content");
+        content.style.color = "white";
+        // item.style.zIndex = "2";
+
+        // Center the focused item
+        const itemRect = item.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+        const centerOffset = (menuRect.width - itemRect.width) >> 1;
+        scrollY -= itemRect.left - menuRect.left - centerOffset;
+      }
+
+      for (let i = 0; i < itemCount; ++i) {
+        items[i].addEventListener("click", () => focusItem(items[i]));
+        items[i].addEventListener("touchend", (e) => {
+          if (!isDragging) {
+            e.preventDefault();
+            focusItem(items[i]);
+          }
+        });
+      }
+
+      function focusMiddleItem() {
+        const middleIndex = ((itemCount - 1) / 2) | 0;
+        const middleItem = items[middleIndex];
+        focusItem(middleItem);
+
+        // Adjust scrollY to center the middle item
+        scrollY = -middleIndex * itemWidth + menuWidth / 2 - itemWidth / 2;
+      }
+
+      function render() {
+        y = lerp(y, scrollY, 0.1);
+        dispose(y);
+
+        requestAnimationFrame(render);
+      }
+      window.addEventListener("load", focusMiddleItem);
+      render();
+    </script>
+    <script alt="searchbar">
+      document.addEventListener("DOMContentLoaded", function () {
+        const homeButton = document.getElementById("home-button");
+        const infoButton = document.getElementById("info-button");
+        const overlay = document.getElementById("overlay");
+        const closePopup = document.getElementById("close-popup");
+        const pageInfo = document.getElementById("page-info");
+        const searchInput = document.getElementById("search-input");
+        const searchMode = document.getElementById("search-mode");
+        const searchModeInput = document.getElementById("search-mode-input");
+        const backButton = document.getElementById("back-button");
+
+        homeButton.addEventListener("click", function () {
+          window.location.reload();
+        });
+
+        infoButton.addEventListener("click", function () {
+          showPopup();
+        });
+
+        closePopup.addEventListener("click", function () {
+          hidePopup();
+        });
+
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) {
+            hidePopup();
+          }
+        });
+        searchInput.addEventListener("click", enterSearchMode);
+        searchInput.addEventListener("focus", enterSearchMode);
+        searchInput.addEventListener("keydown", function (e) {
+          if (e.key === "Tab") {
+            e.preventDefault();
+            enterSearchMode();
+          }
+        });
+
+        backButton.addEventListener("click", exitSearchMode);
+        function exitSearchMode() {
+          searchMode.style.display = "none";
+          searchInput.value = searchModeInput.value;
+        }
+        function enterSearchMode() {
+          searchMode.style.display = "block";
+          searchModeInput.focus();
+          searchModeInput.value = searchInput.value;
+        }
+        function showPopup() {
+          const currentDate = new Date().toLocaleDateString();
+          const pageName = "Home Page"; // Change this to your actual page name
+          const author = "John Doe"; // Change this to the actual author name
+
+          pageInfo.innerHTML = `
+      <strong>Date:</strong> ${currentDate}<br>
+      <strong>Page:</strong> ${pageName}<br>
+      <strong>Author:</strong> ${author}
+    `;
+
+          overlay.style.display = "flex";
+        }
+        function hidePopup() {
+          overlay.style.display = "none";
+        }
+      });
+    </script>
+    <script alt="crossplatform"></script>
+  </body>
+</html>
