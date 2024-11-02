@@ -5,6 +5,7 @@
   height: 15vh;
   overflow: hidden;
   display: flex;
+  z-index: 1;
   justify-content: center;
   align-items: center;
 }
@@ -25,6 +26,7 @@
   height: 100%;
   width: auto;
   overflow: hidden;
+  z-index: 1;
 }
 .blur-overlay::before,
 .blur-overlay::after {
@@ -55,6 +57,7 @@
   top: 1.5vh;
   display: flex;
   gap: 0 rem;
+  z-index: 5;
 }
 .button-container-left {
   left: 1rem;

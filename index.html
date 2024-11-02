@@ -6,10 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
+    <meta name="htmx-config" content='{"selfRequestsOnly": false}' />
     <title>
       Responsive GIF Viewport with Buttons, Search Bar, and Category Icons
     </title>
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/main.css" /> 
     <link rel="stylesheet" href="styles/horizontalmenu.css" />
     <link rel="stylesheet" href="styles/categorycontainer.css" />
     <link rel="stylesheet" href="styles/overlay.css" />
@@ -17,9 +18,10 @@
     <link rel="stylesheet" href="styles/searchcontainer.css" />
     <link rel="stylesheet" href="styles/searchmode.css" />
     <link rel="stylesheet" href="styles/scrolldownmenu.css" />
+    <script src = "js/htmx.min.js" defer crossorigin="anonymous" referrerpolicy="no-referrer" cache="force-cache"></script>
   </head>
   <body>
-    <!-- New navbar -->
+    <!-- New navbar --> 
     <div class="header">
       <nav class="navbar">
         <div class="search-bar">
@@ -40,23 +42,61 @@
     </div>
 
     <div class="gif-container">
-      <div class="gif-image-wrapper">
-        <img
-          src="https://mml.pstatic.net/www/mobile/edit/20240913_1095/upload_1726225306352AFTpw.gif"
-          class="gif-image"
-          alt="Car driving on road"
-        />
-        <div class="blur-overlay"></div>
-      </div>
+      <video 
+        autoplay 
+        loop 
+        muted 
+        playsinline 
+        class="gif-image-wrapper"
+      >
+        <source src="/assets/output.webm" type="video/webm" class="gif-image" alt="Car driving ont the road">
+      </video>
       <div class="button-container-left">
-        <button class="button">≡</button>
-        <button class="button">💸</button>
-        <button class="button">🛍️</button>
+        <a href="/menu.html">
+        <button class="button" 
+        >≡</button></a>
+        <button class="gif-container-button button" 
+          hx-get="http://127.0.0.1:8082/donate" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+          idx = "16"
+        >💸</button>
+        <button class="gif-container-button button" 
+          hx-get="http://127.0.0.1:8082/assets" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+          idx="22"
+        >🛍️</button>
       </div>
       <div class="button-container-right">
-        <button class="button">💬</button>
-        <button class="button">🔔</button>
-        <button class="button">👱</button>
+        <button class="gif-container-button button" 
+          hx-get="http://127.0.0.1:8082/forum" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+          idx="23"
+        >💬</button>
+        <button class="gif-container-button button" 
+          hx-get="http://127.0.0.1:8082/updates" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+          idx="24"
+        >🔔</button>
+        <button class="gif-container-button button" 
+          hx-get="http://127.0.0.1:8082/me" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+          idx = "25"
+        >👱</button>
       </div>
     </div>
     <div class="search-container">
@@ -75,47 +115,89 @@
       </div>
     </div>
     <div class="category-container">
-      <a href="#" class="category-button">
+      <a class="category-button" index="2"
+          hx-get="http://127.0.0.1:8082/news" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+      >
         <div class="category-icon">📰</div>
         <span>news</span>
       </a>
-      <a href="#" class="category-button">
+      <a href="#" class="category-button" index="15"
+          hx-get="http://127.0.0.1:8082/wishlist" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+        >
         <div class="category-icon">🛒</div>
         <span>wishlist</span>
       </a>
-      <a href="#" class="category-button">
+      <a class="category-button" index="21"
+          hx-get="http://127.0.0.1:8082/stats" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+      >
         <div class="category-icon">📈</div>
         <span>stats</span>
       </a>
-      <a href="#" class="category-button">
+      <a class="category-button" index="3"
+          hx-get="http://127.0.0.1:8082/videos" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+      >
         <div class="category-icon">▶️</div>
         <span>videos</span>
       </a>
-      <a href="#" class="category-button">
+      <a class="category-button" index="10"
+          hx-get="http://127.0.0.1:8082/write" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+      >
         <div class="category-icon">📧</div>
         <span>write</span>
       </a>
-      <a href="#" class="category-button">
+      <a class="category-button" index="18"
+          hx-get="http://127.0.0.1:8082/leetcode" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML "
+          hx-swap-oob="true"
+      >
         <div class="category-icon">☕</div>
         <span>leetcode</span>
       </a>
-      <a href="#" class="category-button">
+      <a class="category-button" index="1"
+          hx-get="http://127.0.0.1:8082/links" 
+          hx-trigger="click"
+          hx-target="#content-box"
+          hx-swap="innerHTML"
+          hx-swap-oob="true"
+      >
         <div class="category-icon">📝</div>
         <span>links</span>
       </a>
-      <a href="/sections" class="category-button">
+      <a class="category-button"
+        href="/menu.html"
+      >
         <div class="category-icon">⋯</div>
         <span>other</span>
       </a>
     </div>
 
     <div
+      id="content-box"
       class="content"
-      style="background-color: red; width: 100vw; height: 80vh"
-    ></div>
-    <div
-      class="content"
-      style="background-color: green; width: 100vw; height: 80vh"
+      style="background-color: beige; width: 100vw; height: 200vh"
+      hx-swap="innerHTML"
     ></div>
 
     <div id="search-mode" class="search-mode">
@@ -128,21 +210,38 @@
           <i>search</i>
         </button>
       </div>
-    </div>
+    </div>   
     <div id="overlay" class="overlay">
       <div class="popup">
         <button id="close-popup" aria-label="Close">
           <i>close</i>
-        </button>
-        <h2>by Francisco Cruzado</h2>
+        </button> 
+        <h2>by Francisco Cruzado</h2> 
         <p id="page-info"></p>
       </div>
     </div>
-
+  
     <script src="js/horizontalmenu.js"></script>
     <script src="js/scrollnavbar.js"></script>
     <script src="js/categories.js"></script>
-    <script src="js/infobutton.js"></script>
+    <script src="js/infobutton.js"></script> 
     <script src="js/searchbar.js"></script>
+
+    <script>
+      const category_buttons =
+        document.getElementsByClassName("category-button");
+      for (let i = 0; i < category_buttons.length; ++i) {
+        let index = category_buttons[i].getAttribute("index");
+        if(!index) continue;
+        category_buttons[i].addEventListener("click",()=>focusItem(index));
+      }
+      const navbar_buttons= 
+        document.getElementsByClassName("gif-container-button");
+      for (let i = 0; i < navbar_buttons.length; ++i) {
+        let index = navbar_buttons[i].getAttribute("idx");
+        if(!index) continue;
+        navbar_buttons[i].addEventListener("click",()=>focusItem(index));
+      }
+    </script>
   </body>
 </html>

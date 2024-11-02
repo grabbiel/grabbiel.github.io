@@ -7,3 +7,13 @@ body {
   background-color: rgba(240, 240, 240);
   font-family: monospace, sans-serif;
 }
+a:link{
+ text-decoration: none;
+}
+.header{
+  z-index:100;
+}
+#content-box {
+  position: relative;
+  overflow: hidden;
+}

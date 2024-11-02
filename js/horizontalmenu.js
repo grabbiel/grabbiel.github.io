@@ -1,42 +1,56 @@
 const menu = document.querySelector(".menu");
 const wrapper = document.querySelector(".menu--wrapper");
 const fragment = document.createDocumentFragment();
-const itemCount = 20;
+const itemCount = 26;
 let items;
 let menuWidth = menu.clientWidth;
-let itemWidth = 100; // Fixed width for each item
+const itemWidth = Math.max(menu.clientWidth / 8, 100);
 let wrapWidth = itemCount * itemWidth;
 let scrollY = 0;
 let y = 0;
 let oldScrollY = 0;
 const arr = [
-  "photos",
-  "links",
-  "news",
-  "videos",
-  "read",
-  "github",
-  "food",
-  "music",
-  "anime",
-  "renders",
-  "writing",
-  "vynils",
-  "travel",
-  "fishing",
-  "scuba",
-  "foreign",
-  "leetcode",
-  "pretty",
-  "robots",
-  "stats",
+  "photos", // 0 
+  "links", // 1 
+  "news", // 2 
+  "videos", // 3 
+  "read", // 4 
+  "github", // 5 
+  "food", // 6 
+  "music", // 7
+  "anime", // 8 
+  "renders", // 9 
+  "writing", // 10 
+  "vynils", // 11 
+  "travel", // 12 
+  "fishing", // 13 
+  "scuba", // 14 
+  "wishlist", // 15   
+  "donate", // 16 
+  "foreign", // 17 
+  "leetcode", // 18 
+  "pretty", // 19 
+  "robots", // 20
+  "stats", // 21
+  "assets", // 22 
+  "forum", // 23 
+  "updates", // 24
+  "me" // 25 
 ];
 
 // Create menu items
 for (let i = 0; i < itemCount; i++) {
   const item = document.createElement("div");
   item.className = "menu--item";
-  item.innerHTML = `<div class="menu--item-content">${arr[i]}</div>`;
+  item.setAttribute("hx-get", "http://127.0.0.1:8082/" + arr[i]);
+  item.setAttribute("hx-trigger", "click");
+  item.setAttribute("hx-target", "#content-box");
+  item.setAttribute("hx-swap", "innerHTML");
+  item.style.minWidth = `${itemWidth}px`;
+
+  item.innerHTML = `<div 
+    class="menu--item-content" 
+  >${arr[i]}</div>`;
   fragment.appendChild(item);
 }
 wrapper.appendChild(fragment);
@@ -99,40 +113,80 @@ window.addEventListener("resize", () => {
   wrapWidth = itemCount * itemWidth;
 });
 
-function focusItem(item) {
-  // Reset all items
-  for (let i = 0; i < itemCount; ++i) {
-    items[i].querySelector(".menu--item-content").style.color = "";
-    items[i].style.zIndex = "1";
+const middleIndex = ((itemCount - 1) / 2) | 0;
+const content_box = document.getElementById("content-box");
+
+function triggerHtmxRequest(item) {
+  const url = item.getAttribute("hx-get");
+  const target = item.getAttribute("hx-target");
+
+  htmx.ajax('GET', url, {
+    target: target,
+    swap: 'innerHTML'
+  });
+}
+content_box.addEventListener('htmx:beforeRequest', function () {
+  this.classList.add('loading');
+});
+
+content_box.addEventListener('htmx:afterRequest', function () {
+  this.classList.remove('loading');
+});
+
+function findMenuIndexByEndpoint(endpoint) {
+  return arr.findIndex(item => item == endpoint);
+}
+
+function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
+
+  if (endpoint != null) {
+    itemIndex = findMenuIndexByEndpoint(endpoint);
+    if (itemIndex == 1) return;
   }
 
+  // Reset all items
+  const item = items[itemIndex];
+  for (let i = 0; i < itemCount; ++i) {
+    items[i].querySelector(".menu--item-content").style.color = "";
+  }
   // Focus the clicked item
   const content = item.querySelector(".menu--item-content");
-  content.style.color = "white";
-  // item.style.zIndex = "2";
+  content.style.color = "rgb(156, 9, 255)";
 
   // Center the focused item
   const itemRect = item.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
   const centerOffset = (menuRect.width - itemRect.width) >> 1;
   scrollY -= itemRect.left - menuRect.left - centerOffset;
+
+  if (itemIndex != middleIndex) {
+    content_box.scrollIntoView();
+  }
+
+  if (triggerRequest) {
+    triggerHtmxRequest(item);
+  }
 }
 
+window.focusItemByEndpoint = function (endpoint) {
+  const index = findMenuIndexByEndpoint(endpoint);
+  if (index !== -1) {
+    focusItem(index, true);
+  }
+};
+
 for (let i = 0; i < itemCount; ++i) {
-  items[i].addEventListener("click", () => focusItem(items[i]));
+  items[i].addEventListener("click", () => focusItem(i, true));
   items[i].addEventListener("touchend", (e) => {
     if (!isDragging) {
       e.preventDefault();
-      focusItem(items[i]);
+      focusItem(i, true);
     }
   });
 }
 
 function focusMiddleItem() {
-  const middleIndex = ((itemCount - 1) / 2) | 0;
-  const middleItem = items[middleIndex];
-  focusItem(middleItem);
-
+  focusItem(middleIndex);
   // Adjust scrollY to center the middle item
   scrollY = -middleIndex * itemWidth + menuWidth / 2 - itemWidth / 2;
 }
@@ -143,5 +197,13 @@ function render() {
 
   requestAnimationFrame(render);
 }
-window.addEventListener("load", focusMiddleItem);
+window.addEventListener("load", () => {
+  const pendingEndpoint = sessionStorage.getItem('pendingEndpoint');
+  if (pendingEndpoint) {
+    sessionStorage.removeItem('pendingEndpoint');
+    window.focusItemByEndpoint(pendingEndpoint);
+  } else {
+    focusMiddleItem();
+  }
+});
 render();
