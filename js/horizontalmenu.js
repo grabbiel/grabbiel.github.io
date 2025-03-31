@@ -42,7 +42,7 @@ const arr = [
 for (let i = 0; i < itemCount; i++) {
   const item = document.createElement("div");
   item.className = "menu--item";
-  item.setAttribute("hx-get", "https://server.grabbiel.com/" + arr[i]);
+  item.setAttribute("hx-get", "https://server.grabbiel.com:8444/" + arr[i]);
   item.setAttribute("hx-trigger", "click");
   item.setAttribute("hx-target", "#content-box");
   item.setAttribute("hx-swap", "innerHTML");
