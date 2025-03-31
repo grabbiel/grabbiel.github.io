@@ -22,3 +22,5 @@ go.work
 
 # Custom folders
 other
+known_hosts
+CNAME
