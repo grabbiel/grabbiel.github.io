@@ -10,32 +10,32 @@ let scrollY = 0;
 let y = 0;
 let oldScrollY = 0;
 const arr = [
-  "photos", // 0 
-  "links", // 1 
-  "news", // 2 
-  "videos", // 3 
-  "read", // 4 
-  "github", // 5 
-  "food", // 6 
+  "photos", // 0
+  "links", // 1
+  "news", // 2
+  "videos", // 3
+  "read", // 4
+  "github", // 5
+  "food", // 6
   "music", // 7
-  "anime", // 8 
-  "renders", // 9 
-  "writing", // 10 
-  "vynils", // 11 
-  "travel", // 12 
-  "fishing", // 13 
-  "scuba", // 14 
-  "wishlist", // 15   
-  "donate", // 16 
-  "foreign", // 17 
-  "leetcode", // 18 
-  "pretty", // 19 
+  "anime", // 8
+  "renders", // 9
+  "writing", // 10
+  "vynils", // 11
+  "travel", // 12
+  "fishing", // 13
+  "scuba", // 14
+  "wishlist", // 15
+  "donate", // 16
+  "foreign", // 17
+  "leetcode", // 18
+  "pretty", // 19
   "robots", // 20
   "stats", // 21
-  "assets", // 22 
-  "forum", // 23 
+  "assets", // 22
+  "forum", // 23
   "updates", // 24
-  "me" // 25 
+  "me", // 25
 ];
 
 // Create menu items
@@ -120,25 +120,24 @@ function triggerHtmxRequest(item) {
   const url = item.getAttribute("hx-get");
   const target = item.getAttribute("hx-target");
 
-  htmx.ajax('GET', url, {
+  htmx.ajax("GET", url, {
     target: target,
-    swap: 'innerHTML'
+    swap: "innerHTML",
   });
 }
-content_box.addEventListener('htmx:beforeRequest', function () {
-  this.classList.add('loading');
+content_box.addEventListener("htmx:beforeRequest", function () {
+  this.classList.add("loading");
 });
 
-content_box.addEventListener('htmx:afterRequest', function () {
-  this.classList.remove('loading');
+content_box.addEventListener("htmx:afterRequest", function () {
+  this.classList.remove("loading");
 });
 
 function findMenuIndexByEndpoint(endpoint) {
-  return arr.findIndex(item => item == endpoint);
+  return arr.findIndex((item) => item == endpoint);
 }
 
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
-
   if (endpoint != null) {
     itemIndex = findMenuIndexByEndpoint(endpoint);
     if (itemIndex == 1) return;
@@ -198,12 +197,12 @@ function render() {
   requestAnimationFrame(render);
 }
 window.addEventListener("load", () => {
-  const pendingEndpoint = sessionStorage.getItem('pendingEndpoint');
+  const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
-    sessionStorage.removeItem('pendingEndpoint');
+    sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
-    focusMiddleItem();
+    htmx.ajax("GET", "https://server.grabbiel.com/home", "#content-box");
   }
 });
 render();
