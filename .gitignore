@@ -24,5 +24,4 @@ go.work
 other
 known_hosts
 CNAME
-.DS_Store
-DS_Store
+.DS_Store 

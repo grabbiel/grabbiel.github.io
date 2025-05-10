@@ -10,7 +10,7 @@
     <title>
       Responsive GIF Viewport with Buttons, Search Bar, and Category Icons
     </title>
-    <link rel="stylesheet" href="styles/main.css" /> 
+    <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/horizontalmenu.css" />
     <link rel="stylesheet" href="styles/categorycontainer.css" />
     <link rel="stylesheet" href="styles/overlay.css" />
@@ -18,10 +18,17 @@
     <link rel="stylesheet" href="styles/searchcontainer.css" />
     <link rel="stylesheet" href="styles/searchmode.css" />
     <link rel="stylesheet" href="styles/scrolldownmenu.css" />
-    <script src = "js/htmx.min.js" defer crossorigin="anonymous" referrerpolicy="no-referrer" cache="force-cache"></script>
+    <link rel="stylesheet" href="styles/home.css" />
+    <script
+      src="js/htmx.min.js"
+      defer
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      cache="force-cache"
+    ></script>
   </head>
   <body>
-    <!-- New navbar --> 
+    <!-- New navbar -->
     <div class="header">
       <nav class="navbar">
         <div class="search-bar">
@@ -42,61 +49,73 @@
     </div>
 
     <div class="gif-container">
-      <video 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        class="gif-image-wrapper"
-      >
-        <source src="/assets/output.webm" type="video/webm" class="gif-image" alt="Car driving ont the road">
+      <video autoplay loop muted playsinline class="gif-image-wrapper">
+        <source
+          src="/assets/output.webm"
+          type="video/webm"
+          class="gif-image"
+          alt="Car driving ont the road"
+        />
       </video>
       <div class="button-container-left">
-        <a href="/menu.html">
-        <button class="button" 
-        >≡</button></a>
-        <button class="gif-container-button button" 
-          hx-get="https://server.grabbiel.com/donate" 
+        <a href="/menu.html"> <button class="button">≡</button></a>
+        <button
+          class="gif-container-button button"
+          hx-get="https://server.grabbiel.com/donate"
           hx-trigger="click"
           hx-target="#content-box"
           hx-swap="innerHTML "
           hx-swap-oob="true"
-          idx = "16"
-        >💸</button>
-        <button class="gif-container-button button" 
-          hx-get="https://server.grabbiel.com/assets" 
+          idx="16"
+        >
+          💸
+        </button>
+        <button
+          class="gif-container-button button"
+          hx-get="https://server.grabbiel.com/assets"
           hx-trigger="click"
           hx-target="#content-box"
           hx-swap="innerHTML "
           hx-swap-oob="true"
           idx="22"
-        >🛍️</button>
+        >
+          🛍️
+        </button>
       </div>
       <div class="button-container-right">
-        <button class="gif-container-button button" 
-          hx-get="https://server.grabbiel.com/forum" 
+        <button
+          class="gif-container-button button"
+          hx-get="https://server.grabbiel.com/forum"
           hx-trigger="click"
           hx-target="#content-box"
           hx-swap="innerHTML "
           hx-swap-oob="true"
           idx="23"
-        >💬</button>
-        <button class="gif-container-button button" 
-          hx-get="https://server.grabbiel.com/updates" 
+        >
+          💬
+        </button>
+        <button
+          class="gif-container-button button"
+          hx-get="https://server.grabbiel.com/updates"
           hx-trigger="click"
           hx-target="#content-box"
           hx-swap="innerHTML "
           hx-swap-oob="true"
           idx="24"
-        >🔔</button>
-        <button class="gif-container-button button" 
-          hx-get="https://server.grabbiel.com/me" 
+        >
+          🔔
+        </button>
+        <button
+          class="gif-container-button button"
+          hx-get="https://server.grabbiel.com/me"
           hx-trigger="click"
           hx-target="#content-box"
           hx-swap="innerHTML "
           hx-swap-oob="true"
-          idx = "25"
-        >👱</button>
+          idx="25"
+        >
+          👱
+        </button>
       </div>
     </div>
     <div class="search-container">
@@ -115,79 +134,92 @@
       </div>
     </div>
     <div class="category-container">
-      <a class="category-button" index="2"
-          hx-get="https://server.grabbiel.com/news" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML "
-          hx-swap-oob="true"
+      <a
+        class="category-button"
+        index="2"
+        hx-get="https://server.grabbiel.com/news"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML "
+        hx-swap-oob="true"
       >
         <div class="category-icon">📰</div>
         <span>news</span>
       </a>
-      <a href="#" class="category-button" index="15"
-          hx-get="https://server.grabbiel.com/wishlist" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML "
-          hx-swap-oob="true"
-        >
+      <a
+        href="#"
+        class="category-button"
+        index="15"
+        hx-get="https://server.grabbiel.com/wishlist"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML "
+        hx-swap-oob="true"
+      >
         <div class="category-icon">🛒</div>
         <span>wishlist</span>
       </a>
-      <a class="category-button" index="21"
-          hx-get="https://server.grabbiel.com/stats" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML "
-          hx-swap-oob="true"
+      <a
+        class="category-button"
+        index="21"
+        hx-get="https://server.grabbiel.com/stats"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML "
+        hx-swap-oob="true"
       >
         <div class="category-icon">📈</div>
         <span>stats</span>
       </a>
-      <a class="category-button" index="3"
-          hx-get="https://server.grabbiel.com/videos" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML "
-          hx-swap-oob="true"
+      <a
+        class="category-button"
+        index="3"
+        hx-get="https://server.grabbiel.com/videos"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML "
+        hx-swap-oob="true"
       >
         <div class="category-icon">▶️</div>
         <span>videos</span>
       </a>
-      <a class="category-button" index="10"
-          hx-get="https://server.grabbiel.com/write" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML "
-          hx-swap-oob="true"
+      <a
+        class="category-button"
+        index="10"
+        hx-get="https://server.grabbiel.com/write"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML "
+        hx-swap-oob="true"
       >
         <div class="category-icon">📧</div>
         <span>write</span>
       </a>
-      <a class="category-button" index="18"
-          hx-get="https://server.grabbiel.com/leetcode" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML "
-          hx-swap-oob="true"
+      <a
+        class="category-button"
+        index="18"
+        hx-get="https://server.grabbiel.com/leetcode"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML "
+        hx-swap-oob="true"
       >
         <div class="category-icon">☕</div>
         <span>leetcode</span>
       </a>
-      <a class="category-button" index="1"
-          hx-get="https://server.grabbiel.com/links" 
-          hx-trigger="click"
-          hx-target="#content-box"
-          hx-swap="innerHTML"
-          hx-swap-oob="true"
+      <a
+        class="category-button"
+        index="1"
+        hx-get="https://server.grabbiel.com/links"
+        hx-trigger="click"
+        hx-target="#content-box"
+        hx-swap="innerHTML"
+        hx-swap-oob="true"
       >
         <div class="category-icon">📝</div>
         <span>links</span>
       </a>
-      <a class="category-button"
-        href="/menu.html"
-      >
+      <a class="category-button" href="/menu.html">
         <div class="category-icon">⋯</div>
         <span>other</span>
       </a>
@@ -210,21 +242,21 @@
           <i>search</i>
         </button>
       </div>
-    </div>   
+    </div>
     <div id="overlay" class="overlay">
       <div class="popup">
         <button id="close-popup" aria-label="Close">
           <i>close</i>
-        </button> 
-        <h2>by Francisco Cruzado</h2> 
+        </button>
+        <h2>by Francisco Cruzado</h2>
         <p id="page-info"></p>
       </div>
     </div>
-  
+
     <script src="js/horizontalmenu.js"></script>
     <script src="js/scrollnavbar.js"></script>
     <script src="js/categories.js"></script>
-    <script src="js/infobutton.js"></script> 
+    <script src="js/infobutton.js"></script>
     <script src="js/searchbar.js"></script>
 
     <script>
@@ -232,15 +264,16 @@
         document.getElementsByClassName("category-button");
       for (let i = 0; i < category_buttons.length; ++i) {
         let index = category_buttons[i].getAttribute("index");
-        if(!index) continue;
-        category_buttons[i].addEventListener("click",()=>focusItem(index));
+        if (!index) continue;
+        category_buttons[i].addEventListener("click", () => focusItem(index));
       }
-      const navbar_buttons= 
-        document.getElementsByClassName("gif-container-button");
+      const navbar_buttons = document.getElementsByClassName(
+        "gif-container-button",
+      );
       for (let i = 0; i < navbar_buttons.length; ++i) {
         let index = navbar_buttons[i].getAttribute("idx");
-        if(!index) continue;
-        navbar_buttons[i].addEventListener("click",()=>focusItem(index));
+        if (!index) continue;
+        navbar_buttons[i].addEventListener("click", () => focusItem(index));
       }
     </script>
   </body>
