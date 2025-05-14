@@ -10,32 +10,33 @@ let scrollY = 0;
 let y = 0;
 let oldScrollY = 0;
 const arr = [
-  "photos", // 0
-  "links", // 1
-  "news", // 2
-  "videos", // 3
-  "read", // 4
-  "github", // 5
-  "food", // 6
-  "music", // 7
-  "anime", // 8
-  "renders", // 9
-  "writing", // 10
-  "vynils", // 11
-  "travel", // 12
-  "fishing", // 13
-  "scuba", // 14
-  "wishlist", // 15
-  "donate", // 16
-  "foreign", // 17
-  "leetcode", // 18
-  "pretty", // 19
-  "robots", // 20
-  "stats", // 21
-  "assets", // 22
-  "forum", // 23
-  "updates", // 24
-  "me", // 25
+  "home", // 0
+  "photos", // 1
+  "links", // 2
+  "news", // 3
+  "videos", // 4
+  "read", // 5
+  "github", // 6
+  "food", // 7
+  "music", // 8
+  "anime", // 9
+  "renders", // 10
+  "writing", // 11
+  "vynils", // 12
+  "travel", // 13
+  "fishing", // 14
+  "scuba", // 15
+  "wishlist", // 16
+  "donate", // 17
+  "foreign", // 18
+  "leetcode", // 19
+  "pretty", // 20
+  "robots", // 21
+  "stats", // 22
+  "assets", // 23
+  "forum", // 24
+  "updates", // 25
+  "me", // 26
 ];
 
 // Create menu items
@@ -202,7 +203,8 @@ window.addEventListener("load", () => {
     sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
-    htmx.ajax("GET", "https://server.grabbiel.com/home", "#content-box");
+    focusItem(0, true);
+    // htmx.ajax("GET", "https://server.grabbiel.com/home", "#content-box");
   }
 });
 render();
