@@ -4,14 +4,14 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(240, 240, 240);
+  background-color: #f4f6f8;
   font-family: monospace, sans-serif;
 }
-a:link{
- text-decoration: none;
+a:link {
+  text-decoration: none;
 }
-.header{
-  z-index:100;
+.header {
+  z-index: 100;
 }
 #content-box {
   position: relative;
