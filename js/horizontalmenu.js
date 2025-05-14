@@ -164,7 +164,7 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   const centerOffset = (menuRect.width - itemRect.width) >> 1;
   scrollY -= itemRect.left - menuRect.left - centerOffset;
 
-  if (itemIndex != middleIndex) {
+  if (itemIndex !== 0 && itemIndex !== middleIndex) {
     content_box.scrollIntoView();
   }
 
@@ -210,8 +210,29 @@ window.addEventListener("load", () => {
     sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
-    focusItem(0, true);
-    // htmx.ajax("GET", "https://server.grabbiel.com/home", "#content-box");
+    const homeIndex = 0;
+
+    // Reset all items
+    const homeItem = items[homeIndex];
+    for (let i = 0; i < itemCount; ++i) {
+      items[i].querySelector(".menu--item-content").style.color = "";
+    }
+
+    // Focus the home item
+    const content = homeItem.querySelector(".menu--item-content");
+    content.style.color = "rgb(156, 9, 255)";
+
+    // Update the global current active menu index
+    window.currentActiveMenuIndex = homeIndex;
+
+    // Center the focused item
+    const itemRect = homeItem.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const centerOffset = (menuRect.width - itemRect.width) >> 1;
+    scrollY -= itemRect.left - menuRect.left - centerOffset;
+
+    // Load the home content
+    triggerHtmxRequest(homeItem);
   }
 });
 render();
