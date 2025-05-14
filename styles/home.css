@@ -4,7 +4,39 @@
   gap: 16px;
   padding: 1rem;
   max-width: 960px;
-  margin: auto;
+  margin: 0 auto 2rem auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#feed-loader {
+  text-align: center;
+  padding: 1rem;
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 960px;
+}
+
+#feed-loader p {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Add a loading animation */
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+#feed-loader p {
+  animation: pulse 1.5s infinite ease-in-out;
 }
 
 .content-block {
