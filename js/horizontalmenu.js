@@ -1,7 +1,7 @@
 const menu = document.querySelector(".menu");
 const wrapper = document.querySelector(".menu--wrapper");
 const fragment = document.createDocumentFragment();
-const itemCount = 26;
+const itemCount = 27;
 let items;
 let menuWidth = menu.clientWidth;
 const itemWidth = Math.max(menu.clientWidth / 8, 100);
@@ -38,6 +38,9 @@ const arr = [
   "updates", // 25
   "me", // 26
 ];
+
+window.menuItemCount = itemCount;
+window.currentActiveMenuIndex = 0;
 
 // Create menu items
 for (let i = 0; i < itemCount; i++) {
@@ -153,6 +156,8 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   const content = item.querySelector(".menu--item-content");
   content.style.color = "rgb(156, 9, 255)";
 
+  window.currentActiveMenuIndex = itemIndex;
+
   // Center the focused item
   const itemRect = item.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
@@ -167,6 +172,8 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
     triggerHtmxRequest(item);
   }
 }
+
+window.focusItem = focusItem;
 
 window.focusItemByEndpoint = function (endpoint) {
   const index = findMenuIndexByEndpoint(endpoint);

@@ -1,3 +1,5 @@
+window.currentActiveMenuIndex = 0;
+
 document.addEventListener("DOMContentLoaded", function () {
   // Get the content box where we'll detect swipes
   const contentBox = document.getElementById("content-box");
@@ -53,50 +55,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Navigate to the previous menu item
   function navigateToPreviousMenuItem() {
-    const menuItems = document.querySelectorAll(".menu--item");
-    if (!menuItems.length) return;
-
-    // Find the currently active item and its index
-    let currentIndex = -1;
-    for (let i = 0; i < menuItems.length; i++) {
-      const content = menuItems[i].querySelector(".menu--item-content");
-      if (content && content.style.color === "rgb(156, 9, 255)") {
-        currentIndex = i;
-        break;
-      }
+    // Get the array length from the horizontalmenu.js
+    if (typeof window.menuItemCount !== "number") {
+      console.error(
+        "menuItemCount not found. Please ensure horizontalmenu.js sets this global variable.",
+      );
+      return;
     }
 
-    if (currentIndex === -1) currentIndex = 0;
-
     // Calculate the previous index (with wrap-around)
-    const prevIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+    const prevIndex =
+      (window.currentActiveMenuIndex - 1 + window.menuItemCount) %
+      window.menuItemCount;
 
-    // Trigger a click on the previous item
-    menuItems[prevIndex].click();
+    // Use the global focusItem function from horizontalmenu.js
+    if (typeof window.focusItem === "function") {
+      window.focusItem(prevIndex, true);
+    } else {
+      console.error(
+        "focusItem function not found. Please ensure horizontalmenu.js exposes this function globally.",
+      );
+    }
   }
 
   // Navigate to the next menu item
   function navigateToNextMenuItem() {
-    const menuItems = document.querySelectorAll(".menu--item");
-    if (!menuItems.length) return;
-
-    // Find the currently active item and its index
-    let currentIndex = -1;
-    for (let i = 0; i < menuItems.length; i++) {
-      const content = menuItems[i].querySelector(".menu--item-content");
-      if (content && content.style.color === "rgb(156, 9, 255)") {
-        currentIndex = i;
-        break;
-      }
+    // Get the array length from the horizontalmenu.js
+    if (typeof window.menuItemCount !== "number") {
+      console.error(
+        "menuItemCount not found. Please ensure horizontalmenu.js sets this global variable.",
+      );
+      return;
     }
 
-    if (currentIndex === -1) currentIndex = 0;
-
     // Calculate the next index (with wrap-around)
-    const nextIndex = (currentIndex + 1) % menuItems.length;
+    const nextIndex =
+      (window.currentActiveMenuIndex + 1) % window.menuItemCount;
 
-    // Trigger a click on the next item
-    menuItems[nextIndex].click();
+    // Use the global focusItem function from horizontalmenu.js
+    if (typeof window.focusItem === "function") {
+      window.focusItem(nextIndex, true);
+    } else {
+      console.error(
+        "focusItem function not found. Please ensure horizontalmenu.js exposes this function globally.",
+      );
+    }
   }
 
   // Add visual feedback for swipe
