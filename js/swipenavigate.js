@@ -26,10 +26,16 @@ document.addEventListener("DOMContentLoaded", function () {
   contentBox.addEventListener("touchstart", handleTouchStart, false);
   contentBox.addEventListener("touchend", handleTouchEnd, false);
 
+  // Function to check if the menu is visible
+  function isMenuVisible() {
+    const header = document.querySelector(".header");
+    return header && header.classList.contains("visible");
+  }
+
   // Store the starting touch position
   function handleTouchStart(e) {
-    // Don't start a new touch if we're still processing a previous swipe
-    if (isProcessingSwipe) return;
+    // Only track touch if the menu is visible and we're not processing a previous swipe
+    if (!isMenuVisible() || isProcessingSwipe) return;
 
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
@@ -37,8 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Calculate the swipe direction and navigate if needed
   function handleTouchEnd(e) {
-    // Don't process the touch end if we're already handling a swipe
-    if (isProcessingSwipe) return;
+    // Don't process if the menu isn't visible or we're already handling a swipe
+    if (!isMenuVisible() || isProcessingSwipe) return;
+
+    // Check if we have valid starting coordinates (might not if touchstart was ignored)
+    if (touchStartX === 0 && touchStartY === 0) return;
 
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
@@ -63,6 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
           addSwipeFeedback("left");
           navigateToNextMenuItem();
         }
+
+        // Reset touch coordinates
+        touchStartX = 0;
+        touchStartY = 0;
 
         // Reset the processing flag after the cooldown period
         setTimeout(() => {
@@ -156,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle swipe on entire document for mobile devices
   // But only activate when touch starts outside of the menu
+  // and when the header is visible
   document.addEventListener(
     "touchstart",
     function (e) {
