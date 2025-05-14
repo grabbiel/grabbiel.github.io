@@ -17,18 +17,29 @@ document.addEventListener("DOMContentLoaded", function () {
   // This prevents scrolling from triggering swipe navigation
   const maxVerticalMovement = 75;
 
+  // Debounce flag to prevent multiple swipes being processed at once
+  let isProcessingSwipe = false;
+  // Cooldown period in milliseconds to prevent rapid swipes
+  const swipeCooldown = 500;
+
   // Add touch event listeners to the content area
   contentBox.addEventListener("touchstart", handleTouchStart, false);
   contentBox.addEventListener("touchend", handleTouchEnd, false);
 
   // Store the starting touch position
   function handleTouchStart(e) {
+    // Don't start a new touch if we're still processing a previous swipe
+    if (isProcessingSwipe) return;
+
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }
 
   // Calculate the swipe direction and navigate if needed
   function handleTouchEnd(e) {
+    // Don't process the touch end if we're already handling a swipe
+    if (isProcessingSwipe) return;
+
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
 
@@ -40,6 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (verticalDistance <= maxVerticalMovement) {
       // Check if the swipe distance exceeds the minimum threshold
       if (Math.abs(horizontalDistance) >= minSwipeDistance) {
+        // Set the flag to prevent multiple swipes
+        isProcessingSwipe = true;
+
         if (horizontalDistance > 0) {
           // Swipe right - go to previous menu item
           addSwipeFeedback("right");
@@ -49,6 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
           addSwipeFeedback("left");
           navigateToNextMenuItem();
         }
+
+        // Reset the processing flag after the cooldown period
+        setTimeout(() => {
+          isProcessingSwipe = false;
+        }, swipeCooldown);
       }
     }
   }
@@ -60,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(
         "menuItemCount not found. Please ensure horizontalmenu.js sets this global variable.",
       );
+      isProcessingSwipe = false;
       return;
     }
 
@@ -75,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(
         "focusItem function not found. Please ensure horizontalmenu.js exposes this function globally.",
       );
+      isProcessingSwipe = false;
     }
   }
 
@@ -85,6 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(
         "menuItemCount not found. Please ensure horizontalmenu.js sets this global variable.",
       );
+      isProcessingSwipe = false;
       return;
     }
 
@@ -99,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(
         "focusItem function not found. Please ensure horizontalmenu.js exposes this function globally.",
       );
+      isProcessingSwipe = false;
     }
   }
 
@@ -124,8 +147,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   containers.forEach((container) => {
     if (container) {
-      container.addEventListener("touchstart", handleTouchStart, false);
-      container.addEventListener("touchend", handleTouchEnd, false);
+      container.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
+      container.addEventListener("touchend", handleTouchEnd, { passive: true });
     }
   });
 
@@ -140,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
         handleTouchStart(e);
       }
     },
-    false,
+    { passive: true },
   );
 
   document.addEventListener(
@@ -152,6 +177,6 @@ document.addEventListener("DOMContentLoaded", function () {
         handleTouchEnd(e);
       }
     },
-    false,
+    { passive: true },
   );
 });
