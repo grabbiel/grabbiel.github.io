@@ -1,7 +1,7 @@
 const menu = document.querySelector(".menu");
 const wrapper = document.querySelector(".menu--wrapper");
 const fragment = document.createDocumentFragment();
-const itemCount = 27;
+const itemCount = 26;
 let items;
 let menuWidth = menu.clientWidth;
 const itemWidth = Math.max(menu.clientWidth / 8, 100);
