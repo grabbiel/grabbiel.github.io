@@ -16,10 +16,7 @@ body.content-page .header {
   position: fixed;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-body.content-page #page-content {
-  margin-top: 15vh;
-  padding-top: 0;
-}
+
 body.content-page .gif-container,
 body.content-page .search-container,
 body.content-page .category-container {
