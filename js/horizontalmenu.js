@@ -49,12 +49,7 @@ for (let i = 0; i < itemCount; i++) {
   item.setAttribute("hx-get", "https://server.grabbiel.com/" + arr[i]);
   item.setAttribute("hx-trigger", "click");
   item.setAttribute("hx-swap", "innerHTML");
-
-  if (i === 0) {
-    item.setAttribute("hx-target", "#content-box");
-  } else {
-    item.setAttribute("hx-target", "#page-content");
-  }
+  item.setAttribute("hx-target", "#content-box");
 
   item.style.minWidth = `${itemWidth}px`;
   item.innerHTML = `<div 
@@ -219,12 +214,10 @@ window.addEventListener("load", () => {
   const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
     sessionStorage.removeItem("pendingEndpoint");
-    document.body.classList.add("content-page");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
     const homeIndex = 0;
 
-    document.body.classList.remove("content-page");
     // Reset all items
     const homeItem = items[homeIndex];
     for (let i = 0; i < itemCount; ++i) {
@@ -246,6 +239,9 @@ window.addEventListener("load", () => {
 
     // Load the home content
     triggerHtmxRequest(homeItem);
+  }
+  if (window.currentActiveMenuIndex !== 0) {
+    document.body.classList.add("content-page");
   }
 });
 render();

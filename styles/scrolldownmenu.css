@@ -20,3 +20,8 @@ body.content-page #page-content {
   margin-top: 7.5vh;
   padding-top: 0;
 }
+body.content-page .gif-container,
+body.content-page .search-container,
+body.content-page .category-container {
+  display: none !important;
+}
