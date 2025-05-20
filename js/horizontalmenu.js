@@ -36,7 +36,6 @@ const arr = [
   "assets", // 23
   "forum", // 24
   "updates", // 25
-  "me", // 26
 ];
 
 window.menuItemCount = itemCount;
