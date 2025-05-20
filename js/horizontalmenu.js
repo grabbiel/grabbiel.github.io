@@ -48,10 +48,15 @@ for (let i = 0; i < itemCount; i++) {
   item.className = "menu--item";
   item.setAttribute("hx-get", "https://server.grabbiel.com/" + arr[i]);
   item.setAttribute("hx-trigger", "click");
-  item.setAttribute("hx-target", "#content-box");
   item.setAttribute("hx-swap", "innerHTML");
-  item.style.minWidth = `${itemWidth}px`;
 
+  if (i === 0) {
+    item.setAttribute("hx-target", "#content-box");
+  } else {
+    item.setAttribute("hx-target", "#page-content");
+  }
+
+  item.style.minWidth = `${itemWidth}px`;
   item.innerHTML = `<div 
     class="menu--item-content" 
   >${arr[i]}</div>`;
@@ -158,6 +163,12 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
 
   window.currentActiveMenuIndex = itemIndex;
 
+  if (itemIndex == 0) {
+    document.body.classList.remove("content-page");
+  } else {
+    document.body.classList.add("content-page");
+  }
+
   // Center the focused item
   const itemRect = item.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
@@ -208,10 +219,12 @@ window.addEventListener("load", () => {
   const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
     sessionStorage.removeItem("pendingEndpoint");
+    document.body.classList.add("content-page");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
     const homeIndex = 0;
 
+    document.body.classList.remove("content-page");
     // Reset all items
     const homeItem = items[homeIndex];
     for (let i = 0; i < itemCount; ++i) {
