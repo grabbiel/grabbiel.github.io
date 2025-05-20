@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to check if the menu is visible
   function isMenuVisible() {
     const header = document.querySelector(".header");
-    return header && header.classList.contains("visible");
+    const isContentPage = document.body.classList.contains("content-page");
+    return isContentPage || (header && header.classList.contains("visible"));
   }
 
   // Store the starting touch position
