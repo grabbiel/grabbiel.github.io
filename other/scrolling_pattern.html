@@ -1,0 +1,58 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinite Image Scroll</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .scroll-container {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+
+        z-index: -1;
+      }
+      .scroll-image {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background-image: url("/other/grid.jpg");
+        background-size: 50% 50%;
+        animation: scroll 30s linear infinite;
+      }
+      @keyframes scroll {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-50%, -50%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-container">
+      <div class="scroll-image"></div>
+    </div>
+
+    <script>
+      const scrollImage = document.querySelector(".scroll-image");
+
+      function resetAnimation() {
+        scrollImage.style.animation = "none";
+        scrollImage.offsetHeight; // Trigger reflow
+        scrollImage.style.animation = null;
+      }
+
+      // Reset animation when it completes to create seamless loop
+      scrollImage.addEventListener("animationiteration", resetAnimation);
+    </script>
+  </body>
+</html>
