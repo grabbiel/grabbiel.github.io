@@ -14,6 +14,7 @@
   text-decoration: none;
   color: #333;
   font-size: 0.75rem;
+  cursor: pointer; 
 }
 .category-icon {
   width: 50px;
