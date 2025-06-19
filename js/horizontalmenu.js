@@ -108,6 +108,9 @@ function handleTouchMove(e) {
 
 function handleTouchEnd() {
   isDragging = false;
+  setTimeout(() => {
+    hasDragged = false;
+  }, 50);
 }
 
 menu.addEventListener("wheel", handleWheel, { passive: false });
