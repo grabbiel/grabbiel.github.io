@@ -41,3 +41,13 @@
   opacity: 50%;
   margin: auto;
 }
+.menu.is-dragging {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.menu.is-dragging * {
+  pointer-events: none;
+}
