@@ -4,32 +4,25 @@ document.addEventListener("DOMContentLoaded", function () {
   const closePopup = document.getElementById("close-popup");
   const pageInfo = document.getElementById("page-info");
 
-  infoButton.addEventListener("click", function () {
-    showPopup();
+  infoButton.addEventListener("click", showPopup);
+  closePopup.addEventListener("click", hidePopup);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) hidePopup();
   });
 
-  closePopup.addEventListener("click", function () {
-    hidePopup();
-  });
-
-  overlay.addEventListener("click", function (e) {
-    if (e.target === overlay) {
-      hidePopup();
-    }
-  });
   function showPopup() {
-    const currentDate = new Date().toLocaleDateString();
-    const pageName = "Home Page"; // Change this to your actual page name
-    const author = "John Doe"; // Change this to the actual author name
+    const info = window.siteInfo || { latest: "Unknown", loc: "Unknown" };
 
     pageInfo.innerHTML = `
-      <strong>Date:</strong> ${currentDate}<br>
-      <strong>Page:</strong> ${pageName}<br>
-      <strong>Author:</strong> ${author}
+      <strong>Latest:</strong> ${info.latest}<br>
+      <strong>LOC:</strong> ${info.loc}<br>
+      <strong>More:</strong> <a href="https://franciscoc.com" target="_blank">portfolio</a>, 
+      <a href="https://www.sponsorchecker.com/" target="_blank">project</a>
     `;
 
     overlay.style.display = "flex";
   }
+
   function hidePopup() {
     overlay.style.display = "none";
   }
