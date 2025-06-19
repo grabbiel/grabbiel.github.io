@@ -1,0 +1,27 @@
+.chifon-block {
+  padding: 0; /* Remove padding for full-width video */
+}
+
+.chifon-block video {
+  width: 100%;
+  max-height: 400px;
+  border-radius: 10px 10px 0 0;
+  display: block;
+}
+
+.chifon-block .block-caption {
+  padding: 1rem;
+  margin: 0;
+}
+
+.chifon-block a {
+  display: block;
+  padding: 0 1rem 1rem 1rem;
+  text-decoration: none;
+  color: #007bff;
+  font-size: 0.9rem;
+}
+
+.chifon-block a:hover {
+  text-decoration: underline;
+}
