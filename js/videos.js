@@ -23,6 +23,14 @@ function setupVideoControls() {
   // Touch/swipe handling
   let touchStartY = 0;
   let touchEndY = 0;
+
+  const header = document.querySelector(".header");
+  const headerHeight = header.offsetHeight;
+  document.documentElement.style.setProperty(
+    "--header-height",
+    headerHeight + "px",
+  );
+
   videos.forEach((video) => {
     const videoElement = video.querySelector("video");
     videoElement.addEventListener("click", togglePlayPause);
