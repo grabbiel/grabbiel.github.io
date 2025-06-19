@@ -204,6 +204,7 @@ for (let i = 0; i < itemCount; ++i) {
   items[i].addEventListener("click", (e) => {
     if (hasDragged) {
       e.preventDefault();
+      e.stopPropagation();
       return;
     }
     focusItem(i, true);
