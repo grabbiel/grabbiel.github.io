@@ -16,6 +16,7 @@
 .chifon-block .block-caption {
   margin: 0;
   font-size: 0.9rem;
+  color: white;
 }
 .chifon-play-icon {
   position: absolute;
@@ -28,7 +29,6 @@
   pointer-events: none;
   z-index: 2;
 }
-
 .chifon-overlay {
   z-index: 1;
 }
