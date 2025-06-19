@@ -1,11 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const infoButton = document.getElementById("info-button");
   const overlay = document.getElementById("overlay");
-  const closePopup = document.getElementById("close-popup");
   const pageInfo = document.getElementById("page-info");
 
   infoButton.addEventListener("click", showPopup);
-  closePopup.addEventListener("click", hidePopup);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) hidePopup();
   });
