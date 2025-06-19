@@ -134,6 +134,12 @@
   font-size: 1.2rem;
 }
 
+.video-overlay .location {
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
 .video-controls {
   position: absolute;
   right: 20px;
