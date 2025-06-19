@@ -154,6 +154,19 @@ function playCurrentVideo() {
 }
 
 function togglePlayPause() {
-  const video = videos[currentVideoIndex].querySelector("video");
-  video.paused ? video.play() : video.pause();
+  const container = videos[currentVideoIndex];
+  const video = container.querySelector("video");
+  if (video.paused) {
+    video.play();
+    video.classList.remove("video-paused");
+    const playIcon = container.querySelector(".play-overlay");
+    if (playIcon) playIcon.remove();
+  } else {
+    video.pause();
+    video.classList.add("video-paused");
+    const playIcon = document.createElement("div");
+    playIcon.className = "play-overlay";
+    playIcon.innerHTML = "▶";
+    container.appendChild(playIcon);
+  }
 }

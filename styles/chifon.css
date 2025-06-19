@@ -85,6 +85,22 @@ body.content-page .videos-player {
   display: none !important;
 }
 
+.video-paused {
+  opacity: 0.6;
+}
+
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 10;
+}
+
 .video-overlay {
   position: absolute;
   bottom: 40px;
