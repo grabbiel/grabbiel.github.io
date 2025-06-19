@@ -4,10 +4,11 @@ let videos = [];
 
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
-  if (url.includes("/videos/more")) {
+  if (url.includes("/videos-more")) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
     window.loadingMoreVideos = false;
+    setupCaptionToggle();
   } else if (url.includes("/videos")) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
@@ -15,6 +16,7 @@ document.addEventListener("htmx:afterRequest", function (event) {
       currentVideoIndex = 0;
       playCurrentVideo();
       setupVideoControls();
+      setupCaptionToggle();
     }
   }
 });
@@ -56,6 +58,33 @@ function setupVideoControls() {
     if (e.key === " ") {
       e.preventDefault();
       togglePlayPause();
+    }
+  });
+}
+
+function setupCaptionToggle() {
+  document.querySelectorAll(".caption").forEach((caption) => {
+    const isMobile = window.innerWidth < 768;
+    const limit = isMobile ? 95 : 250;
+    const fullText = caption.textContent;
+
+    if (fullText.length > limit) {
+      const truncated = fullText.substring(0, limit);
+      caption.innerHTML =
+        truncated + '... <span class="caption-toggle">more</span>';
+      caption.dataset.full = fullText; // Store only when needed
+
+      caption.addEventListener("click", function () {
+        if (this.classList.contains("expanded")) {
+          this.innerHTML =
+            truncated + '... <span class="caption-toggle">more</span>';
+          this.classList.remove("expanded");
+        } else {
+          this.innerHTML =
+            fullText + ' <span class="caption-toggle">less</span>';
+          this.classList.add("expanded");
+        }
+      });
     }
   });
 }
