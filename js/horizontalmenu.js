@@ -114,6 +114,7 @@ menu.addEventListener("selectstart", () => false);
 window.addEventListener("resize", () => {
   menuWidth = menu.clientWidth;
   wrapWidth = itemCount * itemWidth;
+  updateHeaderHeight();
 });
 
 const middleIndex = ((itemCount - 1) / 2) | 0;
@@ -209,6 +210,16 @@ function render() {
 
   requestAnimationFrame(render);
 }
+
+function updateHeaderHeight() {
+  const header = document.querySelector(".header");
+  const headerHeight = header.offsetHeight;
+  document.documentElement.style.setProperty(
+    "--header-height",
+    headerHeight + "px",
+  );
+}
+
 window.addEventListener("load", () => {
   const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
@@ -242,5 +253,7 @@ window.addEventListener("load", () => {
   if (window.currentActiveMenuIndex !== 0) {
     document.body.classList.add("content-page");
   }
+  updateHeaderHeight();
 });
+
 render();
