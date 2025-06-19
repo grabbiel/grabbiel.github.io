@@ -12,6 +12,7 @@
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
   color: white;
   padding: 1rem;
+  border-radius: 10px;
 }
 .chifon-block .block-caption {
   margin: 0;
