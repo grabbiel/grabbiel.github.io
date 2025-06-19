@@ -7,6 +7,10 @@
   z-index: 10;
   height: 7.5vh;
   background-color: #00ff9d;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .menu--wrapper {
   display: flex;
@@ -40,14 +44,4 @@
   color: #303038;
   opacity: 50%;
   margin: auto;
-}
-.menu.is-dragging {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-.menu.is-dragging * {
-  pointer-events: none;
 }
