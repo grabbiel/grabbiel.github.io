@@ -82,7 +82,7 @@ function loadMoreVideos() {
   window.loadingMoreVideos = true;
   htmx.ajax(
     "GET",
-    `https://server.grabbiel.com/videos/more?offset=${totalVideos}`,
+    `https://server.grabbiel.com/videos-more?offset=${totalVideos}`,
     {
       target: ".videos-player",
       swap: "beforeend",
