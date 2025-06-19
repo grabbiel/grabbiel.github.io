@@ -79,19 +79,30 @@ function handleWheel(e) {
   scrollY -= delta * 0.9;
 }
 
+// pc
+let dragThreshold = 5;
+let startX = 0;
+let hasDragged = false;
+
+// phone
 let touchStart = 0;
 let touchX = 0;
 let isDragging = false;
 
 function handleTouchStart(e) {
   touchStart = e.clientX || e.touches[0].clientX;
+  startX = touchStart;
   isDragging = true;
+  hasDragged = false;
   menu.classList.add("is-dragging");
 }
 
 function handleTouchMove(e) {
   if (!isDragging) return;
   touchX = e.clientX || e.touches[0].clientX;
+  if (Math.abs(touchX - startX) > dragThreshold) {
+    hasDragged = true;
+  }
   scrollY += (touchX - touchStart) * 2.5;
   touchStart = touchX;
 }
@@ -189,9 +200,16 @@ window.focusItemByEndpoint = function (endpoint) {
 };
 
 for (let i = 0; i < itemCount; ++i) {
-  items[i].addEventListener("click", () => focusItem(i, true));
+  items[i].addEventListener("click", (e) => {
+    if (hasDragged) {
+      e.preventDefault();
+      return;
+    }
+    focusItem(i, true);
+  });
+
   items[i].addEventListener("touchend", (e) => {
-    if (!isDragging) {
+    if (!isDragging && !hasDragged) {
       e.preventDefault();
       focusItem(i, true);
     }
