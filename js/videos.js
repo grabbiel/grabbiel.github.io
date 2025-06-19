@@ -23,6 +23,14 @@ function setupVideoControls() {
   // Touch/swipe handling
   let touchStartY = 0;
   let touchEndY = 0;
+  videos.forEach((video) => {
+    const videoElement = video.querySelector("video");
+    videoElement.addEventListener("click", togglePlayPause);
+    videoElement.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      togglePlayPause();
+    });
+  });
 
   document.addEventListener("touchstart", (e) => {
     touchStartY = e.changedTouches[0].screenY;
@@ -36,7 +44,10 @@ function setupVideoControls() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowUp") previousVideo();
     if (e.key === "ArrowDown") nextVideo();
-    if (e.key === " ") togglePlayPause();
+    if (e.key === " ") {
+      e.preventDefault();
+      togglePlayPause();
+    }
   });
 }
 

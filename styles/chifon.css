@@ -65,6 +65,16 @@
   object-fit: contain;
   margin: 0 auto;
   display: block;
+  -webkit-playsinline: true;
+  -playsinline: true;
+}
+
+.vide-container video::-webkite-media-controls {
+  display: none !important;
+}
+
+.video-container video::-webkit-media-controls-enclosure {
+  display: none !important;
 }
 
 .video-overlay {
