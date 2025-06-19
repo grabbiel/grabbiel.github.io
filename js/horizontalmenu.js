@@ -94,7 +94,6 @@ function handleTouchStart(e) {
   startX = touchStart;
   isDragging = true;
   hasDragged = false;
-  menu.classList.add("is-dragging");
 }
 
 function handleTouchMove(e) {
@@ -102,6 +101,7 @@ function handleTouchMove(e) {
   touchX = e.clientX || e.touches[0].clientX;
   if (Math.abs(touchX - startX) > dragThreshold) {
     hasDragged = true;
+    menu.classList.add("is-dragging");
   }
   scrollY += (touchX - touchStart) * 2.5;
   touchStart = touchX;
