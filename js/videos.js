@@ -32,6 +32,14 @@ function setupVideoControls() {
     });
   });
 
+  videos.forEach((video) => {
+    const muteBtn = video.querySelector(".mute-toggle");
+    muteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMute();
+    });
+  });
+
   document.addEventListener("touchstart", (e) => {
     touchStartY = e.changedTouches[0].screenY;
   });
@@ -49,6 +57,14 @@ function setupVideoControls() {
       togglePlayPause();
     }
   });
+}
+
+function toggleMute() {
+  const video = videos[currentVideoIndex].querySelector("video");
+  const muteBtn = videos[currentVideoIndex].querySelector(".mute-toggle");
+
+  video.muted = !video.muted;
+  muteBtn.textContent = video.muted ? "🔇" : "🔊";
 }
 
 function handleSwipe() {
