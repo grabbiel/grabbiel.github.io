@@ -129,7 +129,7 @@ function setupVideoControls() {
         }
       }
     });
-    videoProgress.addEventListener("mouseup", () => {
+    videoProgress.addEventListener("mouseup", (e) => {
       if (!videoMouseIsDragging) {
         const rect = videoProgress.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
