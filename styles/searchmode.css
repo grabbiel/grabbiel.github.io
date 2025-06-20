@@ -40,6 +40,21 @@
 .search-mode-bar input:focus {
   background-color: rgba(0, 0, 0, 0.05);
 }
+.search-result::before {
+  content: "📄"; /* default */
+}
+.search-result[data-type="chifon"]::before {
+  content: "🎬";
+}
+.search-result[data-type="sochee"]::before {
+  content: "📸";
+}
+.search-result[data-type="article"]::before {
+  content: "📰";
+}
+.search-result[data-type="interactive"]::before {
+  content: "🎮";
+}
 /* Media queries */
 @media screen and (max-width: 480px) {
   .search-mode-bar {
