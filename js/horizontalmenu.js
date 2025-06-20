@@ -79,11 +79,11 @@ function handleWheel(e) {
   scrollY -= delta * 0.9;
 }
 
-// pc
-let dragThreshold = 5;
+// Drag detection variables
+let dragThreshold = 4;
 let startX = 0;
-let clickStartTime = 0;
 let hasMovedEnough = false;
+let clickStartTime = 0;
 
 // phone
 let touchStart = 0;
@@ -92,8 +92,9 @@ let isDragging = false;
 
 function handleTouchStart(e) {
   touchStart = e.clientX || e.touches[0].clientX;
-  startX = touchStart;
   isDragging = true;
+
+  startX = touchStart;
   hasMovedEnough = false;
   clickStartTime = Date.now();
 }
@@ -101,22 +102,28 @@ function handleTouchStart(e) {
 function handleTouchMove(e) {
   if (!isDragging) return;
   touchX = e.clientX || e.touches[0].clientX;
+  scrollY += (touchX - touchStart) * 2.5;
+  touchStart = touchX;
+
   if (Math.abs(touchX - startX) > dragThreshold) {
     hasMovedEnough = true;
   }
-  scrollY += (touchX - touchStart) * 2.5;
-  touchStart = touchX;
 }
 
 function handleTouchEnd() {
   isDragging = false;
 }
 
+let clickedItemIndex = -1;
 menu.addEventListener("wheel", handleWheel, { passive: false });
 menu.addEventListener("touchstart", handleTouchStart);
 menu.addEventListener("touchmove", handleTouchMove);
 menu.addEventListener("touchend", handleTouchEnd);
-menu.addEventListener("mousedown", handleTouchStart);
+menu.addEventListener("mousedown", (e) => {
+  const clickedItem = e.target.closest(".menu--item");
+  clickedItemIndex = clickedItem ? Array.from(items).indexOf(clickedItem) : -1;
+  handleTouchStart(e);
+});
 menu.addEventListener("mousemove", handleTouchMove);
 menu.addEventListener("mouseleave", handleTouchEnd);
 menu.addEventListener("mouseup", handleTouchEnd);
@@ -199,24 +206,24 @@ window.focusItemByEndpoint = function (endpoint) {
   }
 };
 
+// PER ITEM TOUCHEND
 for (let i = 0; i < itemCount; ++i) {
-  items[i].addEventListener("click", (e) => {
-    const clickDuration = Date.now() - clickStartTime;
-    if (hasMovedEnough || clickDuration > 200) {
-      e.preventDefault();
-      e.stopPropagation();
-      hasMovedEnough = false;
-      return;
-    }
-    focusItem(i, true);
-    hasMovedEnough = false;
-  });
-
   items[i].addEventListener("touchend", (e) => {
     if (!isDragging && !hasMovedEnough) {
       e.preventDefault();
       focusItem(i, true);
     }
+    hasMovedEnough = false;
+  });
+
+  items[i].addEventListener("click", (e) => {
+    if (hasMovedEnough) {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      focusItem(i, true);
+    }
+    hasMovedEnough = false;
   });
 }
 
