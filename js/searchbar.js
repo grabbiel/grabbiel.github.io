@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchButton = document.getElementById("search-button");
   let searchTimeout;
 
+  let isDeleting = false;
+
   homeButton.addEventListener("click", function () {
     window.location.reload();
   });
@@ -39,6 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
     searchModeInput.value = currentValue;
   }
 
+  searchModeInput.addEventListener("keydown", (e) => {
+    isDeleting = e.key === "Backspace" || e.key === "Delete";
+  });
+
   searchModeInput.addEventListener("input", (e) => {
     clearTimeout(searchTimeout);
     const query = e.target.value.trim();
@@ -55,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       }, 300);
     }
+    isDeleting = false;
   });
 
   searchButton.addEventListener("click", () => {
