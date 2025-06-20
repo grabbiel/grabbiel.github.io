@@ -107,8 +107,8 @@ function setupVideoControls() {
 
     videoProgress.addEventListener("mousemove", (e) => {
       if (e.buttons == 1) {
-        const distanceX = Math.abs(e.clientX - mouseStartX);
-        const distanceY = Math.abs(e.clientY - mouseStartY);
+        const distanceX = Math.abs(e.clientX - videoMouseStartX);
+        const distanceY = Math.abs(e.clientY - videoMouseStartY);
 
         if (distanceX > 5 || distanceY > 5) {
           if (!videoMouseIsDragging) {
@@ -240,6 +240,13 @@ function changeVideo(newIndex) {
   progressBarTouchStartX = 0;
   progressBarTouchStartY = 0;
   wasPlaying = false;
+  videoMouseIsDragging = false;
+
+  // isSwipeDetected = false;
+  // videoMouseStartX = 0;
+  // videoMouseStartY = 0;
+  // videoTouchEndY = 0;
+  // videoTouchStartY = 0;
 
   const prevContainer = videos[currentVideoIndex];
   const prevVideo = prevContainer.querySelector("video");
