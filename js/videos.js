@@ -108,6 +108,7 @@ function setupVideoControls() {
 
 function setupCaptionToggle() {
   document.querySelectorAll(".caption").forEach((caption) => {
+    if (caption.dataset.full) return;
     const isMobile = window.innerWidth < 768;
     const limit = isMobile ? 95 : 250;
     const fullText = caption.textContent;
