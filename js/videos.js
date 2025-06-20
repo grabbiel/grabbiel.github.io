@@ -34,7 +34,10 @@ function setupVideoControls() {
     videoElement.addEventListener("click", togglePlayPause);
     videoElement.addEventListener("touchend", (e) => {
       e.preventDefault();
-      togglePlayPause();
+      if (!isSwipeDetected) {
+        togglePlayPause();
+      }
+      isSwipeDetected = false;
     });
     muteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -75,7 +78,13 @@ function setupVideoControls() {
 
   document.addEventListener("touchend", (e) => {
     touchEndY = e.changedTouches[0].screenY;
-    handleSwipe();
+    const swipeDistance = touchStartY - touchEndY;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(swipeDistance) > minSwipeDistance) {
+      isSwipeDetected = true;
+      handleSwipe();
+    }
   });
 
   document.addEventListener("keydown", (e) => {
@@ -125,14 +134,11 @@ function toggleMute() {
 
 function handleSwipe() {
   const swipeDistance = touchStartY - touchEndY;
-  const minSwipeDistance = 50;
 
-  if (Math.abs(swipeDistance) > minSwipeDistance) {
-    if (swipeDistance > 0) {
-      nextVideo();
-    } else {
-      previousVideo();
-    }
+  if (swipeDistance > 0) {
+    nextVideo();
+  } else {
+    previousVideo();
   }
 }
 
