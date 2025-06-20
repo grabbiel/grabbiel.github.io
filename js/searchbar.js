@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const backButton = document.getElementById("back-button");
   const searchButton = document.getElementById("search-button");
   let searchTimeout;
-
   let isDeleting = false;
 
   homeButton.addEventListener("click", function () {

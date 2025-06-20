@@ -220,7 +220,19 @@ body.content-page .videos-player {
   width: 0%;
   transition: width 0.1s;
 }
+.progress-bar.scrubbing {
+  height: 8px; /* Expand from 4px */
+  background: rgba(255, 255, 255, 0.5);
+  transition: height 0.2s;
+}
 
+.progress-bar.scrubbing .progress-fill {
+  height: 100%;
+}
+
+.video-container.scrubbing video {
+  filter: brightness(0.7); /* Dim video while scrubbing */
+}
 @media only screen and (max-width: 926px) and (orientation: portrait) {
   .video-overlay .stats {
     bottom: 50%;

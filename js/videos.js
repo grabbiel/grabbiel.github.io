@@ -4,6 +4,8 @@ let videos = [];
 let isSwipeDetected = false;
 let videoTouchStartY = 0;
 let videoTouchEndY = 0;
+let isScrubbing = false;
+let wasPlaying = false;
 
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
@@ -62,15 +64,29 @@ function setupVideoControls() {
       "mousedown",
       () => (playbackBarDragging = true),
     );
+    progressBar.addEventListener("mousedown", (e) => {
+      isScrubbing = true;
+      wasPlaying = !videoElement.paused;
+      videoElement.pause();
+      progressBar.classList.add("scrubbing");
+      video.classList.add("scrubbing");
+    });
     progressBar.addEventListener("mousemove", (e) => {
-      if (playbackBarDragging) {
+      if (isScrubbing) {
         const rect = progressBar.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
         const percentage = Math.max(0, Math.min(1, clickX / rect.width));
         videoElement.currentTime = percentage * videoElement.duration;
       }
     });
-    document.addEventListener("mouseup", () => (playbackBarDragging = false));
+    document.addEventListener("mouseup", () => {
+      if (isScrubbing) {
+        isScrubbing = false;
+        progressBar.classList.remove("scrubbing");
+        video.classList.remove("scrubbing");
+        if (wasPlaying) videoElement.play();
+      }
+    });
   });
 
   document.addEventListener("touchstart", (e) => {
