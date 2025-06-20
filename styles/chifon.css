@@ -106,8 +106,8 @@ body.content-page .videos-player {
 .video-overlay {
   position: absolute;
   bottom: 40px;
-  left: 20px;
-  right: 20px;
+  left: 100px;
+  right: 100px;
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
@@ -151,7 +151,7 @@ body.content-page .videos-player {
 .video-overlay .stats {
   position: absolute;
   right: 5px;
-  bottom: 50%;
+  bottom: 70%;
   transform: translateY(50%);
   display: flex;
   flex-direction: column;
@@ -199,9 +199,9 @@ body.content-page .videos-player {
 
 .video-progress {
   position: absolute;
-  bottom: 100px;
-  left: 20px;
-  right: 20px;
+  bottom: 20px;
+  left: 100px;
+  right: 100px;
   height: 4px;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 2px;
@@ -217,4 +217,34 @@ body.content-page .videos-player {
   border-radius: 2px;
   width: 0%;
   transition: width 0.1s;
+}
+
+@media only screen and (min-width: 480px) and (max-width: 926px) and (orientation: portrait) {
+  .video-overlay .stats {
+    bottom: 50%;
+  }
+  .video-overlay {
+    left: 20px;
+    right: 20px;
+  }
+  .video-progress {
+    left: 20px;
+    right: 20px;
+  }
+  .video-controls {
+    display: none;
+  }
+}
+@media only screen and (min-width: 480px) and (max-width: 926px) and (orientation: landscape) {
+  .video-controls {
+    display: none;
+  }
+  .video-overlay {
+    left: 45px;
+    right: 45px;
+  }
+  .video-progress {
+    left: 45px;
+    right: 45px;
+  }
 }
