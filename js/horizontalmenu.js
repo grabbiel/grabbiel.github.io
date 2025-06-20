@@ -13,7 +13,7 @@ const arr = [
   "home", // 0
   "photos", // 1
   "links", // 2
-  "news", // 3
+  "blog", // 3
   "videos", // 4
   "read", // 5
   "github", // 6

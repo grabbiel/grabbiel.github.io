@@ -1,352 +1,508 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mobile Navigation with Search</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
 
-        .header {
-            padding: 12px 16px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #fff;
-            position: sticky;
-            top: 0;
-        }
+      .header {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        position: sticky;
+        top: 0;
+      }
 
-        .back-button {
-            color: #666;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            min-width: 24px;
-        }
+      .back-button {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        min-width: 24px;
+      }
 
-        .search-container {
-            flex: 1;
-            position: relative;
-        }
+      .search-container {
+        flex: 1;
+        position: relative;
+      }
 
-        .search-input {
-            width: 100%;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
-            background: #f5f5f5;
-            font-size: 16px;
-            outline: none;
-        }
+      .search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        background: #f5f5f5;
+        font-size: 16px;
+        outline: none;
+      }
 
-        .search-input:focus {
-            background: #eeeeee;
-        }
+      .search-input:focus {
+        background: #eeeeee;
+      }
 
-        .nav-list {
-            list-style: none;
-        }
+      .nav-list {
+        list-style: none;
+      }
 
-        .nav-item {
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #f5f5f5;
-            transition: opacity 0.2s ease;
-        }
+      .nav-item {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #f5f5f5;
+        transition: opacity 0.2s ease;
+      }
 
-        .nav-item.hidden {
-            display: none;
-        }
+      .nav-item.hidden {
+        display: none;
+      }
 
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+      }
 
-        .nav-icon.vynil { background-color: #00D780; }
-        .nav-icon.read { background-color: #1EC800; }
-        .nav-icon.fishing { background-color: #00D780; }
-        .nav-icon.leetcode { background-color: #00B8FF; }
-        .nav-icon.scuba { background-color: #00B8FF; }
-        .nav-icon.robotics { background-color: #00B8FF; }
-        .nav-icon.videos { background-color: #00B8FF; }
-        .nav-icon.food { background-color: #00B8FF; }
-        .nav-icon.travel { background-color: #00B8FF; }
-        .nav-icon.github { background-color: #00B8FF; }
-        .nav-icon.pretty { background-color: #00B8FF; }
-        .nav-icon.anime { background-color: #00B8FF; }
-        .nav-icon.renders { background-color: #00B8FF; }
-        .nav-icon.music { background-color: #00B8FF; }
-        .nav-icon.news { background-color: #00B8FF; }
-        .nav-icon.photo { background-color: #00B8FF; }
+      .nav-icon.vynil {
+        background-color: #00d780;
+      }
+      .nav-icon.read {
+        background-color: #1ec800;
+      }
+      .nav-icon.fishing {
+        background-color: #00d780;
+      }
+      .nav-icon.leetcode {
+        background-color: #00b8ff;
+      }
+      .nav-icon.scuba {
+        background-color: #00b8ff;
+      }
+      .nav-icon.robotics {
+        background-color: #00b8ff;
+      }
+      .nav-icon.videos {
+        background-color: #00b8ff;
+      }
+      .nav-icon.food {
+        background-color: #00b8ff;
+      }
+      .nav-icon.travel {
+        background-color: #00b8ff;
+      }
+      .nav-icon.github {
+        background-color: #00b8ff;
+      }
+      .nav-icon.pretty {
+        background-color: #00b8ff;
+      }
+      .nav-icon.anime {
+        background-color: #00b8ff;
+      }
+      .nav-icon.renders {
+        background-color: #00b8ff;
+      }
+      .nav-icon.music {
+        background-color: #00b8ff;
+      }
+      .nav-icon.blog {
+        background-color: #00b8ff;
+      }
+      .nav-icon.photo {
+        background-color: #00b8ff;
+      }
 
-        .nav-content {
-            flex: 1;
-        }
+      .nav-content {
+        flex: 1;
+      }
 
-        .nav-title {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 4px;
-        }
+      .nav-title {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 4px;
+      }
 
-        .nav-description {
-            font-size: 13px;
-            color: #666;
-        }
+      .nav-description {
+        font-size: 13px;
+        color: #666;
+      }
 
-        .no-results {
-            padding: 24px 16px;
-            text-align: center;
-            color: #666;
-            display: none;
-        }
+      .no-results {
+        padding: 24px 16px;
+        text-align: center;
+        color: #666;
+        display: none;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header class="header">
-        <a href="/" class="back-button">←</a>
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search services..." aria-label="Search services">
-        </div>
+      <a href="/" class="back-button">←</a>
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search services..."
+          aria-label="Search services"
+        />
+      </div>
     </header>
 
-<nav>
-        <ul class="nav-list">
-            <li class="nav-item" data-search="image capture flash photo picture camera ai" onclick="handleMenuItemClick(event, 'photos')">
-                <div class="nav-icon photo">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Photos</div>
-                    <div class="nav-description">Pictures taken by me or generated using AI</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="eat meal dish vegetable plate restaurant food cook recipe peru" onclick="handleMenuItemClick(event, 'food')">
-                <div class="nav-icon food">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Food</div>
-                    <div class="nav-description">Recipes and tips on making Peruvian dishes</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="abroad delta united ticket boarding visa passport train travel trip plane" onclick="handleMenuItemClick(event, 'travel')">
-                <div class="nav-icon travel">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Travel</div>
-                    <div class="nav-description">Quick reviews on brief trips</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="fish bait ocean water river lake lagoon" onclick="handleMenuItemClick(event, 'fishing')">
-                <div class="nav-icon fishing">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Fishing</div>
-                    <div class="nav-description">Compendium of learning journey</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="ocean scuba diving water floating under river lake lagoon swim pool" onclick="handleMenuItemClick(event, 'scuba')">
-                <div class="nav-icon scuba">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Scuba</div>
-                    <div class="nav-description">Baby steps on diving deep into the ocean</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="github code programming php java cpp cmake js ts python bug pr commit" onclick="handleMenuItemClick(event, 'github')">
-                <div class="nav-icon github">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">GitHub</div>
-                    <div class="nav-description">Deep dive into written code</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="robot mechanical electronics charge verilog arduino wire chip programming cpp asm binary" onclick="handleMenuItemClick(event, 'robots')">
-                <div class="nav-icon robotics">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Robotics</div>
-                    <div class="nav-description">Report on learning progress</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="leetcode programming icpc algorithm dfs bfs hackerrank codesignal oa interview codeforces math linear algebra" onclick="handleMenuItemClick(event, 'leetcode')">
-                <div class="nav-icon leetcode">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Leetcode</div>
-                    <div class="nav-description">Personal notes for continuous improvement</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="pretty photos videos links books news music happy" onclick="handleMenuItemClick(event, 'pretty')">
-                <div class="nav-icon pretty">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Pretty Things</div>
-                    <div class="nav-description">Set of unrelated beauty</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="read log book text notes lecture manual technical article journal cite academic" onclick="handleMenuItemClick(event, 'read')">
-                <div class="nav-icon read">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Reading Log</div>
-                    <div class="nav-description">Tracking machine and notes</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="vynil record cd music cassette mp3 avi m4a lossless" onclick="handleMenuItemClick(event, 'vynils')">
-                <div class="nav-icon vynil">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Vynil</div>
-                    <div class="nav-description">Updates on an ever growing collection</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="anime japan webtoon manga comic weeb" onclick="handleMenuItemClick(event, 'anime')">
-                <div class="nav-icon anime">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Anime</div>
-                    <div class="nav-description">Recommendations based on limited knowledge</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="videos youtube mp4 media avi mov series show tv streaming interview" onclick="handleMenuItemClick(event, 'videos')">
-                <div class="nav-icon videos">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content">
-                    <div class="nav-title">Videos</div>
-                    <div class="nav-description">Grouping of disconnected found media</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="render blender 3d houdini maya autodesk model zbrush clay" onclick="handleMenuItemClick(event, 'renders')">
-                <div class="nav-icon renders">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content" 
-                    >
-                    <div class="nav-title">3D Renders</div>
-                    <div class="nav-description">Sporadic updates on slowly expanding work</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="music mp3 rec youtube spotify apple shazam" onclick="handleMenuItemClick(event, 'music')">
-                <div class="nav-icon music">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content" 
-                    >
-                    <div class="nav-title">Music</div>
-                    <div class="nav-description">Recommendations on new songs to listen to</div>
-                </div>
-            </li>
-            <li class="nav-item" data-search="news updates changes breaking journal article tv forum internet" onclick="handleMenuItemClick(event, 'news')">
-                <div class="nav-icon news">
-                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-                <div class="nav-content" 
-                    >
-                    <div class="nav-title">News</div>
-                    <div class="nav-description">List of things that occur to me or the world</div>
-                </div>
-            </li>
-
-        </ul>
-        <div class="no-results">No matching services found</div>
+    <nav>
+      <ul class="nav-list">
+        <li
+          class="nav-item"
+          data-search="image capture flash photo picture camera ai"
+          onclick="handleMenuItemClick(event, 'photos')"
+        >
+          <div class="nav-icon photo">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Photos</div>
+            <div class="nav-description">
+              Pictures taken by me or generated using AI
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="eat meal dish vegetable plate restaurant food cook recipe peru"
+          onclick="handleMenuItemClick(event, 'food')"
+        >
+          <div class="nav-icon food">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Food</div>
+            <div class="nav-description">
+              Recipes and tips on making Peruvian dishes
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="abroad delta united ticket boarding visa passport train travel trip plane"
+          onclick="handleMenuItemClick(event, 'travel')"
+        >
+          <div class="nav-icon travel">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Travel</div>
+            <div class="nav-description">Quick reviews on brief trips</div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="fish bait ocean water river lake lagoon"
+          onclick="handleMenuItemClick(event, 'fishing')"
+        >
+          <div class="nav-icon fishing">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Fishing</div>
+            <div class="nav-description">Compendium of learning journey</div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="ocean scuba diving water floating under river lake lagoon swim pool"
+          onclick="handleMenuItemClick(event, 'scuba')"
+        >
+          <div class="nav-icon scuba">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Scuba</div>
+            <div class="nav-description">
+              Baby steps on diving deep into the ocean
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="github code programming php java cpp cmake js ts python bug pr commit"
+          onclick="handleMenuItemClick(event, 'github')"
+        >
+          <div class="nav-icon github">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">GitHub</div>
+            <div class="nav-description">Deep dive into written code</div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="robot mechanical electronics charge verilog arduino wire chip programming cpp asm binary"
+          onclick="handleMenuItemClick(event, 'robots')"
+        >
+          <div class="nav-icon robotics">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Robotics</div>
+            <div class="nav-description">Report on learning progress</div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="leetcode programming icpc algorithm dfs bfs hackerrank codesignal oa interview codeforces math linear algebra"
+          onclick="handleMenuItemClick(event, 'leetcode')"
+        >
+          <div class="nav-icon leetcode">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Leetcode</div>
+            <div class="nav-description">
+              Personal notes for continuous improvement
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="pretty photos videos links books blog news music happy"
+          onclick="handleMenuItemClick(event, 'pretty')"
+        >
+          <div class="nav-icon pretty">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Pretty Things</div>
+            <div class="nav-description">Set of unrelated beauty</div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="read log book text notes lecture manual technical article journal cite academic"
+          onclick="handleMenuItemClick(event, 'read')"
+        >
+          <div class="nav-icon read">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Reading Log</div>
+            <div class="nav-description">Tracking machine and notes</div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="vynil record cd music cassette mp3 avi m4a lossless"
+          onclick="handleMenuItemClick(event, 'vynils')"
+        >
+          <div class="nav-icon vynil">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Vynil</div>
+            <div class="nav-description">
+              Updates on an ever growing collection
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="anime japan webtoon manga comic weeb"
+          onclick="handleMenuItemClick(event, 'anime')"
+        >
+          <div class="nav-icon anime">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Anime</div>
+            <div class="nav-description">
+              Recommendations based on limited knowledge
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="videos youtube mp4 media avi mov series show tv streaming interview"
+          onclick="handleMenuItemClick(event, 'videos')"
+        >
+          <div class="nav-icon videos">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Videos</div>
+            <div class="nav-description">
+              Grouping of disconnected found media
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="render blender 3d houdini maya autodesk model zbrush clay"
+          onclick="handleMenuItemClick(event, 'renders')"
+        >
+          <div class="nav-icon renders">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">3D Renders</div>
+            <div class="nav-description">
+              Sporadic updates on slowly expanding work
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="music mp3 rec youtube spotify apple shazam"
+          onclick="handleMenuItemClick(event, 'music')"
+        >
+          <div class="nav-icon music">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Music</div>
+            <div class="nav-description">
+              Recommendations on new songs to listen to
+            </div>
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          data-search="news updates changes breaking journal article tv forum internet"
+          onclick="handleMenuItemClick(event, 'blog')"
+        >
+          <div class="nav-icon blog">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+          </div>
+          <div class="nav-content">
+            <div class="nav-title">Blog</div>
+            <div class="nav-description">
+              List of things that occur to me or the world
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="no-results">No matching services found</div>
     </nav>
     <script>
-        const searchInput = document.querySelector('.search-input');
-        const navItems = document.querySelectorAll('.nav-item');
-        const noResults = document.querySelector('.no-results');
+      const searchInput = document.querySelector(".search-input");
+      const navItems = document.querySelectorAll(".nav-item");
+      const noResults = document.querySelector(".no-results");
 
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            let hasResults = false;
+      searchInput.addEventListener("input", function (e) {
+        const searchTerm = e.target.value.toLowerCase();
+        let hasResults = false;
 
-            navItems.forEach(item => {
-                const searchContent = item.getAttribute('data-search').toLowerCase();
-                const title = item.querySelector('.nav-title').textContent.toLowerCase();
-                const description = item.querySelector('.nav-description').textContent.toLowerCase();
-                
-                if (searchContent.includes(searchTerm) || 
-                    title.includes(searchTerm) || 
-                    description.includes(searchTerm)) {
-                    item.classList.remove('hidden');
-                    hasResults = true;
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
+        navItems.forEach((item) => {
+          const searchContent = item.getAttribute("data-search").toLowerCase();
+          const title = item
+            .querySelector(".nav-title")
+            .textContent.toLowerCase();
+          const description = item
+            .querySelector(".nav-description")
+            .textContent.toLowerCase();
 
-            noResults.style.display = hasResults ? 'none' : 'block';
+          if (
+            searchContent.includes(searchTerm) ||
+            title.includes(searchTerm) ||
+            description.includes(searchTerm)
+          ) {
+            item.classList.remove("hidden");
+            hasResults = true;
+          } else {
+            item.classList.add("hidden");
+          }
         });
+
+        noResults.style.display = hasResults ? "none" : "block";
+      });
     </script>
     <script>
       function handleMenuItemClick(event, endpoint) {
-          event.preventDefault();
-          
-          // Store the endpoint in sessionStorage
-          sessionStorage.setItem('pendingEndpoint', endpoint);
-          
-          // Redirect to home page
-          window.location.href = '/';
+        event.preventDefault();
+
+        // Store the endpoint in sessionStorage
+        sessionStorage.setItem("pendingEndpoint", endpoint);
+
+        // Redirect to home page
+        window.location.href = "/";
       }
     </script>
-</body>
+  </body>
 </html>
