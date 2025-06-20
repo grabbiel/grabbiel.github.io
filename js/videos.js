@@ -6,7 +6,7 @@ let videoTouchStartY = 0;
 let videoTouchEndY = 0;
 let isScrubbing = false;
 let wasPlaying = false;
-let touchStartX = 0;
+let progressBarTouchStartX = 0;
 
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
@@ -57,11 +57,13 @@ function setupVideoControls() {
       }
     });
     videoProgress.addEventListener("touchstart", (e) => {
-      touchStartX = e.touches[0].clientX;
+      progressBarTouchStartX = e.touches[0].clientX;
     });
     videoProgress.addEventListener("touchmove", (e) => {
       e.preventDefault();
-      const distanceDiff = Math.abs(e.touches[0].clientX - touchStartX);
+      const distanceDiff = Math.abs(
+        e.touches[0].clientX - progressBarTouchStartX,
+      );
 
       if (distanceDiff > 10) {
         if (!isScrubbing) {
@@ -211,7 +213,7 @@ function previousVideo() {
 
 function changeVideo(newIndex) {
   isScrubbing = false;
-  touchStartX = 0;
+  progressBarTouchStartX = 0;
   isSwipeDetected = false;
   videoTouchEndY = 0;
   videoTouchStartY = 0;
