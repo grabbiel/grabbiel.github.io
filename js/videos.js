@@ -164,13 +164,25 @@ function previousVideo() {
 }
 
 function changeVideo(newIndex) {
-  videos[currentVideoIndex].classList.remove("active");
-  videos[currentVideoIndex].querySelector("video").pause();
+  const prevContainer = videos[currentVideoIndex];
+  const prevVideo = prevContainer.querySelector("video");
+
+  prevContainer.classList.remove("active");
+  prevVideo.pause();
+  prevVideo.classList.add("video-paused");
+
+  // Add play overlay to paused video
+  if (!prevContainer.querySelector(".play-overlay")) {
+    const playIcon = document.createElement("div");
+    playIcon.className = "play-overlay";
+    playIcon.innerHTML = "▶";
+    prevContainer.appendChild(playIcon);
+  }
 
   currentVideoIndex = newIndex;
-
   videos[currentVideoIndex].classList.add("active");
   playCurrentVideo();
+
   if (newIndex >= totalVideos - 3 && !window.loadingMoreVideos) {
     loadMoreVideos();
   }
@@ -189,7 +201,14 @@ function loadMoreVideos() {
 }
 
 function playCurrentVideo() {
-  const video = videos[currentVideoIndex].querySelector("video");
+  const container = videos[currentVideoIndex];
+  const video = container.querySelector("video");
+
+  // Clean up paused state
+  video.classList.remove("video-paused");
+  const playIcon = container.querySelector(".play-overlay");
+  if (playIcon) playIcon.remove();
+
   video.currentTime = 0;
   video.play();
 }
