@@ -249,7 +249,7 @@ body.content-page .videos-player {
 }
 @media only screen and (max-width: 926px) and (orientation: portrait) {
   .video-overlay .stats {
-    bottom: 50%;
+    bottom: 60%;
   }
   .video-overlay {
     left: 20px;

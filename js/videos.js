@@ -239,6 +239,7 @@ function changeVideo(newIndex) {
   isScrubbing = false;
   progressBarTouchStartX = 0;
   progressBarTouchStartY = 0;
+  wasPlaying = false;
 
   const prevContainer = videos[currentVideoIndex];
   const prevVideo = prevContainer.querySelector("video");
