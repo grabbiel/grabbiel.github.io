@@ -140,6 +140,10 @@ window.addEventListener("resize", () => {
   wrapWidth = itemCount * itemWidth;
   updateHeaderHeight();
 });
+window.addEventListener("orientationchange", updateHeaderHeight);
+document.addEventListener("visibilitychange", () => {
+  setTimeout(updateHeaderHeight, 100);
+});
 
 const middleIndex = ((itemCount - 1) / 2) | 0;
 const content_box = document.getElementById("content-box");
