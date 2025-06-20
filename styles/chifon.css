@@ -1,5 +1,5 @@
 :root {
-  --header-height: 12.5vh;
+  --header-height: calc(var(--menu-height) + var(--navbar-height));
 }
 
 /* under [home] menu */

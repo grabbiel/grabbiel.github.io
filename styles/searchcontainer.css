@@ -1,10 +1,13 @@
 /* Navbar styles */
+:root {
+  --navbar-height: 5vh;
+}
 .navbar {
   width: 100vw;
   background-color: #f8f8f8;
   box-sizing: border-box;
   padding: 0vh 7.5vw;
-  height: 5vh;
+  height: var(--navbar-height);
 }
 .search-bar {
   display: flex;
@@ -86,4 +89,15 @@
   border-right: 2px solid white;
   border-bottom: 2px solid white;
   transform: rotate(-45deg);
+}
+
+@media only screen and (min-device-width: 480px) and (max-device-width: 768px) and (orientation: portrait) {
+  :root {
+    --navbar-height: 6vh;
+  }
+}
+@media only screen and (min-device-width: 480px) and (max-device-width: 768px) and (orientation: landscape) {
+  :root {
+    --navbar-height: 9vh;
+  }
 }

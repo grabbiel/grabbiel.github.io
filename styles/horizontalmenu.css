@@ -1,11 +1,14 @@
 /* Menu styles */
+:root {
+  --menu-height: 7.5vh;
+}
 .menu {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   width: 100vw;
   position: relative;
   z-index: 10;
-  height: 7.5vh;
+  height: var(--menu-height);
   background-color: #00ff9d;
   user-select: none;
   -webkit-user-select: none;
@@ -44,4 +47,10 @@
   color: #303038;
   opacity: 50%;
   margin: auto;
+}
+
+@media only screen and (min-device-width: 480px) and (max-device-width: 768px) and (orientation: landscape) {
+  :root {
+    --menu-height: 9vh;
+  }
 }
