@@ -244,8 +244,8 @@ function changeVideo(newIndex) {
   isSwipeDetected = false;
   videoTouchEndY = 0;
   videoTouchStartY = 0;
-  // videoMouseStartX = 0;
-  // videoMouseStartY = 0;
+  videoMouseStartX = 0;
+  videoMouseStartY = 0;
 
   const prevContainer = videos[currentVideoIndex];
   const prevVideo = prevContainer.querySelector("video");
