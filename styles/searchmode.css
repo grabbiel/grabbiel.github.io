@@ -55,6 +55,10 @@
 .search-result[data-type="interactive"]::before {
   content: "🎮";
 }
+.search-results {
+  display: flex;
+  flex-direction: column;
+}
 /* Media queries */
 @media screen and (max-width: 480px) {
   .search-mode-bar {

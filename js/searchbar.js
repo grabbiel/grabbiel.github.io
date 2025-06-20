@@ -39,12 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
     searchModeInput.value = currentValue;
   }
 
-  let lastTriggeredLength = 0;
   searchModeInput.addEventListener("input", (e) => {
     clearTimeout(searchTimeout);
     const query = e.target.value.trim();
 
-    if (query.length >= 2 && query.length > lastTriggeredLength) {
+    if (query.length >= 2) {
       searchTimeout = setTimeout(() => {
         htmx.ajax(
           "GET",
@@ -54,14 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
             swap: "afterbegin",
           },
         );
-        lastTriggeredLength = query.length;
       }, 300);
-    }
-  });
-
-  searchModeInput.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" || e.key === "Delete") {
-      lastTriggeredLength = Math.max(0, e.target.value.trim().length - 1);
     }
   });
 
