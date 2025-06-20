@@ -1,6 +1,9 @@
 let currentVideoIndex = 0;
 let totalVideos = 0;
 let videos = [];
+let isSwipeDetected = false;
+let videoTouchStartY = 0;
+let videoTouchEndY = 0;
 
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
@@ -23,8 +26,6 @@ document.addEventListener("htmx:afterRequest", function (event) {
 
 function setupVideoControls() {
   // Touch/swipe handling
-  let touchStartY = 0;
-  let touchEndY = 0;
 
   videos.forEach((video) => {
     const videoElement = video.querySelector("video");
@@ -73,12 +74,12 @@ function setupVideoControls() {
   });
 
   document.addEventListener("touchstart", (e) => {
-    touchStartY = e.changedTouches[0].screenY;
+    videoTouchStartY = e.changedTouches[0].screenY;
   });
 
   document.addEventListener("touchend", (e) => {
-    touchEndY = e.changedTouches[0].screenY;
-    const swipeDistance = touchStartY - touchEndY;
+    videoTouchEndY = e.changedTouches[0].screenY;
+    const swipeDistance = videoTouchStartY - videoTouchEndY;
     const minSwipeDistance = 50;
 
     if (Math.abs(swipeDistance) > minSwipeDistance) {
@@ -133,7 +134,7 @@ function toggleMute() {
 }
 
 function handleSwipe() {
-  const swipeDistance = touchStartY - touchEndY;
+  const swipeDistance = videoTouchStartY - videoTouchEndY;
 
   if (swipeDistance > 0) {
     nextVideo();
