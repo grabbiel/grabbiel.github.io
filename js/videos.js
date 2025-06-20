@@ -14,6 +14,7 @@ document.addEventListener("htmx:afterRequest", function (event) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
     window.loadingMoreVideos = false;
+    setupVideoControls();
     setupCaptionToggle();
   } else if (url.includes("/videos")) {
     videos = document.querySelectorAll(".video-container");
@@ -55,12 +56,6 @@ function setupVideoControls() {
         progressFill.style.width = progress + "%";
       }
     });
-    // videoProgress.addEventListener("click", (e) => {
-    //   const rect = videoProgress.getBoundingClientRect();
-    //   const clickX = e.clientX - rect.left;
-    //   const percentage = clickX / rect.width;
-    //   videoElement.currentTime = percentage * videoElement.duration;
-    // });
     videoProgress.addEventListener("touchstart", (e) => {
       touchStartX = e.touches[0].clientX;
     });
@@ -215,9 +210,20 @@ function previousVideo() {
 }
 
 function changeVideo(newIndex) {
+  isScrubbing = false;
+  touchStartX = 0;
+  isSwipeDetected = false;
+  videoTouchEndY = 0;
+  videoTouchStartY = 0;
+  wasPlaying = false;
+
   const prevContainer = videos[currentVideoIndex];
   const prevVideo = prevContainer.querySelector("video");
   const prevCaption = prevContainer.querySelector(".caption");
+  const prevProgress = prevContainer.querySelector(".progress-bar");
+
+  prevProgress.classList.remove("scrubbing");
+  prevContainer.classList.remove("scrubbing");
 
   if (prevCaption && prevCaption.classList.contains("expanded")) {
     const fullText = prevCaption.dataset.full;
