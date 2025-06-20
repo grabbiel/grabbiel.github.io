@@ -76,7 +76,15 @@ function setupVideoControls() {
   document.addEventListener("touchstart", (e) => {
     videoTouchStartY = e.changedTouches[0].screenY;
   });
-
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (document.querySelector(".videos-player")) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
   document.addEventListener("touchend", (e) => {
     videoTouchEndY = e.changedTouches[0].screenY;
     const swipeDistance = videoTouchStartY - videoTouchEndY;

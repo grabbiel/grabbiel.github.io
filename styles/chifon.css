@@ -48,6 +48,8 @@
   overflow: hidden;
   background: black;
   box-sizing: border-box;
+  overscroll-behavior: none;
+  touch-action: pan-y;
 }
 
 body.content-page .videos-player {
