@@ -34,6 +34,7 @@ function setupVideoControls() {
     const muteBtn = video.querySelector(".mute-toggle");
     const progressBar = video.querySelector(".progress-bar");
     const progressFill = video.querySelector(".progress-fill");
+    const videoProgress = video.querySelector(".video-progress");
     videoElement.addEventListener("click", togglePlayPause);
     videoElement.addEventListener("touchend", (e) => {
       e.preventDefault();
@@ -53,8 +54,8 @@ function setupVideoControls() {
         progressFill.style.width = progress + "%";
       }
     });
-    progressBar.addEventListener("click", (e) => {
-      const rect = progressBar.getBoundingClientRect();
+    videoProgress.addEventListener("click", (e) => {
+      const rect = videoProgress.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const percentage = clickX / rect.width;
       videoElement.currentTime = percentage * videoElement.duration;
@@ -64,16 +65,16 @@ function setupVideoControls() {
       "mousedown",
       () => (playbackBarDragging = true),
     );
-    progressBar.addEventListener("mousedown", (e) => {
+    videoProgress.addEventListener("mousedown", (e) => {
       isScrubbing = true;
       wasPlaying = !videoElement.paused;
       videoElement.pause();
       progressBar.classList.add("scrubbing");
       video.classList.add("scrubbing");
     });
-    progressBar.addEventListener("mousemove", (e) => {
+    videoProgress.addEventListener("mousemove", (e) => {
       if (isScrubbing) {
-        const rect = progressBar.getBoundingClientRect();
+        const rect = videoProgress.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
         const percentage = Math.max(0, Math.min(1, clickX / rect.width));
         videoElement.currentTime = percentage * videoElement.duration;
