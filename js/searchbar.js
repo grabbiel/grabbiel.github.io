@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     searchMode.style.display = "none";
     searchInput.value = searchModeInput.value;
     mainSearchInput.value = searchModeInput.value;
+    document.getElementById("search-results").innerHTML = "";
   }
   function enterSearchMode() {
     searchMode.style.display = "block";
@@ -38,20 +39,29 @@ document.addEventListener("DOMContentLoaded", function () {
     searchModeInput.value = currentValue;
   }
 
+  let lastTriggeredLength = 0;
   searchModeInput.addEventListener("input", (e) => {
     clearTimeout(searchTimeout);
     const query = e.target.value.trim();
 
-    if (query.length >= 2) {
+    if (query.length >= 2 && query.length > lastTriggeredLength) {
       searchTimeout = setTimeout(() => {
         htmx.ajax(
           "GET",
           `https://server.grabbiel.com/search-preview?q=${encodeURIComponent(query)}`,
           {
             target: "#search-results",
+            swap: "afterbegin",
           },
         );
+        lastTriggeredLength = query.length;
       }, 300);
+    }
+  });
+
+  searchModeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" || e.key === "Delete") {
+      lastTriggeredLength = Math.max(0, e.target.value.trim().length - 1);
     }
   });
 
