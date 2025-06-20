@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchMode = document.getElementById("search-mode");
   const searchModeInput = document.getElementById("search-mode-input");
   const backButton = document.getElementById("back-button");
+  const searchButton = document.getElementById("search-button");
+  let searchTimeout;
 
   homeButton.addEventListener("click", function () {
     window.location.reload();
@@ -35,4 +37,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const currentValue = document.activeElement.value;
     searchModeInput.value = currentValue;
   }
+
+  searchModeInput.addEventListener("input", (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+
+    if (query.length >= 2) {
+      searchTimeout = setTimeout(() => {
+        htmx.ajax(
+          "GET",
+          `https://server.grabbiel.com/search-preview?q=${encodeURIComponent(query)}`,
+          {
+            target: "#search-results",
+          },
+        );
+      }, 300);
+    }
+  });
+
+  searchButton.addEventListener("click", () => {
+    const query = searchInput.value.trim();
+    if (query) {
+      htmx.ajax(
+        "GET",
+        `https://server.grabbiel.com/search?q=${encodeURIComponent(query)}`,
+        {
+          target: "#search-results",
+        },
+      );
+    }
+  });
 });
