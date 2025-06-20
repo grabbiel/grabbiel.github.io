@@ -82,7 +82,8 @@ function handleWheel(e) {
 // pc
 let dragThreshold = 5;
 let startX = 0;
-let hasDragged = false;
+let clickStartTime = 0;
+let hasMovedEnough = false;
 
 // phone
 let touchStart = 0;
@@ -93,14 +94,15 @@ function handleTouchStart(e) {
   touchStart = e.clientX || e.touches[0].clientX;
   startX = touchStart;
   isDragging = true;
-  hasDragged = false;
+  hasMovedEnough = false;
+  clickStartTime = Date.now();
 }
 
 function handleTouchMove(e) {
   if (!isDragging) return;
   touchX = e.clientX || e.touches[0].clientX;
   if (Math.abs(touchX - startX) > dragThreshold) {
-    hasDragged = true;
+    hasMovedEnough = true;
   }
   scrollY += (touchX - touchStart) * 2.5;
   touchStart = touchX;
@@ -108,9 +110,6 @@ function handleTouchMove(e) {
 
 function handleTouchEnd() {
   isDragging = false;
-  setTimeout(() => {
-    hasDragged = false;
-  }, 50);
 }
 
 menu.addEventListener("wheel", handleWheel, { passive: false });
@@ -202,16 +201,19 @@ window.focusItemByEndpoint = function (endpoint) {
 
 for (let i = 0; i < itemCount; ++i) {
   items[i].addEventListener("click", (e) => {
-    if (hasDragged) {
+    const clickDuration = Date.now() - clickStartTime;
+    if (hasMovedEnough || clickDuration > 200) {
       e.preventDefault();
       e.stopPropagation();
+      hasMovedEnough = false;
       return;
     }
     focusItem(i, true);
+    hasMovedEnough = false;
   });
 
   items[i].addEventListener("touchend", (e) => {
-    if (!isDragging && !hasDragged) {
+    if (!isDragging && !hasMovedEnough) {
       e.preventDefault();
       focusItem(i, true);
     }
