@@ -6,6 +6,7 @@ let videoTouchStartY = 0;
 let videoTouchEndY = 0;
 let isScrubbing = false;
 let wasPlaying = false;
+let touchStartX = 0;
 
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
@@ -54,17 +55,49 @@ function setupVideoControls() {
         progressFill.style.width = progress + "%";
       }
     });
-    videoProgress.addEventListener("click", (e) => {
-      const rect = videoProgress.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const percentage = clickX / rect.width;
-      videoElement.currentTime = percentage * videoElement.duration;
+    // videoProgress.addEventListener("click", (e) => {
+    //   const rect = videoProgress.getBoundingClientRect();
+    //   const clickX = e.clientX - rect.left;
+    //   const percentage = clickX / rect.width;
+    //   videoElement.currentTime = percentage * videoElement.duration;
+    // });
+    videoProgress.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].clientX;
     });
-    let playbackBarDragging = false;
-    progressBar.addEventListener(
-      "mousedown",
-      () => (playbackBarDragging = true),
-    );
+    videoProgress.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      const distanceDiff = Math.abs(e.touches[0].clientX - touchStartX);
+
+      if (distanceDiff > 10) {
+        if (!isScrubbing) {
+          isScrubbing = true;
+          wasPlaying = !videoElement.paused;
+          videoElement.pause();
+          progressBar.classList.add("scrubbing");
+          video.classList.add("scrubbing");
+        }
+
+        const rect = videoProgress.getBoundingClientRect();
+        const touchX = e.touches[0].clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+        videoElement.currentTime = percentage * videoElement.duration;
+      }
+    });
+    videoProgress.addEventListener("touchend", (e) => {
+      const rect = videoProgress.getBoundingClientRect();
+
+      if (!isScrubbing) {
+        const touchX = e.changedTouches[0].clientX - rect.left;
+        const percentage = touchX / rect.width;
+        videoElement.currentTime = percentage * videoElement.duration;
+      } else {
+        isScrubbing = false;
+        progressBar.classList.remove("scrubbing");
+        video.classList.remove("scrubbing");
+        if (wasPlaying) videoElement.play();
+      }
+    });
+
     videoProgress.addEventListener("mousedown", (e) => {
       isScrubbing = true;
       wasPlaying = !videoElement.paused;
