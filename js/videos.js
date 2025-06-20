@@ -241,12 +241,11 @@ function changeVideo(newIndex) {
   progressBarTouchStartY = 0;
   wasPlaying = false;
   videoMouseIsDragging = false;
-
   isSwipeDetected = false;
+  videoTouchEndY = 0;
+  videoTouchStartY = 0;
   // videoMouseStartX = 0;
   // videoMouseStartY = 0;
-  // videoTouchEndY = 0;
-  // videoTouchStartY = 0;
 
   const prevContainer = videos[currentVideoIndex];
   const prevVideo = prevContainer.querySelector("video");
