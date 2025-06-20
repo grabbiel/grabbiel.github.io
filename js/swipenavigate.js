@@ -38,6 +38,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Only track touch if the menu is visible and we're not processing a previous swipe
     if (!isMenuVisible() || isProcessingSwipe) return;
 
+    const target = e.target;
+    if (target.closest(".video-overlay") || target.closest(".video-progress"))
+      return;
+
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }
@@ -46,6 +50,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleTouchEnd(e) {
     // Don't process if the menu isn't visible or we're already handling a swipe
     if (!isMenuVisible() || isProcessingSwipe) return;
+
+    // Check if touch is on video controls
+    const target = e.target;
+    if (target.closest(".video-overlay") || target.closest(".video-progress")) {
+      return;
+    }
 
     // Check if we have valid starting coordinates (might not if touchstart was ignored)
     if (touchStartX === 0 && touchStartY === 0) return;
