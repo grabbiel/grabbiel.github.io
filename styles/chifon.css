@@ -1,3 +1,7 @@
+:root {
+  --header-height: 13.5vh;
+}
+
 /* under [home] menu */
 .chifon-block {
   position: relative;
@@ -41,10 +45,8 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100dvh;
   overflow: hidden;
   background: black;
-  padding-top: var(--header-height);
   box-sizing: border-box;
 }
 

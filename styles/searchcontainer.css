@@ -4,6 +4,7 @@
   background-color: #f8f8f8;
   box-sizing: border-box;
   padding: 0vh 7.5vw;
+  height: 5vh;
 }
 .search-bar {
   display: flex;
