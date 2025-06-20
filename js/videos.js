@@ -30,6 +30,7 @@ function setupVideoControls() {
     const videoElement = video.querySelector("video");
     const muteBtn = video.querySelector(".mute-toggle");
     const progressBar = video.querySelector(".progress-bar");
+    const progressFill = video.querySelector(".progress-fill");
     videoElement.addEventListener("click", togglePlayPause);
     videoElement.addEventListener("touchend", (e) => {
       e.preventDefault();
