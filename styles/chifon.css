@@ -69,7 +69,7 @@ body.content-page .videos-player {
 }
 
 .video-container video {
-  height: 100%;
+  height: calc(100vh - var(--header-height));
   width: auto;
   max-width: 100vw;
   object-fit: contain;
