@@ -90,13 +90,12 @@ let touchStart = 0;
 let touchX = 0;
 let isDragging = false;
 
+// pc
+let isMouseDragging = false;
+
 function handleTouchStart(e) {
   touchStart = e.clientX || e.touches[0].clientX;
   isDragging = true;
-
-  startX = touchStart;
-  hasMovedEnough = false;
-  clickStartTime = Date.now();
 }
 
 function handleTouchMove(e) {
@@ -104,10 +103,6 @@ function handleTouchMove(e) {
   touchX = e.clientX || e.touches[0].clientX;
   scrollY += (touchX - touchStart) * 2.5;
   touchStart = touchX;
-
-  if (Math.abs(touchX - startX) > dragThreshold) {
-    hasMovedEnough = true;
-  }
 }
 
 function handleTouchEnd() {
@@ -120,13 +115,24 @@ menu.addEventListener("touchstart", handleTouchStart);
 menu.addEventListener("touchmove", handleTouchMove);
 menu.addEventListener("touchend", handleTouchEnd);
 menu.addEventListener("mousedown", (e) => {
-  const clickedItem = e.target.closest(".menu--item");
-  clickedItemIndex = clickedItem ? Array.from(items).indexOf(clickedItem) : -1;
-  handleTouchStart(e);
+  touchStart = e.clientX;
+  isMouseDragging = false;
 });
-menu.addEventListener("mousemove", handleTouchMove);
-menu.addEventListener("mouseleave", handleTouchEnd);
-menu.addEventListener("mouseup", handleTouchEnd);
+menu.addEventListener("mousemove", (e) => {
+  if (e.buttons === 1) {
+    isMouseDragging = true;
+    touchX = e.clientX;
+    scrollY += (touchX - touchStart) * 2.5;
+    touchStart = touchX;
+  }
+});
+menu.addEventListener("mouseup", () => {
+  isMouseDragging = false;
+});
+menu.addEventListener("mouseleave", () => {
+  isDragging = false;
+  isMouseDragging = false;
+});
 menu.addEventListener("selectstart", () => false);
 
 window.addEventListener("resize", () => {
@@ -209,21 +215,18 @@ window.focusItemByEndpoint = function (endpoint) {
 // PER ITEM TOUCHEND
 for (let i = 0; i < itemCount; ++i) {
   items[i].addEventListener("touchend", (e) => {
-    if (!isDragging && !hasMovedEnough) {
+    if (!isDragging) {
       e.preventDefault();
       focusItem(i, true);
     }
-    hasMovedEnough = false;
   });
-
   items[i].addEventListener("click", (e) => {
-    if (hasMovedEnough) {
+    if (isMouseDragging) {
       e.preventDefault();
       e.stopPropagation();
     } else {
       focusItem(i, true);
     }
-    hasMovedEnough = false;
   });
 }
 
