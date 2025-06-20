@@ -11,6 +11,7 @@ let progressBarTouchStartY = 0;
 let videoMouseStartX = 0;
 let videoMouseStartY = 0;
 let videoMouseIsDragging = false;
+let keyboardListenersAdded = false;
 
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
@@ -170,14 +171,18 @@ function setupVideoControls() {
     }
   });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp") previousVideo();
-    if (e.key === "ArrowDown") nextVideo();
-    if (e.key === " ") {
-      e.preventDefault();
-      togglePlayPause();
-    }
-  });
+  if (!keyboardListenersAdded) {
+    keyboardListenersAdded = true;
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp") previousVideo();
+      if (e.key === "ArrowDown") nextVideo();
+      if (e.key === " ") {
+        e.preventDefault();
+        togglePlayPause();
+      }
+    });
+  }
 }
 
 function setupCaptionToggle() {
