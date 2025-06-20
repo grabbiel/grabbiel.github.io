@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   searchButton.addEventListener("click", () => {
-    const query = searchInput.value.trim();
+    const query = searchModeInput.value.trim();
     if (query) {
       htmx.ajax(
         "GET",
