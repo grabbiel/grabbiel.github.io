@@ -36,6 +36,9 @@ function setupVideoControls() {
   // Touch/swipe handling
 
   videos.forEach((video) => {
+    if (video.dataset.listenersAdded) return;
+    video.dataset.listenersAdded = 1;
+
     const videoElement = video.querySelector("video");
     const muteBtn = video.querySelector(".mute-toggle");
     const progressBar = video.querySelector(".progress-bar");
