@@ -167,6 +167,17 @@ function previousVideo() {
 function changeVideo(newIndex) {
   const prevContainer = videos[currentVideoIndex];
   const prevVideo = prevContainer.querySelector("video");
+  const prevCaption = prevContainer.querySelector(".caption");
+
+  if (prevCaption && prevCaption.classList.contains("expanded")) {
+    const fullText = prevCaption.dataset.full;
+    const isMobile = window.innerWidth < 768;
+    const limit = isMobile ? 95 : 250;
+    const truncated = fullText.substring(0, limit);
+    prevCaption.innerHTML =
+      truncated + '... <span class="caption-toggle">more</span>';
+    prevCaption.classList.remove("expanded");
+  }
 
   prevContainer.classList.remove("active");
   prevVideo.pause();
