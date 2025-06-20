@@ -219,7 +219,7 @@ body.content-page .videos-player {
   transition: width 0.1s;
 }
 
-@media only screen and (min-width: 480px) and (max-width: 926px) and (orientation: portrait) {
+@media only screen and (max-width: 926px) and (orientation: portrait) {
   .video-overlay .stats {
     bottom: 50%;
   }
@@ -235,7 +235,7 @@ body.content-page .videos-player {
     display: none;
   }
 }
-@media only screen and (min-width: 480px) and (max-width: 926px) and (orientation: landscape) {
+@media only screen and (max-width: 926px) and (orientation: landscape) {
   .video-controls {
     display: none;
   }
