@@ -8,6 +8,7 @@
   height: 100%;
   background-color: #f8f8f8;
   z-index: 2000;
+  flex-direction: column;
 }
 .search-mode-bar {
   display: flex;
@@ -55,9 +56,16 @@
 .search-result[data-type="interactive"]::before {
   content: "🎮";
 }
+.search-result {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
 #search-results {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 5px;
+  -webkit-overflow-scrolling: touch;
 }
 /* Media queries */
 @media screen and (max-width: 480px) {

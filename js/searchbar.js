@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("search-results").innerHTML = "";
   }
   function enterSearchMode() {
-    searchMode.style.display = "block";
+    searchMode.style.display = "flex";
     searchModeInput.focus();
     const currentValue = document.activeElement.value;
     searchModeInput.value = currentValue;
