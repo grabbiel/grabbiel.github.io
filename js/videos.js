@@ -28,19 +28,44 @@ function setupVideoControls() {
 
   videos.forEach((video) => {
     const videoElement = video.querySelector("video");
+    const muteBtn = video.querySelector(".mute-toggle");
+    const progressBar = video.querySelector(".progress-bar");
     videoElement.addEventListener("click", togglePlayPause);
     videoElement.addEventListener("touchend", (e) => {
       e.preventDefault();
       togglePlayPause();
     });
-  });
-
-  videos.forEach((video) => {
-    const muteBtn = video.querySelector(".mute-toggle");
     muteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       toggleMute();
     });
+    videoElement.addEventListener("timeupdate", () => {
+      if (progressFill) {
+        const progress =
+          (videoElement.currentTime / videoElement.duration) * 100;
+        progressFill.style.width = progress + "%";
+      }
+    });
+    progressBar.addEventListener("click", (e) => {
+      const rect = progressBar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = clickX / rect.width;
+      videoElement.currentTime = percentage * videoElement.duration;
+    });
+    let playbackBarDragging = false;
+    progressBar.addEventListener(
+      "mousedown",
+      () => (playbackBarDragging = true),
+    );
+    progressBar.addEventListener("mousemove", (e) => {
+      if (playbackBarDragging) {
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+        videoElement.currentTime = percentage * videoElement.duration;
+      }
+    });
+    document.addEventListener("mouseup", () => (playbackBarDragging = false));
   });
 
   document.addEventListener("touchstart", (e) => {
