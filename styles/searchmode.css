@@ -55,7 +55,7 @@
 .search-result[data-type="interactive"]::before {
   content: "🎮";
 }
-.search-results {
+#search-results {
   display: flex;
   flex-direction: column;
 }
