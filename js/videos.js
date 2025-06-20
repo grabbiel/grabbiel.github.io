@@ -242,7 +242,7 @@ function changeVideo(newIndex) {
   wasPlaying = false;
   videoMouseIsDragging = false;
 
-  // isSwipeDetected = false;
+  isSwipeDetected = false;
   // videoMouseStartX = 0;
   // videoMouseStartY = 0;
   // videoTouchEndY = 0;
