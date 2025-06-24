@@ -1,0 +1,48 @@
+.links-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tag-section {
+  margin-bottom: 40px;
+}
+
+.tag-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-transform: capitalize;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 8px;
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.link-block {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.link-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.link-thumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.link-title {
+  padding: 12px;
+  font-weight: 500;
+  background: white;
+}
