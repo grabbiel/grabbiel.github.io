@@ -24,8 +24,8 @@ const arr = [
   "writing", // 11
   "vynils", // 12
   "travel", // 13
-  "fishing", // 14
-  "scuba", // 15
+  "tierlist", // 14
+  "quiz", // 15
   "wishlist", // 16
   "donate", // 17
   "foreign", // 18
@@ -35,7 +35,7 @@ const arr = [
   "stats", // 22
   "assets", // 23
   "forum", // 24
-  "updates", // 25
+  "games", // 25
 ];
 
 window.menuItemCount = itemCount;
