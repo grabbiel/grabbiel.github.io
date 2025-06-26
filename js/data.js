@@ -1,4 +1,4 @@
 window.siteInfo = {
-  latest: "2025-06-24",
-  loc: 3016
+  latest: "2025-06-26",
+  loc: 3308
 };
