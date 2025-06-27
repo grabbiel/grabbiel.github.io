@@ -146,7 +146,7 @@ body.content-page .videos-player {
 .video-overlay .caption.expanded {
   max-height: 150px;
   overflow-y: scroll;
-  rgba(128, 128, 128, 0.7);
+  background: rgba(128, 128, 128, 0.7);
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
