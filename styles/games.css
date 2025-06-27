@@ -52,7 +52,6 @@
   background: rgba(0, 0, 0, 0.8);
   z-index: 1000;
   overflow-y: auto;
-  padding: 20px;
 }
 
 .game-title-screen {
@@ -187,12 +186,9 @@
     padding: 20px 12px;
   }
   
-  .game-content-overlay {
-    padding: 12px;
-  }
-  
   .game-title-screen {
     margin: 20px auto;
+    width: 90%;
   }
   
   .title-screen-name {
