@@ -165,6 +165,8 @@ function setupVideoControls() {
     const swipeDistance = videoTouchStartY - videoTouchEndY;
     const minSwipeDistance = 50;
 
+    if (e.target.closest(".caption.expanded")) return;
+
     if (Math.abs(swipeDistance) > minSwipeDistance) {
       isSwipeDetected = true;
       handleSwipe();

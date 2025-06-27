@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!isMenuVisible() || isProcessingSwipe) return;
 
     const target = e.target;
-    if (target.closest(".video-overlay") || target.closest(".video-progress") || target.closest(".horizontal-tabs") || target.closest(".category-tabs") || target.closest(".game-content-overlay")) {
+    if (target.closest(".video-overlay") || target.closest(".video-progress") || target.closest(".horizontal-tabs") || target.closest(".category-tabs") || target.closest(".game-content-overlay") || target.closest(".caption.expanded")) {
       return;
     }
 
