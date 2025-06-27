@@ -39,8 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!isMenuVisible() || isProcessingSwipe) return;
 
     const target = e.target;
-    if (target.closest(".video-overlay") || target.closest(".video-progress"))
+    if (target.closest(".video-overlay") || target.closest(".video-progress") || target.closest(".horizontal-tabs") || target.closest(".category-tabs") || target.closest(".game-content-overlay")) {
       return;
+    }
 
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
