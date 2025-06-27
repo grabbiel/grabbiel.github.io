@@ -155,6 +155,7 @@ function setupVideoControls() {
     "touchmove",
     (e) => {
       if (document.querySelector(".videos-player")) {
+        if (e.target.closest(".caption.expanded")) return;
         e.preventDefault();
       }
     },
