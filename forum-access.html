@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Access - GRABBIEL</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .approval-form, .token-form { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        button { background: #007cba; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        input, textarea { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div id="content">Loading...</div>
+
+    <script>
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const approvalToken = urlParams.get('approval');
+            
+            if (approvalToken) {
+                validateApprovalToken(approvalToken);
+            } else {
+                document.getElementById('content').innerHTML = '<h2>Invalid Access Link</h2>';
+            }
+        });
+
+        function validateApprovalToken(token) {
+            fetch(`https://email.grabbiel.com/validate-approval?token=${token}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.valid) {
+                        showApprovalForm(token, data.email);
+                    } else {
+                        document.getElementById('content').innerHTML = '<h2>Invalid or expired approval link</h2>';
+                    }
+                });
+        }
+
+        function showApprovalForm(token, email) {
+            document.getElementById('content').innerHTML = `
+                <div class="approval-form">
+                    <h2>Forum Access Approved</h2>
+                    <p>Email: ${email}</p>
+                    <p>Click to receive your posting code:</p>
+                    <button onclick="requestPostingToken('${token}')">Send Code</button>
+                </div>
+            `;
+        }
+
+        function requestPostingToken(approvalToken) {
+            fetch('https://email.grabbiel.com/send-posting-token', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `approval_token=${approvalToken}`
+            }).then(() => {
+                showTokenInputForm();
+            });
+        }
+
+        function showTokenInputForm() {
+            document.getElementById('content').innerHTML = `
+                <div class="token-form">
+                    <h2>Check Your Email</h2>
+                    <p>A posting code has been sent to your email.</p>
+                    <h3>Enter Your Posting Code</h3>
+                    <input type="text" id="postingToken" placeholder="Paste your code here">
+                    <button onclick="savePostingToken()">Save Code</button>
+                </div>
+            `;
+        }
+
+        function savePostingToken() {
+            const token = document.getElementById('postingToken').value;
+            if (token) {
+                localStorage.setItem('forumPostingToken', token);
+                alert('Code saved! You can now post to the forum.');
+                window.location.href = '/'; // Redirect to main page
+            }
+        }
+    </script>
+</body>
+</html>
