@@ -22,8 +22,8 @@ document.addEventListener("htmx:afterSwap", function (event) {
     console.log("replyForm found:", !!replyForm);
     console.log("requestBtn found:", !!requestBtn);
     const token = localStorage.getItem('forumPostingToken');
-    console.log("Token exists:", !!token, "Value:", token);
     if (token) {
+      console.log("Token exists:", !!token, "Value:", token);
       if (replyForm) replyForm.style.display = 'block';
       if (requestBtn) requestBtn.style.display = 'none';
     } else {
