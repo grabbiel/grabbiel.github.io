@@ -18,6 +18,8 @@ document.addEventListener("htmx:afterSwap", function (event) {
     if (localStorage.getItem('forumPostingToken')) {
       document.getElementById('replyForm').style.display = 'block';
       document.getElementById('requestAccessBtn').style.display = 'none';
+    } else {
+      document.getElementById('replyForm').style.display = 'none';
     }
   }
 });
