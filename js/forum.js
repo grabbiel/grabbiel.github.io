@@ -15,8 +15,15 @@ function submitReply(group, articleId) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `token=${token}&group=${group}&reply_to=${articleId}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+      console.log('Status:', response.status, response.statusText);
+      console.log('Headers:', [...response.headers.entries()]);
+      return response.text();
+    })
+    .then(text => {
+      console.log('Raw response: ', text);
+      const data = JSON.parse(text);
+      console.log('Parsed data: ', data);
       if (data.success) {
         // Show loading overlay
         document.getElementById('forum-content').innerHTML = '<div style="text-align:center; padding:40px;">🔄 Loading updated thread...</div>';
