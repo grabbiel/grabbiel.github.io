@@ -11,27 +11,33 @@ function submitReply(group, articleId) {
 }
 
 function requestPostAccess(groupName) {
+  // Check if already requested
+  if (localStorage.getItem('forumAccessRequested')) {
+    showRequestedMessage();
+    return;
+  }
+
   document.body.insertAdjacentHTML('beforeend', `
-    <div id="accessModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; align-items:center; justify-content:center;">
-      <div id="modalContent" style="background:white; border-radius:10px; overflow:hidden; min-width:400px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-        <div style="background:#f6f6f6; padding:12px; display:flex; align-items:center; border-bottom:1px solid #ddd;">
-          <div style="width:12px; height:12px; background:#ff5f57; border-radius:50%; cursor:pointer; margin-right:8px;" onclick="document.getElementById('accessModal').remove()"></div>
-          <div style="width:12px; height:12px; background:#ffbd2e; border-radius:50%; margin-right:8px;"></div>
-          <div style="width:12px; height:12px; background:#28ca42; border-radius:50%;"></div>
-          <span style="flex:1; text-align:center; font-weight:bold; color:#333;">Request Forum Access</span>
+    <div id="accessModal" class="access-modal">
+      <div id="modalContent" class="modal-content">
+        <div class="modal-titlebar">
+          <div class="traffic-light red" onclick="document.getElementById('accessModal').remove()"></div>
+          <div class="traffic-light yellow"></div>
+          <div class="traffic-light green"></div>
+          <span class="modal-title">Request Forum Access</span>
         </div>
-        <div style="padding:20px;">
-          <form id="accessForm">
-            <input name="email" type="email" placeholder="Your email" required style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px; box-sizing:border-box;">
-            <textarea name="reason" placeholder="Why do you want access?" required style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px; min-height:80px; resize:vertical; box-sizing:border-box;"></textarea>
-            <button type="submit" style="background:#007cba; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; width:100%;">Submit Request</button>
+        <div class="modal-body">
+          <p class="rate-warning">⚠️ Rate limited - don't spam requests</p>
+          <form id="accessForm" class="modal-form">
+            <input name="email" type="email" placeholder="Your email" required>
+            <textarea name="reason" placeholder="Why do you want access?" required></textarea>
+            <button type="submit" class="modal-submit">Submit Request</button>
           </form>
         </div>
       </div>
     </div>
   `);
 
-  // Close on outside click
   document.getElementById('accessModal').onclick = function (e) {
     if (e.target === this) this.remove();
   };
@@ -43,16 +49,33 @@ function requestPostAccess(groupName) {
       method: 'POST',
       body: new URLSearchParams(formData)
     }).then(() => {
-      document.getElementById('modalContent').innerHTML = '<div style="padding:40px; text-align:center;"><h3>Request Submitted!</h3><p>Check your email for approval.</p></div>';
-      setTimeout(() => document.getElementById('accessModal').remove(), 2000);
+      localStorage.setItem('forumAccessRequested', 'true');
+      document.getElementById('accessModal').remove();
+      showRequestedMessage();
     });
   };
+}
+
+function showRequestedMessage() {
+  const btn = document.getElementById('requestAccessBtn');
+  if (btn) {
+    btn.outerHTML = `
+      <div class="access-requested">
+        <p>📧 Access request submitted<br>
+        <small>Check your email if approved. Don't resubmit.</small></p>
+      </div>
+    `;
+  }
 }
 
 document.addEventListener("htmx:afterSwap", function (event) {
   if (event.detail.xhr.responseURL.includes("/forum/thread")) {
     if (localStorage.getItem('forumPostingToken')) {
       document.body.classList.add('has-token');
+    }
+    if (localStorage.getItem('forumAccessRequested')) {
+      document.body.classList.add('has-requested');
+      showRequestedMessage();
     }
   }
 });
