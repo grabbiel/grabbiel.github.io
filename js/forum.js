@@ -12,23 +12,9 @@ function submitReply(group, articleId) {
 
 
 document.addEventListener("htmx:afterSwap", function (event) {
-  const url = event.detail.xhr.responseURL;
-  if (url.includes("/forum/thread")) {
-    console.log("Called to /forum/thread");
-
-    const replyForm = document.getElementById('replyForm');
-    const requestBtn = document.getElementById('requestAccessBtn');
-
-    console.log("replyForm found:", !!replyForm);
-    console.log("requestBtn found:", !!requestBtn);
-    const token = localStorage.getItem('forumPostingToken');
-    if (token) {
-      console.log("Token exists:", !!token, "Value:", token);
-      if (replyForm) replyForm.style.display = 'block';
-      if (requestBtn) requestBtn.style.display = 'none';
-    } else {
-      if (replyForm) replyForm.style.display = 'none';
+  if (event.detail.xhr.responseURL.includes("/forum/thread")) {
+    if (localStorage.getItem('forumPostingToken')) {
+      document.body.classList.add('has-token');
     }
-
   }
 });
