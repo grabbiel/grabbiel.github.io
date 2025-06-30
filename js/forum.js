@@ -68,6 +68,40 @@ function showRequestedMessage() {
   }
 }
 
+function enterPostingToken() {
+  document.body.insertAdjacentHTML('beforeend', `
+    <div id="tokenModal" class="access-modal">
+      <div class="modal-content">
+        <div class="modal-titlebar">
+          <div class="traffic-light red" onclick="document.getElementById('tokenModal').remove()"></div>
+          <div class="traffic-light yellow"></div>
+          <div class="traffic-light green"></div>
+          <span class="modal-title">Enter Posting Token</span>
+        </div>
+        <div class="modal-body">
+          <form id="tokenForm" class="modal-form">
+            <input name="token" type="text" placeholder="Paste your posting token here" required>
+            <button type="submit" class="modal-submit">Save Token</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `);
+
+  document.getElementById('tokenModal').onclick = function (e) {
+    if (e.target === this) this.remove();
+  };
+
+  document.getElementById('tokenForm').onsubmit = function (e) {
+    e.preventDefault();
+    const token = new FormData(this).get('token');
+    localStorage.setItem('forumPostingToken', token);
+    document.body.classList.add('has-token');
+    document.getElementById('tokenModal').remove();
+    alert('Token saved! You can now post to the forum.');
+  };
+}
+
 document.addEventListener("htmx:afterSwap", function (event) {
   if (event.detail.xhr.responseURL.includes("/forum/thread")) {
     if (localStorage.getItem('forumPostingToken')) {
