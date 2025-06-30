@@ -11,7 +11,7 @@ function submitReply(group, articleId) {
 }
 
 
-document.addEventListener("htmx:afterRequest", function (event) {
+document.addEventListener("htmx:afterSwap", function (event) {
   const url = event.detail.xhr.responseURL;
   if (url.includes("/forum/thread")) {
     console.log("Called to /forum/thread");
