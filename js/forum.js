@@ -95,10 +95,31 @@ function enterPostingToken() {
   document.getElementById('tokenForm').onsubmit = function (e) {
     e.preventDefault();
     const token = new FormData(this).get('token');
-    localStorage.setItem('forumPostingToken', token);
-    document.body.classList.add('has-token');
-    document.getElementById('tokenModal').remove();
-    alert('Token saved! You can now post to the forum.');
+
+    // Validate token with server
+    fetch('https://server.grabbiel.com/forum/validate-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `token=${token}`
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.valid) {
+          localStorage.setItem('forumPostingToken', token);
+          document.body.classList.add('has-token');
+          document.querySelector('.reply-section').style.display = 'none';
+          document.getElementById('tokenModal').innerHTML =
+            '<div class="modal-body"><p style="color:green; text-align:center;">✅ Token validated successfully!</p></div>';
+          setTimeout(() => document.getElementById('tokenModal').remove(), 2000);
+        } else {
+          document.getElementById('tokenModal').innerHTML =
+            '<div class="modal-body"><p style="color:red; text-align:center;">❌ Invalid token. Please check and try again.</p></div>';
+        }
+      })
+      .catch(() => {
+        document.getElementById('tokenModal').innerHTML =
+          '<div class="modal-body"><p style="color:red; text-align:center;">❌ Validation failed. Try again later.</p></div>';
+      });
   };
 }
 
