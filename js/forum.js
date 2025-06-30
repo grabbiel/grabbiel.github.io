@@ -11,11 +11,10 @@ function submitReply(group, articleId) {
 }
 
 function requestPostAccess(groupName) {
-  // Show form via HTMX
   document.body.insertAdjacentHTML('beforeend', `
     <div id="accessModal" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:2px solid #ccc; z-index:1000;">
       <h3>Request Forum Access</h3>
-      <form hx-post="https://email.grabbiel.com/request-access" hx-target="#accessModal">
+      <form id="accessForm">
         <input name="email" type="email" placeholder="Your email" required>
         <textarea name="reason" placeholder="Why do you want access?" required></textarea>
         <button type="submit">Submit Request</button>
@@ -23,6 +22,17 @@ function requestPostAccess(groupName) {
       </form>
     </div>
   `);
+
+  document.getElementById('accessForm').onsubmit = function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch('https://email.grabbiel.com/request-access', {
+      method: 'POST',
+      body: new URLSearchParams(formData)
+    }).then(() => {
+      document.getElementById('accessModal').innerHTML = '<p>Request submitted!</p>';
+    });
+  };
 }
 
 document.addEventListener("htmx:afterSwap", function (event) {
