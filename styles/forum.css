@@ -44,7 +44,6 @@
 
 .forum-group h3 {
   margin: 0;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   color: #d63384;
   font-size: 20px;
   text-shadow: 1px 1px 2px rgba(214, 51, 132, 0.1);
@@ -60,7 +59,6 @@
 
 .forum-threads h2 {
   color: #6f42c1;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   text-align: center;
   font-size: 28px;
   margin-bottom: 25px;
@@ -102,7 +100,6 @@
 .thread-item h3 {
   margin: 0 0 10px 0;
   color: #0066cc;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   font-size: 18px;
 }
 
@@ -144,7 +141,6 @@
 
 .article.original-post h2 {
   color: #cc5500;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   margin-top: 0;
   font-size: 24px;
 }
@@ -193,7 +189,6 @@
 #forum-content .body {
   color: #333;
   line-height: 1.6;
-  font-family: 'Arial', sans-serif;
 }
 
 .see-replies-btn {
@@ -202,7 +197,6 @@
   border-radius: 25px;
   padding: 8px 15px;
   color: #cc5500;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -226,7 +220,6 @@
 
 .reply-section h3 {
   color: #0066cc;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   margin-top: 0;
 }
 
@@ -245,7 +238,6 @@
   border: 2px solid #cce6ff;
   border-radius: 10px;
   margin: 10px 0;
-  font-family: 'Arial', sans-serif;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
 }
@@ -267,7 +259,6 @@
   border-radius: 25px;
   padding: 12px 25px;
   color: white;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -297,7 +288,6 @@
   padding: 20px;
   color: #cc0000;
   text-align: center;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
   margin: 20px 0;
 }
 

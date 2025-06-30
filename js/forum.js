@@ -10,6 +10,21 @@ function submitReply(group, articleId) {
   });
 }
 
+function requestPostAccess(groupName) {
+  // Show form via HTMX
+  document.body.insertAdjacentHTML('beforeend', `
+    <div id="accessModal" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:2px solid #ccc; z-index:1000;">
+      <h3>Request Forum Access</h3>
+      <form hx-post="https://email.grabbiel.com/request-access" hx-target="#accessModal">
+        <input name="email" type="email" placeholder="Your email" required>
+        <textarea name="reason" placeholder="Why do you want access?" required></textarea>
+        <button type="submit">Submit Request</button>
+        <button type="button" onclick="document.getElementById('accessModal').remove()">Cancel</button>
+      </form>
+    </div>
+  `);
+}
+
 document.addEventListener("htmx:afterSwap", function (event) {
   if (event.detail.xhr.responseURL.includes("/forum/thread")) {
     if (localStorage.getItem('forumPostingToken')) {
