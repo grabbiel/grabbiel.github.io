@@ -3,11 +3,42 @@ function submitReply(group, articleId) {
   const body = document.getElementById('replyBody').value;
   const subject = document.getElementById('replySubject').value;
 
+  // Disable form and show loading
+  const submitBtn = event.target;
+  const form = submitBtn.closest('.reply-form');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Posting...';
+  form.style.opacity = '0.6';
+
   fetch('https://server.grabbiel.com/forum/post', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `token=${token}&group=${group}&reply_to=${articleId}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-  });
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Show loading overlay
+        document.getElementById('forum-content').innerHTML = '<div style="text-align:center; padding:40px;">🔄 Loading updated thread...</div>';
+
+        // Clear form and reload
+        document.getElementById('replyBody').value = '';
+        document.getElementById('replySubject').value = '';
+        htmx.ajax('GET', `https://server.grabbiel.com/forum/thread?id=${articleId}&group=${group}`, '#forum-content');
+      } else {
+        alert('Failed to post reply');
+        // Re-enable form
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Post Reply';
+        form.style.opacity = '1';
+      }
+    })
+    .catch(() => {
+      alert('Error posting reply');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Post Reply';
+      form.style.opacity = '1';
+    });
 }
 
 function requestPostAccess(groupName) {
