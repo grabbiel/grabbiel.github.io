@@ -3,7 +3,7 @@ function submitReply(group, articleId) {
   const body = document.getElementById('replyBody').value;
   const subject = document.getElementById('replySubject').value;
 
-  // Disable form and show loading
+  // Find the submit button differently
   const submitBtn = document.querySelector('.reply-form button');
   const form = document.querySelector('.reply-form');
   submitBtn.disabled = true;
@@ -15,33 +15,17 @@ function submitReply(group, articleId) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `token=${token}&group=${group}&reply_to=${articleId}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   })
-    .then(response => {
-      console.log('Status:', response.status, response.statusText);
-      console.log('Headers:', [...response.headers.entries()]);
-      return response.text();
-    })
-    .then(text => {
-      console.log('Raw response: ', text);
-      const data = JSON.parse(text);
-      console.log('Parsed data: ', data);
+    .then(response => response.json())
+    .then(data => {
       if (data.success) {
-        // Show loading overlay
-        document.getElementById('forum-content').innerHTML = '<div style="text-align:center; padding:40px;">🔄 Loading updated thread...</div>';
-
-        // Clear form and reload
         document.getElementById('replyBody').value = '';
         document.getElementById('replySubject').value = '';
+        document.getElementById('forum-content').innerHTML = '<div style="text-align:center; padding:40px;">🔄 Loading updated thread...</div>';
         htmx.ajax('GET', `https://server.grabbiel.com/forum/thread?id=${articleId}&group=${group}`, '#forum-content');
-      } else {
-        alert('Failed to post reply');
-        // Re-enable form
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Post Reply';
-        form.style.opacity = '1';
       }
     })
-    .catch(() => {
-      alert('Error posting reply');
+    .catch(error => {
+      console.error('Error:', error);
       submitBtn.disabled = false;
       submitBtn.textContent = 'Post Reply';
       form.style.opacity = '1';
