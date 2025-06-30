@@ -4,8 +4,8 @@ function submitReply(group, articleId) {
   const subject = document.getElementById('replySubject').value;
 
   // Disable form and show loading
-  const submitBtn = event.target;
-  const form = submitBtn.closest('.reply-form');
+  const submitBtn = document.querySelector('.reply-form button');
+  const form = document.querySelector('.reply-form');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Posting...';
   form.style.opacity = '0.6';
