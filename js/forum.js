@@ -15,11 +15,18 @@ document.addEventListener("htmx:afterSwap", function (event) {
   const url = event.detail.xhr.responseURL;
   if (url.includes("/forum/thread")) {
     console.log("Called to /forum/thread");
+
+    const replyForm = document.getElementById('replyForm');
+    const requestBtn = document.getElementById('requestAccessBtn');
+
+    console.log("replyForm found:", !!replyForm);
+    console.log("requestBtn found:", !!requestBtn);
+
     if (localStorage.getItem('forumPostingToken')) {
-      document.getElementById('replyForm').style.display = 'block';
-      document.getElementById('requestAccessBtn').style.display = 'none';
+      if (replyForm) replyForm.style.display = 'block';
+      if (requestBtn) requestBtn.style.display = 'none';
     } else {
-      document.getElementById('replyForm').style.display = 'none';
+      if (replyForm) replyForm.style.display = 'none';
     }
   }
 });
