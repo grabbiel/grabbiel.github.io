@@ -21,12 +21,14 @@ document.addEventListener("htmx:afterSwap", function (event) {
 
     console.log("replyForm found:", !!replyForm);
     console.log("requestBtn found:", !!requestBtn);
-
-    if (localStorage.getItem('forumPostingToken')) {
+    const token = localStorage.getItem('forumPostingToken');
+    console.log("Token exists:", !!token, "Value:", token);
+    if (token) {
       if (replyForm) replyForm.style.display = 'block';
       if (requestBtn) requestBtn.style.display = 'none';
     } else {
       if (replyForm) replyForm.style.display = 'none';
     }
+
   }
 });
