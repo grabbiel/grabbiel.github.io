@@ -7,6 +7,9 @@
 .has-requested #requestAccessBtn { 
   display: none !important; 
 }
+.has-token .reply-section {
+  display: none !important;
+}
 
 .forum-groups {
   display: grid;

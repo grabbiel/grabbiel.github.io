@@ -107,7 +107,6 @@ function enterPostingToken() {
         if (data.valid) {
           localStorage.setItem('forumPostingToken', token);
           document.body.classList.add('has-token');
-          document.querySelector('.reply-section').style.display = 'none';
           document.getElementById('tokenModal').innerHTML =
             '<div class="modal-body"><p style="color:green; text-align:center;">✅ Token validated successfully!</p></div>';
           setTimeout(() => document.getElementById('tokenModal').remove(), 2000);
