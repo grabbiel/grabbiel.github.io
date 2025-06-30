@@ -10,7 +10,6 @@ function submitReply(group, articleId) {
   });
 }
 
-
 document.addEventListener("htmx:afterSwap", function (event) {
   if (event.detail.xhr.responseURL.includes("/forum/thread")) {
     if (localStorage.getItem('forumPostingToken')) {
