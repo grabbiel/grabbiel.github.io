@@ -9,3 +9,14 @@ function submitReply(group, articleId) {
     body: `token=${token}&group=${group}&reply_to=${articleId}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   });
 }
+
+
+document.addEventListener("htmx:afterRequest", function (event) {
+  const url = event.detail.xhr.responseURL;
+  if (url.includes("/forum/thread")) {
+    if (localStorage.getItem('forumPostingToken')) {
+      document.getElementById('replyForm').style.display = 'block';
+      document.getElementById('requestAccessBtn').style.display = 'none';
+    }
+  }
+});
