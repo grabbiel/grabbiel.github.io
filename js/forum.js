@@ -188,27 +188,40 @@ document.addEventListener("htmx:afterRequest", function (event) {
 });
 
 function toggleReply(replyId, event) {
+  // Stop the click from bubbling up to the clickable-reply parent
   if (event) {
     event.stopPropagation();
     event.preventDefault();
   }
 
   const replyBody = document.getElementById("body-" + replyId);
+  const subRepliesContainer = document.getElementById("replies-" + replyId);
   const toggleBtn = document.querySelector(
     `[onclick*="toggleReply(${replyId}"]`,
   );
+  const replyPost = document.getElementById("reply-" + replyId);
 
-  if (!replyBody || !toggleBtn) return;
+  if (!replyBody || !toggleBtn || !replyPost) return;
 
-  if (replyBody.style.display === "none") {
-    // Expand
+  const isMinimized = replyBody.style.display === "none";
+
+  if (isMinimized) {
+    // Expand: Show reply body and all sub-replies
     replyBody.style.display = "block";
+    if (subRepliesContainer) {
+      subRepliesContainer.style.display = "block";
+    }
     toggleBtn.textContent = "▼";
     toggleBtn.title = "Minimize";
+    replyPost.classList.remove("minimized");
   } else {
-    // Minimize
+    // Minimize: Hide reply body AND entire sub-replies container
     replyBody.style.display = "none";
+    if (subRepliesContainer) {
+      subRepliesContainer.style.display = "none";
+    }
     toggleBtn.textContent = "▶";
     toggleBtn.title = "Expand";
+    replyPost.classList.add("minimized");
   }
 }
