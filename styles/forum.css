@@ -495,3 +495,47 @@
 .reply-body {
   margin-left: 0;
 }
+
+#replyForm {
+  text-decoration: underline;
+}
+
+.forum-comment {
+  position: relative;
+  text-decoration: none !important;
+  color: #1976d2;
+  font-weight: 500;
+  padding-bottom: 6px;
+  display: inline-block;
+}
+
+.forum-comment::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1976d2 0px,
+    #1976d2 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  animation: pulse-dots 1s linear infinite;
+}
+
+@keyframes pulse-dots {
+  0% {
+    background-position: 0 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    background-position: 8px 0;
+    opacity: 1;
+  }
+}
