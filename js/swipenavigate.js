@@ -117,30 +117,26 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updatePanelClasses() {
-    console.log("updatePanelClasses called, currentActiveMenuIndex:", window.currentActiveMenuIndex);
-
-    const panels = document.querySelectorAll('.content-panel');
-    console.log("Found panels:", panels.length);
-
     const current = window.currentActiveMenuIndex;
     const maxPanels = window.menuItemCount || 26;
 
-    panels.forEach(panel => {
-      const index = parseInt(panel.dataset.index);
-      console.log(`Panel ${index}: before classes:`, panel.className);
+    const prevIndex = (current - 1 + maxPanels) % maxPanels;
+    const nextIndex = (current + 1) % maxPanels;
 
-      panel.className = 'content-panel';
+    // Ensure key panels exist
+    const currentPanel = getOrCreatePanel(current);
+    const prevPanel = getOrCreatePanel(prevIndex);
+    const nextPanel = getOrCreatePanel(nextIndex);
 
-      const prevIndex = (current - 1 + maxPanels) % maxPanels;
-      const nextIndex = (current + 1) % maxPanels;
-
-      if (index === current) panel.classList.add('current');
-      else if (index === prevIndex) panel.classList.add('prev');
-      else if (index === nextIndex) panel.classList.add('next');
-      else panel.classList.add('hidden');
-
-      console.log(`Panel ${index}: after classes:`, panel.className);
+    // Reset all existing panels
+    document.querySelectorAll('.content-panel').forEach(panel => {
+      panel.className = 'content-panel hidden';
     });
+
+    // Assign correct classes
+    currentPanel.className = 'content-panel current';
+    prevPanel.className = 'content-panel prev';
+    nextPanel.className = 'content-panel next';
   }
 
   function preloadAdjacentPanels(centerIndex) {
