@@ -134,17 +134,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function navigateToPanel(newIndex) {
+    console.log("Navigating to panel:", newIndex);
     window.currentActiveMenuIndex = newIndex;
     const targetOffset = -newIndex * window.innerWidth;
+    console.log("Setting transform to:", targetOffset);
     contentSlider.style.transform = `translateX(${targetOffset}px)`;
 
-    // Update menu focus
-    if (typeof window.focusItem === "function") {
-      window.focusItem(newIndex, true);
-    }
-
-    // Preload adjacent panels
-    preloadAdjacentPanels(newIndex);
+    // Debug panel structure
+    const panels = document.querySelectorAll('.content-panel');
+    console.log("Total panels:", panels.length);
+    panels.forEach((panel, i) => {
+      console.log(`Panel ${i}:`, panel.dataset.index, panel.dataset.loaded, panel.innerHTML.length + " chars");
+    });
   }
 
   function preloadAdjacentPanels(centerIndex) {
