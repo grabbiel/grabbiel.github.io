@@ -29,6 +29,11 @@ function initChifonPlayer() {
         if (index > -1) {
           videoQueue.splice(index, 1);
         }
+
+        // Pause video if it's currently playing and out of view
+        if (currentPlayingVideo === video && !entry.isIntersecting) {
+          pauseVideo(video);
+        }
       }
     });
 
