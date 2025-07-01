@@ -137,12 +137,6 @@ function loadPanelContent(panel, endpoint) {
   });
 }
 
-function updateSliderPosition() {
-  const contentSlider = document.getElementById("content-slider");
-  const targetOffset = -window.currentActiveMenuIndex * window.innerWidth;
-  contentSlider.style.transform = `translateX(${targetOffset}px)`;
-}
-
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   console.log("focusItem called with:", itemIndex, "endpoint:", endpoint, "arr[itemIndex]:", arr[itemIndex]);
   if (endpoint != null) {
@@ -174,8 +168,9 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   const centerOffset = (menuRect.width - itemRect.width) >> 1;
   scrollY -= itemRect.left - menuRect.left - centerOffset;
 
-  // Update slider position
-  updateSliderPosition();
+  if (typeof window.updatePanelClasses === "function") {
+    window.updatePanelClasses();
+  }
 
   if (triggerRequest) {
     // Load current panel and adjacent panels
