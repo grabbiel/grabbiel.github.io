@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
     lastMoveTime = startTime;
     lastMoveX = startX;
 
-    contentSlider.classList.add("dragging");
     swipeProgress.classList.add("active");
   }
 
@@ -58,9 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
       lastMoveX = currentX;
     }
 
-    // Update slider position
-    updateSliderPosition(deltaX);
-
     // Update progress bar
     const progress = Math.abs(deltaX) / window.innerWidth;
     swipeProgress.style.transform = `scaleX(${Math.min(progress, 1)})`;
@@ -74,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const duration = Date.now() - startTime;
     const distance = Math.abs(deltaX);
 
-    contentSlider.classList.remove("dragging");
     swipeProgress.classList.remove("active");
     swipeProgress.style.transform = "scaleX(0)";
 
@@ -104,55 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       navigateToPanel(newIndex);
-    } else {
-      // Snap back to current panel
-      resetSliderPosition();
     }
-  }
-
-  function updateSliderPosition(deltaX) {
-    const currentOffset = -window.currentActiveMenuIndex * window.innerWidth;
-    const newOffset = currentOffset + deltaX;
-
-    // Add resistance at boundaries
-    const maxOffset = 0;
-    const minOffset = -(maxPanels - 1) * window.innerWidth;
-
-    let finalOffset = newOffset;
-    if (newOffset > maxOffset) {
-      finalOffset = maxOffset + (newOffset - maxOffset) * 0.3;
-    } else if (newOffset < minOffset) {
-      finalOffset = minOffset + (newOffset - minOffset) * 0.3;
-    }
-
-    contentSlider.style.transform = `translateX(${finalOffset}px)`;
-  }
-
-  function resetSliderPosition() {
-    const targetOffset = -window.currentActiveMenuIndex * window.innerWidth;
-    contentSlider.style.transform = `translateX(${targetOffset}px)`;
-  }
-  function updatePanelClasses() {
-    console.log("updatePanelClasses called, currentActiveMenuIndex:", window.currentActiveMenuIndex);
-
-    const panels = document.querySelectorAll('.content-panel');
-    console.log("Found panels:", panels.length);
-
-    const current = window.currentActiveMenuIndex;
-
-    panels.forEach(panel => {
-      const index = parseInt(panel.dataset.index);
-      console.log(`Panel ${index}: before classes:`, panel.className);
-
-      panel.className = 'content-panel';
-
-      if (index === current) panel.classList.add('current');
-      else if (index === current - 1) panel.classList.add('prev');
-      else if (index === current + 1) panel.classList.add('next');
-      else panel.classList.add('hidden');
-
-      console.log(`Panel ${index}: after classes:`, panel.className);
-    });
   }
 
   function navigateToPanel(newIndex) {
@@ -160,18 +107,49 @@ document.addEventListener("DOMContentLoaded", function () {
     window.currentActiveMenuIndex = newIndex;
     updatePanelClasses();
 
+    // Update menu focus
     if (typeof window.focusItem === "function") {
       window.focusItem(newIndex, true);
     }
+
+    // Preload adjacent panels
     preloadAdjacentPanels(newIndex);
   }
 
+  function updatePanelClasses() {
+    console.log("updatePanelClasses called, currentActiveMenuIndex:", window.currentActiveMenuIndex);
+
+    const panels = document.querySelectorAll('.content-panel');
+    console.log("Found panels:", panels.length);
+
+    const current = window.currentActiveMenuIndex;
+    const maxPanels = window.menuItemCount || 26;
+
+    panels.forEach(panel => {
+      const index = parseInt(panel.dataset.index);
+      console.log(`Panel ${index}: before classes:`, panel.className);
+
+      panel.className = 'content-panel';
+
+      const prevIndex = (current - 1 + maxPanels) % maxPanels;
+      const nextIndex = (current + 1) % maxPanels;
+
+      if (index === current) panel.classList.add('current');
+      else if (index === prevIndex) panel.classList.add('prev');
+      else if (index === nextIndex) panel.classList.add('next');
+      else panel.classList.add('hidden');
+
+      console.log(`Panel ${index}: after classes:`, panel.className);
+    });
+  }
+
   function preloadAdjacentPanels(centerIndex) {
+    const maxPanels = window.menuItemCount || 26;
     const indicesToLoad = [
-      centerIndex - 1,
+      (centerIndex - 1 + maxPanels) % maxPanels,
       centerIndex,
-      centerIndex + 1
-    ].filter(i => i >= 0 && i < maxPanels);
+      (centerIndex + 1) % maxPanels
+    ];
 
     indicesToLoad.forEach(index => {
       const panel = document.querySelector(`.content-panel[data-index="${index}"]`);
@@ -217,13 +195,12 @@ document.addEventListener("DOMContentLoaded", function () {
     return isContentPage || (header && header.classList.contains("visible"));
   }
 
+  // Make updatePanelClasses global
+  window.updatePanelClasses = updatePanelClasses;
+
   // Initialize with home panel
   setTimeout(() => {
     preloadAdjacentPanels(0);
+    updatePanelClasses();
   }, 100);
 });
-
-
-console.log("swipenavigate.js loaded");
-console.log("window.arr available:", window.arr);
-console.log("Current active index:", window.currentActiveMenuIndex);

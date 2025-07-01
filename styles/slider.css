@@ -1,12 +1,9 @@
+
 #content-slider {
   position: relative;
   width: 100vw;
   height: calc(100vh - var(--header-height));
   overflow: hidden;
-}
-
-#content-slider.dragging {
-  transition: none;
 }
 
 .content-panel {
@@ -15,9 +12,12 @@
   left: 0;
   width: 100vw;
   height: 100%;
-  transform: translateX(100vw);
-  transition: transform 0.3s ease-out;
+  transform: translateX(200vw); /* Default: hidden off-screen */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f4f6f8;
+  padding-top: 0;
 }
 
 .content-panel.loading {
@@ -36,27 +36,21 @@
   animation: spin 1s linear infinite;
 }
 
-/* Panel positioning */
+/* Panel positioning classes */
 .content-panel.current { transform: translateX(0); }
 .content-panel.prev { transform: translateX(-100vw); }
 .content-panel.next { transform: translateX(100vw); }
 .content-panel.hidden { transform: translateX(200vw); }
 
-/* Override existing content-box styles for panels */
-.content-panel {
-  padding-top: 0;
-}
-
+/* Content adjustments */
 body.content-page .content-panel {
   padding-top: 0;
 }
 
-/* Ensure home feed layout works in panels */
 .content-panel .home-feed {
   padding-top: 1rem;
 }
 
-/* Smooth scrolling reset for panels */
 .content-panel:focus {
   outline: none;
 }
@@ -80,7 +74,6 @@ body.content-page .content-panel {
   background: rgba(0, 255, 157, 0.8);
 }
 
-/* Update existing loading animation */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
