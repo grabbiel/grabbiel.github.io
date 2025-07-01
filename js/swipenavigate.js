@@ -162,21 +162,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function loadPanelContent(panel, index) {
+  function loadPanelContent(panel, indexOrEndpoint) {
     panel.classList.add("loading");
     panel.dataset.loaded = "loading";
 
-    const menuItems = window.arr || ["home", "photos", "links", "blog", "videos"];
-    const endpoint = menuItems[index];
+    // Handle both numeric index and string endpoint
+    let endpoint;
+    if (typeof indexOrEndpoint === "number") {
+      endpoint = window.arr[indexOrEndpoint];
+    } else {
+      endpoint = indexOrEndpoint;
+    }
+
+    console.log("Loading panel:", indexOrEndpoint, "endpoint:", endpoint);
 
     if (endpoint) {
       htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
         target: panel,
         swap: "innerHTML"
       }).then(() => {
+        console.log("Panel loaded successfully:", endpoint);
         panel.classList.remove("loading");
         panel.dataset.loaded = "true";
-      }).catch(() => {
+      }).catch((error) => {
+        console.log("Panel load failed:", endpoint, error);
         panel.classList.remove("loading");
         panel.dataset.loaded = "error";
       });
