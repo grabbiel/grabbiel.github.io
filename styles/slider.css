@@ -39,17 +39,17 @@
 }
 
 /* Panel positioning */
-.content-panel[data-position="prev"] {
-  transform: translateX(-100vw);
-}
-
-.content-panel[data-position="current"] {
-  transform: translateX(0);
-}
-
-.content-panel[data-position="next"] {
-  transform: translateX(100vw);
-}
+/*.content-panel[data-position="prev"] {*/
+/*  transform: translateX(-100vw);*/
+/*}*/
+/**/
+/*.content-panel[data-position="current"] {*/
+/*  transform: translateX(0);*/
+/*}*/
+/**/
+/*.content-panel[data-position="next"] {*/
+/*  transform: translateX(100vw);*/
+/*}*/
 
 /* Override existing content-box styles for panels */
 .content-panel {
