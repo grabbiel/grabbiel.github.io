@@ -94,13 +94,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (shouldNavigate) {
-      const newIndex = window.currentActiveMenuIndex + direction;
-      if (newIndex >= 0 && newIndex < maxPanels) {
-        navigateToPanel(newIndex);
-      } else {
-        // Snap back to current panel
-        resetSliderPosition();
+      let newIndex = window.currentActiveMenuIndex + direction;
+
+      // Handle circular navigation
+      if (newIndex < 0) {
+        newIndex = maxPanels - 1; // Wrap to last panel
+      } else if (newIndex >= maxPanels) {
+        newIndex = 0; // Wrap to first panel
       }
+
+      navigateToPanel(newIndex);
     } else {
       // Snap back to current panel
       resetSliderPosition();
@@ -191,3 +194,8 @@ document.addEventListener("DOMContentLoaded", function () {
     preloadAdjacentPanels(0);
   }, 100);
 });
+
+
+console.log("swipenavigate.js loaded");
+console.log("window.arr available:", window.arr);
+console.log("Current active index:", window.currentActiveMenuIndex);
