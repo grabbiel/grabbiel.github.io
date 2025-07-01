@@ -187,19 +187,28 @@ document.addEventListener("htmx:afterRequest", function (event) {
   }
 });
 
-function toggleReply(replyId) {
+function toggleReply(replyId, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
   const replyBody = document.getElementById("body-" + replyId);
   const toggleBtn = document.querySelector(
-    `[onclick*="toggleReply(${replyId})"]`,
+    `[onclick*="toggleReply(${replyId}"]`,
   );
 
   if (!replyBody || !toggleBtn) return;
 
   if (replyBody.style.display === "none") {
+    // Expand
     replyBody.style.display = "block";
     toggleBtn.textContent = "▼";
+    toggleBtn.title = "Minimize";
   } else {
+    // Minimize
     replyBody.style.display = "none";
     toggleBtn.textContent = "▶";
+    toggleBtn.title = "Expand";
   }
 }
