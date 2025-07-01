@@ -186,3 +186,20 @@ document.addEventListener("htmx:afterRequest", function (event) {
     }
   }
 });
+
+function toggleReply(replyId) {
+  const replyBody = document.getElementById("body-" + replyId);
+  const toggleBtn = document.querySelector(
+    `[onclick*="toggleReply(${replyId})"]`,
+  );
+
+  if (!replyBody || !toggleBtn) return;
+
+  if (replyBody.style.display === "none") {
+    replyBody.style.display = "block";
+    toggleBtn.textContent = "▼";
+  } else {
+    replyBody.style.display = "none";
+    toggleBtn.textContent = "▶";
+  }
+}
