@@ -132,20 +132,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const targetOffset = -window.currentActiveMenuIndex * window.innerWidth;
     contentSlider.style.transform = `translateX(${targetOffset}px)`;
   }
+  function updatePanelClasses() {
+    const panels = document.querySelectorAll('.content-panel');
+    const current = window.currentActiveMenuIndex;
+
+    panels.forEach(panel => {
+      const index = parseInt(panel.dataset.index);
+      panel.className = 'content-panel';
+
+      if (index === current) panel.classList.add('current');
+      else if (index === current - 1) panel.classList.add('prev');
+      else if (index === current + 1) panel.classList.add('next');
+      else panel.classList.add('hidden');
+    });
+  }
 
   function navigateToPanel(newIndex) {
-    console.log("Navigating to panel:", newIndex);
     window.currentActiveMenuIndex = newIndex;
-    const targetOffset = -newIndex * window.innerWidth;
-    console.log("Setting transform to:", targetOffset);
-    contentSlider.style.transform = `translateX(${targetOffset}px)`;
+    updatePanelClasses();
 
-    // Debug panel structure
-    const panels = document.querySelectorAll('.content-panel');
-    console.log("Total panels:", panels.length);
-    panels.forEach((panel, i) => {
-      console.log(`Panel ${i}:`, panel.dataset.index, panel.dataset.loaded, panel.innerHTML.length + " chars");
-    });
+    if (typeof window.focusItem === "function") {
+      window.focusItem(newIndex, true);
+    }
+    preloadAdjacentPanels(newIndex);
   }
 
   function preloadAdjacentPanels(centerIndex) {

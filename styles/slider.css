@@ -1,12 +1,8 @@
 #content-slider {
-  display: flex;
-  width: 100%;
+  position: relative;
+  width: 100vw;
   height: calc(100vh - var(--header-height));
   overflow: hidden;
-  position: relative;
-  transform: translateX(0);
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
 }
 
 #content-slider.dragging {
@@ -14,12 +10,14 @@
 }
 
 .content-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100vw;
-  flex-shrink: 0;
+  height: 100%;
+  transform: translateX(100vw);
+  transition: transform 0.3s ease-out;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  position: relative;
-  background: #f4f6f8;
 }
 
 .content-panel.loading {
@@ -39,17 +37,10 @@
 }
 
 /* Panel positioning */
-/*.content-panel[data-position="prev"] {*/
-/*  transform: translateX(-100vw);*/
-/*}*/
-/**/
-/*.content-panel[data-position="current"] {*/
-/*  transform: translateX(0);*/
-/*}*/
-/**/
-/*.content-panel[data-position="next"] {*/
-/*  transform: translateX(100vw);*/
-/*}*/
+.content-panel.current { transform: translateX(0); }
+.content-panel.prev { transform: translateX(-100vw); }
+.content-panel.next { transform: translateX(100vw); }
+.content-panel.hidden { transform: translateX(200vw); }
 
 /* Override existing content-box styles for panels */
 .content-panel {
