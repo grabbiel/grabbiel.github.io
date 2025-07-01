@@ -133,21 +133,30 @@ document.addEventListener("DOMContentLoaded", function () {
     contentSlider.style.transform = `translateX(${targetOffset}px)`;
   }
   function updatePanelClasses() {
+    console.log("updatePanelClasses called, currentActiveMenuIndex:", window.currentActiveMenuIndex);
+
     const panels = document.querySelectorAll('.content-panel');
+    console.log("Found panels:", panels.length);
+
     const current = window.currentActiveMenuIndex;
 
     panels.forEach(panel => {
       const index = parseInt(panel.dataset.index);
+      console.log(`Panel ${index}: before classes:`, panel.className);
+
       panel.className = 'content-panel';
 
       if (index === current) panel.classList.add('current');
       else if (index === current - 1) panel.classList.add('prev');
       else if (index === current + 1) panel.classList.add('next');
       else panel.classList.add('hidden');
+
+      console.log(`Panel ${index}: after classes:`, panel.className);
     });
   }
 
   function navigateToPanel(newIndex) {
+    console.log("navigateToPanel called with:", newIndex);
     window.currentActiveMenuIndex = newIndex;
     updatePanelClasses();
 
