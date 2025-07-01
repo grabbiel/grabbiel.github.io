@@ -10,24 +10,50 @@ let scrollY = 0;
 let y = 0;
 let oldScrollY = 0;
 const arr = [
-  "home", "photos", "links", "blog", "videos", "read", "github", "food",
-  "music", "anime", "renders", "writing", "vynils", "travel", "tierlist",
-  "quiz", "wishlist", "donate", "foreign", "leetcode", "pretty", "robots",
-  "stats", "assets", "forum", "games"
+  "home", // 0
+  "photos", // 1
+  "links", // 2
+  "blog", // 3
+  "videos", // 4
+  "read", // 5
+  "github", // 6
+  "food", // 7
+  "music", // 8
+  "anime", // 9
+  "renders", // 10
+  "writing", // 11
+  "vynils", // 12
+  "travel", // 13
+  "tierlist", // 14
+  "quiz", // 15
+  "wishlist", // 16
+  "donate", // 17
+  "foreign", // 18
+  "leetcode", // 19
+  "pretty", // 20
+  "robots", // 21
+  "stats", // 22
+  "assets", // 23
+  "forum", // 24
+  "games", // 25
 ];
 
 window.menuItemCount = itemCount;
 window.currentActiveMenuIndex = 0;
-window.arr = arr; // Expose for swipe navigation
 
 // Create menu items
 for (let i = 0; i < itemCount; i++) {
   const item = document.createElement("div");
   item.className = "menu--item";
-  item.setAttribute("data-endpoint", arr[i]);
-  item.setAttribute("data-index", i);
+  item.setAttribute("hx-get", "https://server.grabbiel.com/" + arr[i]);
+  item.setAttribute("hx-trigger", "click");
+  item.setAttribute("hx-swap", "innerHTML");
+  item.setAttribute("hx-target", "#content-box");
+
   item.style.minWidth = `${itemWidth}px`;
-  item.innerHTML = `<div class="menu--item-content">${arr[i]}</div>`;
+  item.innerHTML = `<div 
+    class="menu--item-content" 
+  >${arr[i]}</div>`;
   fragment.appendChild(item);
 }
 wrapper.appendChild(fragment);
@@ -48,13 +74,23 @@ function dispose(scroll) {
 
 function handleWheel(e) {
   e.preventDefault();
+  // Use deltaX for horizontal scrolling, fall back to deltaY if deltaX is 0
   const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
   scrollY -= delta * 0.9;
 }
 
+// Drag detection variables
+let dragThreshold = 4;
+let startX = 0;
+let hasMovedEnough = false;
+let clickStartTime = 0;
+
+// phone
 let touchStart = 0;
 let touchX = 0;
 let isDragging = false;
+
+// pc
 let isMouseDragging = false;
 
 function handleTouchStart(e) {
@@ -73,6 +109,7 @@ function handleTouchEnd() {
   isDragging = false;
 }
 
+let clickedItemIndex = -1;
 menu.addEventListener("wheel", handleWheel, { passive: false });
 menu.addEventListener("touchstart", handleTouchStart);
 menu.addEventListener("touchmove", handleTouchMove);
@@ -103,122 +140,86 @@ window.addEventListener("resize", () => {
   wrapWidth = itemCount * itemWidth;
 });
 
-function getOrCreatePanel(index) {
-  let panel = document.querySelector(`.content-panel[data-index="${index}"]`);
-  if (!panel) {
-    panel = document.createElement("div");
-    panel.className = "content-panel";
-    panel.setAttribute("data-index", index);
-    panel.setAttribute("data-menu", arr[index]);
-    document.getElementById("content-slider").appendChild(panel);
-  }
-  return panel;
-}
+const middleIndex = ((itemCount - 1) / 2) | 0;
+const content_box = document.getElementById("content-box");
 
-function loadPanelContent(panel, endpoint) {
-  if (panel.dataset.loaded === "true") return;
+function triggerHtmxRequest(item) {
+  const url = item.getAttribute("hx-get");
+  const target = item.getAttribute("hx-target");
 
-  panel.classList.add("loading");
-  panel.dataset.loaded = "loading";
-
-  htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
-    target: panel,
-    swap: "innerHTML"
-  }).then(() => {
-    panel.classList.remove("loading");
-    panel.dataset.loaded = "true";
-  }).catch(() => {
-    panel.classList.remove("loading");
-    panel.dataset.loaded = "error";
-    panel.innerHTML = '<div class="error">Failed to load content</div>';
+  htmx.ajax("GET", url, {
+    target: target,
+    swap: "innerHTML",
   });
 }
+content_box.addEventListener("htmx:beforeRequest", function () {
+  this.classList.add("loading");
+});
 
-function updateSliderPosition() {
-  const contentSlider = document.getElementById("content-slider");
-  const targetOffset = -window.currentActiveMenuIndex * window.innerWidth;
-  contentSlider.style.transform = `translateX(${targetOffset}px)`;
+content_box.addEventListener("htmx:afterRequest", function () {
+  this.classList.remove("loading");
+});
+
+function findMenuIndexByEndpoint(endpoint) {
+  return arr.findIndex((item) => item == endpoint);
 }
 
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   if (endpoint != null) {
-    itemIndex = arr.findIndex(item => item === endpoint);
-    if (itemIndex === -1) return;
+    itemIndex = findMenuIndexByEndpoint(endpoint);
+    if (itemIndex == 1) return;
   }
 
-  // Reset all menu items
-  items.forEach(item => {
-    item.querySelector(".menu--item-content").style.color = "";
-  });
-
-  // Focus the selected item
+  // Reset all items
   const item = items[itemIndex];
+  for (let i = 0; i < itemCount; ++i) {
+    items[i].querySelector(".menu--item-content").style.color = "";
+  }
+  // Focus the clicked item
   const content = item.querySelector(".menu--item-content");
   content.style.color = "rgb(156, 9, 255)";
 
   window.currentActiveMenuIndex = itemIndex;
 
-  if (itemIndex === 0) {
+  if (itemIndex == 0) {
     document.body.classList.remove("content-page");
   } else {
     document.body.classList.add("content-page");
   }
 
-  // Center the focused item in menu
+  // Center the focused item
   const itemRect = item.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
   const centerOffset = (menuRect.width - itemRect.width) >> 1;
   scrollY -= itemRect.left - menuRect.left - centerOffset;
 
-  // Update slider position
-  updateSliderPosition();
-
-  if (triggerRequest) {
-    // Load current panel and adjacent panels
-    const currentPanel = getOrCreatePanel(itemIndex);
-    loadPanelContent(currentPanel, arr[itemIndex]);
-
-    // Preload adjacent panels
-    if (itemIndex > 0) {
-      const prevPanel = getOrCreatePanel(itemIndex - 1);
-      if (prevPanel.dataset.loaded !== "true") {
-        loadPanelContent(prevPanel, arr[itemIndex - 1]);
-      }
-    }
-    if (itemIndex < itemCount - 1) {
-      const nextPanel = getOrCreatePanel(itemIndex + 1);
-      if (nextPanel.dataset.loaded !== "true") {
-        loadPanelContent(nextPanel, arr[itemIndex + 1]);
-      }
-    }
+  if (itemIndex !== 0 && itemIndex !== middleIndex) {
+    content_box.scrollIntoView();
   }
 
-  // Scroll to top if not home
-  if (itemIndex !== 0) {
-    const slider = document.getElementById("content-slider");
-    if (slider) slider.scrollIntoView();
+  if (triggerRequest) {
+    triggerHtmxRequest(item);
   }
 }
 
 window.focusItem = focusItem;
 
 window.focusItemByEndpoint = function (endpoint) {
-  const index = arr.findIndex(item => item === endpoint);
+  const index = findMenuIndexByEndpoint(endpoint);
   if (index !== -1) {
     focusItem(index, true);
   }
 };
 
-// Menu item click handlers
-items.forEach((item, i) => {
-  item.addEventListener("touchend", (e) => {
+// PER ITEM TOUCHEND
+for (let i = 0; i < itemCount; ++i) {
+  items[i].addEventListener("touchend", (e) => {
     if (!isDragging) {
       e.preventDefault();
       focusItem(i, true);
     }
   });
-
-  item.addEventListener("click", (e) => {
+  items[i].addEventListener("click", (e) => {
     if (isMouseDragging) {
       e.preventDefault();
       e.stopPropagation();
@@ -226,22 +227,53 @@ items.forEach((item, i) => {
       focusItem(i, true);
     }
   });
-});
+}
+
+function focusMiddleItem() {
+  focusItem(middleIndex);
+  // Adjust scrollY to center the middle item
+  scrollY = -middleIndex * itemWidth + menuWidth / 2 - itemWidth / 2;
+}
 
 function render() {
   y = lerp(y, scrollY, 0.1);
   dispose(y);
+
   requestAnimationFrame(render);
 }
 
-// Initialize
 window.addEventListener("load", () => {
   const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
     sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
-    focusItem(0, true);
+    const homeIndex = 0;
+
+    // Reset all items
+    const homeItem = items[homeIndex];
+    for (let i = 0; i < itemCount; ++i) {
+      items[i].querySelector(".menu--item-content").style.color = "";
+    }
+
+    // Focus the home item
+    const content = homeItem.querySelector(".menu--item-content");
+    content.style.color = "rgb(156, 9, 255)";
+
+    // Update the global current active menu index
+    window.currentActiveMenuIndex = homeIndex;
+
+    // Center the focused item
+    const itemRect = homeItem.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const centerOffset = (menuRect.width - itemRect.width) >> 1;
+    scrollY -= itemRect.left - menuRect.left - centerOffset;
+
+    // Load the home content
+    triggerHtmxRequest(homeItem);
+  }
+  if (window.currentActiveMenuIndex !== 0) {
+    document.body.classList.add("content-page");
   }
 });
 

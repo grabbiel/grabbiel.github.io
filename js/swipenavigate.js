@@ -1,208 +1,193 @@
 window.currentActiveMenuIndex = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Get the content box where we'll detect swipes
-  const contentBox = document.getElementById("content-box");
+  const contentSlider = document.getElementById("content-slider");
+  const swipeProgress = document.querySelector(".swipe-progress");
 
-  // Variables to track touch positions
-  let touchStartX = 0;
-  let touchEndX = 0;
-  let touchStartY = 0;
-  let touchEndY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let currentX = 0;
+  let startTime = 0;
+  let velocityX = 0;
+  let lastMoveTime = 0;
+  let lastMoveX = 0;
 
-  // Minimum swipe distance to register as a navigation (in pixels)
-  const minSwipeDistance = 75;
+  const minSwipeDistance = 50;
+  const velocityThreshold = 0.3;
+  const maxPanels = window.menuItemCount || 26;
 
-  // Maximum vertical movement allowed for horizontal swipe to be valid (in pixels)
-  // This prevents scrolling from triggering swipe navigation
-  const maxVerticalMovement = 75;
+  // Touch event handlers
+  contentSlider.addEventListener("touchstart", handleTouchStart, { passive: false });
+  contentSlider.addEventListener("touchmove", handleTouchMove, { passive: false });
+  contentSlider.addEventListener("touchend", handleTouchEnd, { passive: false });
 
-  // Debounce flag to prevent multiple swipes being processed at once
-  let isProcessingSwipe = false;
-  // Cooldown period in milliseconds to prevent rapid swipes
-  const swipeCooldown = 500;
+  function handleTouchStart(e) {
+    if (!isMenuVisible()) return;
 
-  // Add touch event listeners to the content area
-  contentBox.addEventListener("touchstart", handleTouchStart, false);
-  contentBox.addEventListener("touchend", handleTouchEnd, false);
+    const target = e.target;
+    if (target.closest(".video-overlay") || target.closest(".video-progress") ||
+      target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
+      target.closest(".game-content-overlay") || target.closest(".caption.expanded")) {
+      return;
+    }
 
-  // Function to check if the menu is visible
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    currentX = startX;
+    startTime = Date.now();
+    lastMoveTime = startTime;
+    lastMoveX = startX;
+
+    contentSlider.classList.add("dragging");
+    swipeProgress.classList.add("active");
+  }
+
+  function handleTouchMove(e) {
+    if (!isDragging) return;
+
+    e.preventDefault();
+
+    currentX = e.touches[0].clientX;
+    const deltaX = currentX - startX;
+    const now = Date.now();
+
+    // Calculate velocity
+    if (now - lastMoveTime > 0) {
+      velocityX = (currentX - lastMoveX) / (now - lastMoveTime);
+      lastMoveTime = now;
+      lastMoveX = currentX;
+    }
+
+    // Update slider position
+    updateSliderPosition(deltaX);
+
+    // Update progress bar
+    const progress = Math.abs(deltaX) / window.innerWidth;
+    swipeProgress.style.transform = `scaleX(${Math.min(progress, 1)})`;
+  }
+
+  function handleTouchEnd(e) {
+    if (!isDragging) return;
+
+    isDragging = false;
+    const deltaX = currentX - startX;
+    const duration = Date.now() - startTime;
+    const distance = Math.abs(deltaX);
+
+    contentSlider.classList.remove("dragging");
+    swipeProgress.classList.remove("active");
+    swipeProgress.style.transform = "scaleX(0)";
+
+    // Determine if we should snap to next/prev panel
+    let shouldNavigate = false;
+    let direction = 0;
+
+    // Check velocity-based navigation
+    if (Math.abs(velocityX) > velocityThreshold) {
+      shouldNavigate = true;
+      direction = velocityX > 0 ? -1 : 1; // Velocity direction is opposite to panel movement
+    }
+    // Check distance-based navigation
+    else if (distance > minSwipeDistance) {
+      shouldNavigate = true;
+      direction = deltaX > 0 ? -1 : 1;
+    }
+
+    if (shouldNavigate) {
+      const newIndex = window.currentActiveMenuIndex + direction;
+      if (newIndex >= 0 && newIndex < maxPanels) {
+        navigateToPanel(newIndex);
+      } else {
+        // Snap back to current panel
+        resetSliderPosition();
+      }
+    } else {
+      // Snap back to current panel
+      resetSliderPosition();
+    }
+  }
+
+  function updateSliderPosition(deltaX) {
+    const currentOffset = -window.currentActiveMenuIndex * window.innerWidth;
+    const newOffset = currentOffset + deltaX;
+
+    // Add resistance at boundaries
+    const maxOffset = 0;
+    const minOffset = -(maxPanels - 1) * window.innerWidth;
+
+    let finalOffset = newOffset;
+    if (newOffset > maxOffset) {
+      finalOffset = maxOffset + (newOffset - maxOffset) * 0.3;
+    } else if (newOffset < minOffset) {
+      finalOffset = minOffset + (newOffset - minOffset) * 0.3;
+    }
+
+    contentSlider.style.transform = `translateX(${finalOffset}px)`;
+  }
+
+  function resetSliderPosition() {
+    const targetOffset = -window.currentActiveMenuIndex * window.innerWidth;
+    contentSlider.style.transform = `translateX(${targetOffset}px)`;
+  }
+
+  function navigateToPanel(newIndex) {
+    window.currentActiveMenuIndex = newIndex;
+    const targetOffset = -newIndex * window.innerWidth;
+    contentSlider.style.transform = `translateX(${targetOffset}px)`;
+
+    // Update menu focus
+    if (typeof window.focusItem === "function") {
+      window.focusItem(newIndex, true);
+    }
+
+    // Preload adjacent panels
+    preloadAdjacentPanels(newIndex);
+  }
+
+  function preloadAdjacentPanels(centerIndex) {
+    const indicesToLoad = [
+      centerIndex - 1,
+      centerIndex,
+      centerIndex + 1
+    ].filter(i => i >= 0 && i < maxPanels);
+
+    indicesToLoad.forEach(index => {
+      const panel = document.querySelector(`.content-panel[data-index="${index}"]`);
+      if (panel && !panel.dataset.loaded && !panel.classList.contains("loading")) {
+        loadPanelContent(panel, index);
+      }
+    });
+  }
+
+  function loadPanelContent(panel, index) {
+    panel.classList.add("loading");
+    panel.dataset.loaded = "loading";
+
+    const menuItems = window.arr || ["home", "photos", "links", "blog", "videos"];
+    const endpoint = menuItems[index];
+
+    if (endpoint) {
+      htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
+        target: panel,
+        swap: "innerHTML"
+      }).then(() => {
+        panel.classList.remove("loading");
+        panel.dataset.loaded = "true";
+      }).catch(() => {
+        panel.classList.remove("loading");
+        panel.dataset.loaded = "error";
+      });
+    }
+  }
+
   function isMenuVisible() {
     const header = document.querySelector(".header");
     const isContentPage = document.body.classList.contains("content-page");
     return isContentPage || (header && header.classList.contains("visible"));
   }
 
-  // Store the starting touch position
-  function handleTouchStart(e) {
-    // Only track touch if the menu is visible and we're not processing a previous swipe
-    if (!isMenuVisible() || isProcessingSwipe) return;
-
-    const target = e.target;
-    if (target.closest(".video-overlay") || target.closest(".video-progress") || target.closest(".horizontal-tabs") || target.closest(".category-tabs") || target.closest(".game-content-overlay") || target.closest(".caption.expanded")) {
-      return;
-    }
-
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-  }
-
-  // Calculate the swipe direction and navigate if needed
-  function handleTouchEnd(e) {
-    // Don't process if the menu isn't visible or we're already handling a swipe
-    if (!isMenuVisible() || isProcessingSwipe) return;
-
-    // Check if touch is on video controls
-    const target = e.target;
-    if (target.closest(".video-overlay") || target.closest(".video-progress")) {
-      return;
-    }
-
-    // Check if we have valid starting coordinates (might not if touchstart was ignored)
-    if (touchStartX === 0 && touchStartY === 0) return;
-
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-
-    // Calculate horizontal and vertical movement
-    const horizontalDistance = touchEndX - touchStartX;
-    const verticalDistance = Math.abs(touchEndY - touchStartY);
-
-    // Only process if it's a horizontal swipe (not a scroll)
-    if (verticalDistance <= maxVerticalMovement) {
-      // Check if the swipe distance exceeds the minimum threshold
-      if (Math.abs(horizontalDistance) >= minSwipeDistance) {
-        // Set the flag to prevent multiple swipes
-        isProcessingSwipe = true;
-
-        if (horizontalDistance > 0) {
-          // Swipe right - go to previous menu item
-          addSwipeFeedback("right");
-          navigateToPreviousMenuItem();
-        } else {
-          // Swipe left - go to next menu item
-          addSwipeFeedback("left");
-          navigateToNextMenuItem();
-        }
-
-        // Reset touch coordinates
-        touchStartX = 0;
-        touchStartY = 0;
-
-        // Reset the processing flag after the cooldown period
-        setTimeout(() => {
-          isProcessingSwipe = false;
-        }, swipeCooldown);
-      }
-    }
-  }
-
-  // Navigate to the previous menu item
-  function navigateToPreviousMenuItem() {
-    // Get the array length from the horizontalmenu.js
-    if (typeof window.menuItemCount !== "number") {
-      console.error(
-        "menuItemCount not found. Please ensure horizontalmenu.js sets this global variable.",
-      );
-      isProcessingSwipe = false;
-      return;
-    }
-
-    // Calculate the previous index (with wrap-around)
-    const prevIndex =
-      (window.currentActiveMenuIndex - 1 + window.menuItemCount) %
-      window.menuItemCount;
-
-    // Use the global focusItem function from horizontalmenu.js
-    if (typeof window.focusItem === "function") {
-      window.focusItem(prevIndex, true);
-    } else {
-      console.error(
-        "focusItem function not found. Please ensure horizontalmenu.js exposes this function globally.",
-      );
-      isProcessingSwipe = false;
-    }
-  }
-
-  // Navigate to the next menu item
-  function navigateToNextMenuItem() {
-    // Get the array length from the horizontalmenu.js
-    if (typeof window.menuItemCount !== "number") {
-      console.error(
-        "menuItemCount not found. Please ensure horizontalmenu.js sets this global variable.",
-      );
-      isProcessingSwipe = false;
-      return;
-    }
-
-    // Calculate the next index (with wrap-around)
-    const nextIndex =
-      (window.currentActiveMenuIndex + 1) % window.menuItemCount;
-
-    // Use the global focusItem function from horizontalmenu.js
-    if (typeof window.focusItem === "function") {
-      window.focusItem(nextIndex, true);
-    } else {
-      console.error(
-        "focusItem function not found. Please ensure horizontalmenu.js exposes this function globally.",
-      );
-      isProcessingSwipe = false;
-    }
-  }
-
-  // Add visual feedback for swipe
-  function addSwipeFeedback(direction) {
-    const feedback = document.createElement("div");
-    feedback.classList.add("swipe-feedback");
-    feedback.classList.add(direction === "left" ? "swipe-left" : "swipe-right");
-    document.body.appendChild(feedback);
-
-    // Remove the feedback element after animation completes
-    setTimeout(() => {
-      feedback.remove();
-    }, 500);
-  }
-
-  // Add similar swipe functionality for additional containers
-  const containers = [
-    document.querySelector(".category-container"),
-    document.querySelector(".gif-container"),
-    document.querySelector(".search-container"),
-  ];
-
-  containers.forEach((container) => {
-    if (container) {
-      container.addEventListener("touchstart", handleTouchStart, {
-        passive: true,
-      });
-      container.addEventListener("touchend", handleTouchEnd, { passive: true });
-    }
-  });
-
-  // Handle swipe on entire document for mobile devices
-  // But only activate when touch starts outside of the menu
-  // and when the header is visible
-  document.addEventListener(
-    "touchstart",
-    function (e) {
-      // Check if the touch is not on the menu
-      const menu = document.querySelector(".menu");
-      if (menu && !menu.contains(e.target)) {
-        handleTouchStart(e);
-      }
-    },
-    { passive: true },
-  );
-
-  document.addEventListener(
-    "touchend",
-    function (e) {
-      // Check if the touch is not on the menu
-      const menu = document.querySelector(".menu");
-      if (menu && !menu.contains(e.target)) {
-        handleTouchEnd(e);
-      }
-    },
-    { passive: true },
-  );
+  // Initialize with home panel
+  setTimeout(() => {
+    preloadAdjacentPanels(0);
+  }, 100);
 });

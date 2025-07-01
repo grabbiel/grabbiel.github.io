@@ -1,0 +1,115 @@
+#content-slider {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  overflow: hidden;
+  position: relative;
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+#content-slider.dragging {
+  transition: none;
+}
+
+.content-panel {
+  width: 100vw;
+  flex-shrink: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  background: #f4f6f8;
+}
+
+.content-panel.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-panel.loading::before {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e0e0e0;
+  border-top: 3px solid #00ff9d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Panel positioning */
+.content-panel[data-position="prev"] {
+  transform: translateX(-100vw);
+}
+
+.content-panel[data-position="current"] {
+  transform: translateX(0);
+}
+
+.content-panel[data-position="next"] {
+  transform: translateX(100vw);
+}
+
+/* Override existing content-box styles for panels */
+.content-panel {
+  padding-top: 0;
+}
+
+body.content-page .content-panel {
+  padding-top: 0;
+}
+
+/* Ensure home feed layout works in panels */
+.content-panel .home-feed {
+  padding-top: 1rem;
+}
+
+/* Smooth scrolling reset for panels */
+.content-panel:focus {
+  outline: none;
+}
+
+/* Touch feedback overlay */
+.swipe-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 4px;
+  background: rgba(0, 255, 157, 0.3);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.1s ease-out;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.swipe-progress.active {
+  background: rgba(0, 255, 157, 0.8);
+}
+
+/* Update existing loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  #content-slider {
+    height: calc(100vh - var(--header-height));
+  }
+  
+  .content-panel.loading::before {
+    width: 32px;
+    height: 32px;
+    border-width: 2px;
+  }
+}
+
+/* Content page adjustments */
+body.content-page #content-slider {
+  height: calc(100vh - var(--header-height));
+  top: 0;
+}

@@ -20,7 +20,6 @@
       href="favicon.png"
     />
     <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/slider.css" />
     <link rel="stylesheet" href="styles/horizontalmenu.css" />
     <link rel="stylesheet" href="styles/categorycontainer.css" />
     <link rel="stylesheet" href="styles/overlay.css" />
@@ -143,12 +142,12 @@
       </a>
     </div>
 
-    <div id="content-slider" style="padding-top: var(--header-height);">
-      <div class="content-panel" data-index="0" data-menu="home"></div>
-      <div class="content-panel" data-index="1" data-menu="photos"></div>
-      <div class="content-panel" data-index="2" data-menu="links"></div>
-    </div>
-    <div class="swipe-progress"></div>
+    <div
+      id="content-box"
+      class="content"
+      style="padding-top: var(--header-height); width: 100%"
+      hx-swap="innerHTML"
+    ></div>
 
     <div id="search-mode" class="search-mode">
       <div class="search-mode-bar">
