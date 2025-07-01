@@ -19,7 +19,6 @@ const arr = [
 window.menuItemCount = itemCount;
 window.currentActiveMenuIndex = 0;
 window.arr = arr; // Expose for swipe navigation
-console.log("window.arr set to:", window.arr);
 
 // Create menu items
 for (let i = 0; i < itemCount; i++) {
@@ -116,28 +115,26 @@ function getOrCreatePanel(index) {
   return panel;
 }
 
-function loadPanelContent(panel, index) {
-  console.log("Loading panel:", index, "endpoint:", window.arr[index]);
+function loadPanelContent(panel, endpoint) {
+  if (panel.dataset.loaded === "true") return;
+
+  console.log("Loading panel for endpoint:", endpoint);
   panel.classList.add("loading");
   panel.dataset.loaded = "loading";
 
-  const endpoint = window.arr[index];
-  console.log("HTMX request to:", `https://server.grabbiel.com/${endpoint}`);
-
-  if (endpoint) {
-    htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
-      target: panel,
-      swap: "innerHTML"
-    }).then(() => {
-      console.log("Panel loaded successfully:", index);
-      panel.classList.remove("loading");
-      panel.dataset.loaded = "true";
-    }).catch((error) => {
-      console.log("Panel load failed:", index, error);
-      panel.classList.remove("loading");
-      panel.dataset.loaded = "error";
-    });
-  }
+  htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
+    target: panel,
+    swap: "innerHTML"
+  }).then(() => {
+    console.log("Panel loaded successfully:", endpoint);
+    panel.classList.remove("loading");
+    panel.dataset.loaded = "true";
+  }).catch(() => {
+    console.log("Panel load failed:", endpoint);
+    panel.classList.remove("loading");
+    panel.dataset.loaded = "error";
+    panel.innerHTML = '<div class="error">Failed to load content</div>';
+  });
 }
 
 function updateSliderPosition() {
@@ -147,6 +144,7 @@ function updateSliderPosition() {
 }
 
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
+  console.log("focusItem called with:", itemIndex, "endpoint:", endpoint, "arr[itemIndex]:", arr[itemIndex]);
   if (endpoint != null) {
     itemIndex = arr.findIndex(item => item === endpoint);
     if (itemIndex === -1) return;
