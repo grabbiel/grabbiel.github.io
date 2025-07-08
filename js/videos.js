@@ -154,7 +154,7 @@ function setupVideoControls() {
   document.addEventListener(
     "touchmove",
     (e) => {
-      if (document.querySelector(".videos-player")) {
+      if (e.target.closest(".video-container")) {
         if (e.target.closest(".caption.expanded")) return;
         e.preventDefault();
       }
