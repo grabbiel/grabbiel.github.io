@@ -238,20 +238,27 @@ document.addEventListener("htmx:afterRequest", function (event) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
     window.loadingMoreVideos = false;
-    setupVideoControls();
+    setupVideoControls(); // Only setup video-specific controls
     setupCaptionToggle();
   } else if (url.includes("/videos")) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
     if (totalVideos > 0) {
       currentVideoIndex = 0;
-      setup_video_listeners();
-      playCurrentVideo();
-      setupVideoControls();
+      setupVideoControls(); // Only setup video-specific controls
       setupCaptionToggle();
     }
   }
 });
+
+function activateVideosPage() {
+  if (videos.length > 0) {
+    setup_video_listeners(); // Setup global listeners only when active
+    playCurrentVideo();
+  }
+}
+
+window.activateVideosPage = activateVideosPage;
 
 function setupVideoControls() {
   videos.forEach((video) => {

@@ -172,7 +172,11 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   if (previousMenu !== newMenu) {
     cleanupMenuListeners(previousMenu);
   }
+  if (arr[itemIndex] === 'videos' && window.activateVideosPage) {
+    window.activateVideosPage();
+  }
   window.currentActiveMenuIndex = itemIndex;
+
 
   if (itemIndex === 0) {
     document.body.classList.remove("content-page");
