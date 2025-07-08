@@ -3,6 +3,7 @@ let totalVideos = 0;
 let videos = [];
 let isSwipeDetected = false;
 let videoTouchStartY = 0;
+let videoTouchStartX = 0;
 let videoTouchEndY = 0;
 let isScrubbing = false;
 let wasPlaying = false;
@@ -22,11 +23,21 @@ let videoEventListeners = {
 
 function videos_handler_touchstart(e) {
   videoTouchStartY = e.changedTouches[0].screenY;
+  videoTouchStartX = e.changedTouches[0].screenX;
 }
 function videos_handler_touchmove(e) {
+  if (!window.videoMenuActive) return;
   if (!e.target.closest(".video-container")) return;
   if (e.target.closest(".caption.expanded")) return;
-  e.preventDefault();
+  if (e.target.closest(".video-progress")) return;
+
+  const touch = e.touches[0];
+  const deltaY = Math.abs(touch.clientY - videoTouchStartY);
+  const deltaX = Math.abs(touch.clientX - (videoTouchStartX || touch.clientX));
+
+  if (deltaY > deltaX && deltaY > 10) {
+    e.preventDefault();
+  }
 }
 function videos_handler_touchend(e) {
   videoTouchEndY = e.changedTouches[0].screenY;
@@ -184,7 +195,7 @@ function setup_video_listeners() {
 }
 
 function cleanup_video_listeners() {
-  window.videosMenuActive = false;
+  window.videoMenuActive = false;
 
   if (videoEventListeners.touchstart) {
     document.removeEventListener("touchstart", videoEventListeners.touchstart);
