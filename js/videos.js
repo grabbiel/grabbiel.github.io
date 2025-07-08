@@ -145,6 +145,7 @@ function setupVideoControls() {
           previousVideo();
         }
       } else if (!isSwipeDetected) {
+        e.preventDefault();
         togglePlayPause();
       }
       isSwipeDetected = false;
@@ -153,7 +154,7 @@ function setupVideoControls() {
     // Add container-specific touch listeners
     video.addEventListener("touchstart", containerTouchStart, { passive: true });
     video.addEventListener("touchmove", containerTouchMove, { passive: false });
-    video.addEventListener("touchend", containerTouchEnd, { passive: true });
+    video.addEventListener("touchend", containerTouchEnd, { passive: false });
 
     // Video-specific handlers
     const clickHandler = () => togglePlayPause();
@@ -256,12 +257,6 @@ function setupVideoControls() {
 
     // Add all event listeners
     videoElement.addEventListener("click", clickHandler);
-    videoElement.addEventListener("touchend", (e) => {
-      if (!window.videoMenuActive) return;
-      e.preventDefault();
-      if (!isSwipeDetected) togglePlayPause();
-      isSwipeDetected = false;
-    }, { passive: false });
     muteBtn.addEventListener("click", muteClickHandler);
     videoElement.addEventListener("timeupdate", timeUpdateHandler);
     videoProgress.addEventListener("touchstart", progressTouchStart);
