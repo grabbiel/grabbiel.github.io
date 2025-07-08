@@ -44,14 +44,11 @@ body:not(.content-page) .content-panel.current {
     overflow-y: visible;
     transform: none;
     transition: none;
-    width: 100%;
     background: transparent;
 }
 body:not(.content-page) #content-slider {
-    position: relative;
     height: auto;
     overflow: visible;
-    top: 0;
 }
 body:not(.content-page) .content-panel:not(.current) {
     display: none;
