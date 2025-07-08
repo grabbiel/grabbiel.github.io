@@ -137,6 +137,9 @@ function setupVideoControls() {
 
       if (e.target.closest(".caption")) return;
       if (e.target.closest(".video-progress")) return;
+      if (e.target.closest(".mute-toggle")) return;
+      if (e.target.closest(".location")) return;
+      if (e.target.closest(".stats")) return;
 
       if (Math.abs(swipeDistance) > minSwipeDistance) {
         isSwipeDetected = true;
