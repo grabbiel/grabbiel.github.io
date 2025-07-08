@@ -118,7 +118,6 @@ function getOrCreatePanel(index) {
 function loadPanelContent(panel, endpoint) {
   if (panel.dataset.loaded === "true") return;
 
-  console.log("Loading panel for endpoint:", endpoint);
   panel.classList.add("loading");
   panel.dataset.loaded = "loading";
 
@@ -126,11 +125,9 @@ function loadPanelContent(panel, endpoint) {
     target: panel,
     swap: "innerHTML"
   }).then(() => {
-    console.log("Panel loaded successfully:", endpoint);
     panel.classList.remove("loading");
     panel.dataset.loaded = "true";
   }).catch(() => {
-    console.log("Panel load failed:", endpoint);
     panel.classList.remove("loading");
     panel.dataset.loaded = "error";
     panel.innerHTML = '<div class="error">Failed to load content</div>';
@@ -150,7 +147,6 @@ function cleanupMenuListeners(menuName) {
 }
 
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
-  console.log("focusItem called with:", itemIndex, "endpoint:", endpoint, "arr[itemIndex]:", arr[itemIndex]);
   if (endpoint != null) {
     itemIndex = arr.findIndex(item => item === endpoint);
     if (itemIndex === -1) return;
@@ -268,6 +264,3 @@ window.addEventListener("load", () => {
 
 render();
 
-console.log("horizontalmenu.js loaded");
-console.log("Content slider exists:", !!document.getElementById("content-slider"));
-console.log("Menu items created:", items.length);

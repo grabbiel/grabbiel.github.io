@@ -168,16 +168,18 @@ function videoprogress_handle_mousemove(videoElement, progressBar, video, videoP
 }
 
 function videoprogress_handle_mouseup(videoElement, progressBar, video, videoProgress) {
-  if (!videoMouseIsDragging) {
-    const rect = videoProgress.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-    videoElement.currentTime = percentage * videoElement.duration;
-  } else if (isScrubbing) {
-    isScrubbing = false;
-    progressBar.classList.remove("scrubbing");
-    video.classList.remove("scrubbing");
-    if (wasPlaying) videoElement.play();
+  return function (e) {
+    if (!videoMouseIsDragging) {
+      const rect = videoProgress.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+      videoElement.currentTime = percentage * videoElement.duration;
+    } else if (isScrubbing) {
+      isScrubbing = false;
+      progressBar.classList.remove("scrubbing");
+      video.classList.remove("scrubbing");
+      if (wasPlaying) videoElement.play();
+    }
   }
 }
 
