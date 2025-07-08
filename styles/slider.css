@@ -37,6 +37,26 @@
   animation: spin 1s linear infinite;
 }
 
+/* home menu */
+body:not(.content-page) .content-panel.current {
+    position: relative;
+    height: auto;
+    overflow-y: visible;
+    transform: none;
+    transition: none;
+    width: 100%;
+    background: transparent;
+}
+body:not(.content-page) #content-slider {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    top: 0;
+}
+body:not(.content-page) .content-panel:not(.current) {
+    display: none;
+}
+
 /* Panel positioning classes */
 .content-panel.current { transform: translateX(0); }
 .content-panel.prev { transform: translateX(-100vw); }
