@@ -55,7 +55,6 @@
 body.content-page .videos-player {
   height: calc(100vh - var(--header-height));
   padding-top: 0;
-  top: var(--header-height);
 }
 
 .video-container {
