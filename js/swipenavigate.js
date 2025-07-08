@@ -45,6 +45,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleTouchMove(e) {
     if (!isDragging) return;
+    if (target.closest(".video-overlay") || target.closest(".video-progress") ||
+      target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
+      target.closest(".game-content-overlay") || target.closest(".caption.expanded")) {
+      return;
+    }
 
     const touch = e.touches[0];
     const deltaY = touch.clientY - startY;
@@ -77,6 +82,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleTouchEnd(e) {
     if (!isDragging) return;
+    if (target.closest(".video-overlay") || target.closest(".video-progress") ||
+      target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
+      target.closest(".game-content-overlay") || target.closest(".caption.expanded")) {
+      return;
+    }
 
     isDragging = false;
     const deltaX = currentX - startX;

@@ -22,24 +22,21 @@ let videoEventListeners = {
 };
 
 function videos_handler_touchstart(e) {
+  if (!window.videoMenuActive) return;
   videoTouchStartY = e.changedTouches[0].screenY;
   videoTouchStartX = e.changedTouches[0].screenX;
 }
 function videos_handler_touchmove(e) {
   if (!window.videoMenuActive) return;
-  if (!e.target.closest(".video-container")) return;
   if (e.target.closest(".caption.expanded")) return;
   if (e.target.closest(".video-progress")) return;
 
-  const touch = e.touches[0];
-  const deltaY = Math.abs(touch.clientY - videoTouchStartY);
-  const deltaX = Math.abs(touch.clientX - (videoTouchStartX || touch.clientX));
-
-  if (deltaY > deltaX && deltaY > 10) {
-    e.preventDefault();
-  }
+  e.preventDefault();
 }
 function videos_handler_touchend(e) {
+
+  if (!window.videoMenuActive) return;
+
   videoTouchEndY = e.changedTouches[0].screenY;
   const swipeDistance = videoTouchStartY - videoTouchEndY;
   const minSwipeDistance = 50;
@@ -48,7 +45,11 @@ function videos_handler_touchend(e) {
 
   if (Math.abs(swipeDistance) > minSwipeDistance) {
     isSwipeDetected = true;
-    handleSwipe();
+    if (swipeDistance > 0) {
+      nextVideo();
+    } else {
+      previousVideo();
+    }
   }
 }
 function videos_handler_keydown(e) {
@@ -324,15 +325,6 @@ function toggleMute() {
   muteBtn.textContent = video.muted ? "🔇" : "🔊";
 }
 
-function handleSwipe() {
-  const swipeDistance = videoTouchStartY - videoTouchEndY;
-
-  if (swipeDistance > 0) {
-    nextVideo();
-  } else {
-    previousVideo();
-  }
-}
 
 function nextVideo() {
   if (currentVideoIndex < totalVideos - 1) {
