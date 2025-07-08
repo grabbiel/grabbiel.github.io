@@ -6,6 +6,7 @@ body {
   width: 100%;
   background-color: #f4f6f8;
   font-family: monospace, sans-serif;
+  scrollbar-width: none;
 }
 a:link {
   text-decoration: none;
