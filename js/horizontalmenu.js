@@ -186,7 +186,7 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   const centerOffset = (menuRect.width - itemRect.width) >> 1;
   scrollY -= itemRect.left - menuRect.left - centerOffset;
 
-  if (typeof window.updatePanelClasses === "function") {
+  if (typeof window.updatePanelClasses === "function" && !triggerRequest) {
     window.updatePanelClasses();
   }
 
