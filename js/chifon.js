@@ -2,7 +2,8 @@ let currentPlayingVideo = null;
 let videoQueue = [];
 
 document.addEventListener("htmx:afterRequest", function (event) {
-  if (event.detail.target.id === "content-box") {
+  if (event.detail.target.classList.contains("content-panel") &&
+    event.detail.target.dataset.menu === "home") {
     initChifonPlayer();
   }
 });
