@@ -6,6 +6,9 @@ document.addEventListener("htmx:afterRequest", function (event) {
     event.detail.target.dataset.menu === "home") {
     initChifonPlayer();
   }
+  if (event.detail.xhr.responseURL.includes("/home/more")) {
+    initChifonPlayer();
+  }
 });
 
 function initChifonPlayer() {
