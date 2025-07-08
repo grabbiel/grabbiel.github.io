@@ -13,12 +13,17 @@
   left: 0;
   width: 100vw;
   height: 100%;
-  transform: translateX(200vw); /* Default: hidden off-screen */
+  transform: translateX(200vw);
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow-y: auto;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
   background: #f4f6f8;
   padding-top: 0;
+}
+
+.content-panel::-webkit-scrollbar {
+  display: none;
 }
 
 .content-panel.loading {

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let isDragging = false;
   let startX = 0;
+  let startY = 0;
   let currentX = 0;
   let startTime = 0;
   let velocityX = 0;
@@ -31,6 +32,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    const touch = e.touches[0];
+    startY = touch.clientY;
     isDragging = true;
     startX = e.touches[0].clientX;
     currentX = startX;
@@ -38,16 +41,26 @@ document.addEventListener("DOMContentLoaded", function () {
     lastMoveTime = startTime;
     lastMoveX = startX;
 
-    swipeProgress.classList.add("active");
   }
 
   function handleTouchMove(e) {
     if (!isDragging) return;
 
-    e.preventDefault();
-
+    const touch = e.touches[0];
+    const deltaY = touch.clientY - startY;
     currentX = e.touches[0].clientX;
     const deltaX = currentX - startX;
+
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      isDragging = false;
+      return;
+    }
+
+    if (Math.abs(deltaX) > 10) {
+      e.preventDefault();
+      swipeProgress.classList.add("active");
+    }
+
     const now = Date.now();
 
     // Calculate velocity
