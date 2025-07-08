@@ -13,6 +13,212 @@ let videoMouseStartY = 0;
 let videoMouseIsDragging = false;
 let keyboardListenersAdded = false;
 
+let videoEventListeners = {
+  touchstart: null,
+  touchmove: null,
+  touchend: null,
+  keydown: null
+};
+
+function videos_handler_touchstart(e) {
+  videoTouchStartY = e.changedTouches[0].screenY;
+}
+function videos_handler_touchmove(e) {
+  if (e.target.closest(".caption.expanded")) return;
+  e.preventDefault();
+}
+function videos_handler_touchend(e) {
+  videoTouchEndY = e.changedTouches[0].screenY;
+  const swipeDistance = videoTouchStartY - videoTouchEndY;
+  const minSwipeDistance = 50;
+
+  if (e.target.closest(".caption.expanded")) return;
+
+  if (Math.abs(swipeDistance) > minSwipeDistance) {
+    isSwipeDetected = true;
+    handleSwipe();
+  }
+}
+function videos_handler_keydown(e) {
+  if (e.key === "ArrowUp") previousVideo();
+  if (e.key === "ArrowDown") nextVideo();
+  if (e.key === " ") {
+    e.preventDefault();
+    togglePlayPause();
+  }
+}
+
+function videos_handler_click(e) {
+  togglePlayPause();
+}
+
+function videos_handler_touchend(e) {
+  e.preventDefault();
+  if (!isSwipeDetected) {
+    togglePlayPause();
+  }
+  isSwipeDetected = false;
+}
+
+function videos_handler_mute_click(e) {
+  e.stopPropagation();
+  toggleMute();
+}
+
+function videos_handler_timeupdate(videoElement, progressFill) {
+  return function () {
+    if (progressFill) {
+      const progress =
+        (videoElement.currentTime / videoElement.duration) * 100;
+      progressFill.style.width = progress + "%";
+    }
+  }
+}
+
+// progress bar event handlers
+function videoprogress_handler_touchstart(e) {
+  progressBarTouchStartX = e.touches[0].clientX;
+  progressBarTouchStartY = e.touches[0].clientY;
+}
+
+function videoprogress_handler_touchmove(videoElement, progressBar, video, videoProgress) {
+  return function (e) {
+    e.preventDefault();
+    const distanceX = Math.abs(e.touches[0].clientX - progressBarTouchStartX);
+
+    if (distanceX > 10) {
+      if (!isScrubbing) {
+        isScrubbing = true;
+        wasPlaying = !videoElement.paused;
+        videoElement.pause();
+        progressBar.classList.add("scrubbing");
+        video.classList.add("scrubbing");
+      }
+
+      const rect = videoProgress.getBoundingClientRect();
+      const touchX = e.touches[0].clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+      videoElement.currentTime = percentage * videoElement.duration;
+    }
+  }
+}
+
+
+function videoprogress_handler_touchend(videoElement, progressBar, video, videoProgress) {
+  return function (e) {
+    const rect = videoProgress.getBoundingClientRect();
+
+    if (!isScrubbing) {
+      const touchX = e.changedTouches[0].clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+      videoElement.currentTime = percentage * videoElement.duration;
+    } else {
+      isScrubbing = false;
+      progressBar.classList.remove("scrubbing");
+      video.classList.remove("scrubbing");
+      if (wasPlaying) videoElement.play();
+    }
+  }
+}
+
+function videoprogress_handle_mousedown(e) {
+  videoMouseStartX = e.clientX;
+  videoMouseStartY = e.clientY;
+  videoMouseIsDragging = false;
+}
+
+function videoprogress_handle_mousemove(videoElement, progressBar, video, videoProgress) {
+  return function (e) {
+    if (e.buttons == 1) {
+      const distanceX = Math.abs(e.clientX - videoMouseStartX);
+      const distanceY = Math.abs(e.clientY - videoMouseStartY);
+
+      if (distanceX > 5 || distanceY > 5) {
+        if (!videoMouseIsDragging) {
+          videoMouseIsDragging = true;
+          isScrubbing = true;
+          wasPlaying = !videoElement.paused;
+          videoElement.pause();
+          progressBar.classList.add("scrubbing");
+          video.classList.add("scrubbing");
+        }
+      }
+
+      if (isScrubbing) {
+        const rect = videoProgress.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+        videoElement.currentTime = percentage * videoElement.duration;
+      }
+    }
+  }
+}
+
+function videoprogress_handle_mouseup(videoElement, progressBar, video, videoProgress) {
+  if (!videoMouseIsDragging) {
+    const rect = videoProgress.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+    videoElement.currentTime = percentage * videoElement.duration;
+  } else if (isScrubbing) {
+    isScrubbing = false;
+    progressBar.classList.remove("scrubbing");
+    video.classList.remove("scrubbing");
+    if (wasPlaying) videoElement.play();
+  }
+}
+
+function setup_video_listeners() {
+  if (videoEventListeners.touchstart) return;
+  window.videoMenuActive = true;
+  videoEventListeners.touchstart = videos_handler_touchstart;
+  videoEventListeners.touchmove = videos_handler_touchmove;
+  videoEventListeners.touchend = videos_handler_touchend;
+  videoEventListeners.keydown = videos_handler_keydown;
+
+  document.addEventListener("touchstart", videoEventListeners.touchstart);
+  document.addEventListener("touchmove", videoEventListeners.touchmove, { passive: false });
+  document.addEventListener("touchend", videoEventListeners.touchend);
+  document.addEventListener("keydown", videoEventListeners.keydown);
+}
+
+function cleanup_video_listeners() {
+  window.videosMenuActive = false;
+
+  if (videoEventListeners.touchstart) {
+    document.removeEventListener("touchstart", videoEventListeners.touchstart);
+    document.removeEventListener("touchmove", videoEventListeners.touchmove);
+    document.removeEventListener("touchend", videoEventListeners.touchend);
+    document.removeEventListener("keydown", videoEventListeners.keydown);
+
+    // Reset references
+    videoEventListeners.touchstart = null;
+    videoEventListeners.touchmove = null;
+    videoEventListeners.touchend = null;
+    videoEventListeners.keydown = null;
+  }
+
+  // Pause all videos and reset state
+  if (videos && videos.length > 0) {
+    videos.forEach(container => {
+      const video = container.querySelector('video');
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  }
+
+  currentVideoIndex = 0;
+  isScrubbing = false;
+  isSwipeDetected = false;
+  videoTouchStartY = 0;
+  videoTouchEndY = 0;
+  wasPlaying = false;
+}
+
+window.cleanup_video_listeners = cleanup_video_listeners;
+
 document.addEventListener("htmx:afterRequest", function (event) {
   const url = event.detail.xhr.responseURL;
   if (url.includes("/videos-more")) {
@@ -26,6 +232,7 @@ document.addEventListener("htmx:afterRequest", function (event) {
     totalVideos = videos.length;
     if (totalVideos > 0) {
       currentVideoIndex = 0;
+      setup_video_listeners();
       playCurrentVideo();
       setupVideoControls();
       setupCaptionToggle();
@@ -34,8 +241,6 @@ document.addEventListener("htmx:afterRequest", function (event) {
 });
 
 function setupVideoControls() {
-  // Touch/swipe handling
-
   videos.forEach((video) => {
     if (video.dataset.listenersAdded) return;
     video.dataset.listenersAdded = 1;
@@ -45,147 +250,30 @@ function setupVideoControls() {
     const progressBar = video.querySelector(".progress-bar");
     const progressFill = video.querySelector(".progress-fill");
     const videoProgress = video.querySelector(".video-progress");
-    videoElement.addEventListener("click", togglePlayPause);
-    videoElement.addEventListener("touchend", (e) => {
-      e.preventDefault();
-      if (!isSwipeDetected) {
-        togglePlayPause();
-      }
-      isSwipeDetected = false;
-    });
-    muteBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleMute();
-    });
-    videoElement.addEventListener("timeupdate", () => {
-      if (progressFill) {
-        const progress =
-          (videoElement.currentTime / videoElement.duration) * 100;
-        progressFill.style.width = progress + "%";
-      }
-    });
-    videoProgress.addEventListener("touchstart", (e) => {
-      progressBarTouchStartX = e.touches[0].clientX;
-      progressBarTouchStartY = e.touches[0].clientY;
-    });
-    videoProgress.addEventListener("touchmove", (e) => {
-      e.preventDefault();
-      const distanceX = Math.abs(e.touches[0].clientX - progressBarTouchStartX);
-      const distanceY = Math.abs(e.touches[0].clientY - progressBarTouchStartY);
 
-      if (distanceX > 10) {
-        if (!isScrubbing) {
-          isScrubbing = true;
-          wasPlaying = !videoElement.paused;
-          videoElement.pause();
-          progressBar.classList.add("scrubbing");
-          video.classList.add("scrubbing");
-        }
+    // store references for cleanup 
+    const clickHandler = videos_handler_click;
+    const touchEndHandler = videos_handler_touchend;
+    const muteClickHandler = videos_handler_mute_click;
+    const timeUpdateHandler = videos_handler_timeupdate(videoElement, progressFill);
+    const progressTouchStartHandler = videoprogress_handler_touchstart;
+    const progressTouchMoveHandler = videoprogress_handler_touchmove(videoElement, progressBar, video, videoProgress);
+    const progressTouchEndHandler = videoprogress_handler_touchend(videoElement, progressBar, video, videoProgress);
+    const progressMouseDownHandler = videoprogress_handle_mousedown;
+    const progressMouseMoveHandler = videoprogress_handle_mousemove(videoElement, progressBar, video, videoProgress);
+    const progressMouseUpHandler = videoprogress_handle_mouseup(videoElement, progressBar, video, videoProgress);
 
-        const rect = videoProgress.getBoundingClientRect();
-        const touchX = e.touches[0].clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, touchX / rect.width));
-        videoElement.currentTime = percentage * videoElement.duration;
-      }
-    });
-    videoProgress.addEventListener("touchend", (e) => {
-      const rect = videoProgress.getBoundingClientRect();
-
-      if (!isScrubbing) {
-        const touchX = e.changedTouches[0].clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, touchX / rect.width));
-        videoElement.currentTime = percentage * videoElement.duration;
-      } else {
-        isScrubbing = false;
-        progressBar.classList.remove("scrubbing");
-        video.classList.remove("scrubbing");
-        if (wasPlaying) videoElement.play();
-      }
-    });
-
-    videoProgress.addEventListener("mousedown", (e) => {
-      videoMouseStartX = e.clientX;
-      videoMouseStartY = e.clientY;
-      videoMouseIsDragging = false;
-    });
-
-    videoProgress.addEventListener("mousemove", (e) => {
-      if (e.buttons == 1) {
-        const distanceX = Math.abs(e.clientX - videoMouseStartX);
-        const distanceY = Math.abs(e.clientY - videoMouseStartY);
-
-        if (distanceX > 5 || distanceY > 5) {
-          if (!videoMouseIsDragging) {
-            videoMouseIsDragging = true;
-            isScrubbing = true;
-            wasPlaying = !videoElement.paused;
-            videoElement.pause();
-            progressBar.classList.add("scrubbing");
-            video.classList.add("scrubbing");
-          }
-        }
-
-        if (isScrubbing) {
-          const rect = videoProgress.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-          videoElement.currentTime = percentage * videoElement.duration;
-        }
-      }
-    });
-    videoProgress.addEventListener("mouseup", (e) => {
-      if (!videoMouseIsDragging) {
-        const rect = videoProgress.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-        videoElement.currentTime = percentage * videoElement.duration;
-      } else if (isScrubbing) {
-        isScrubbing = false;
-        progressBar.classList.remove("scrubbing");
-        video.classList.remove("scrubbing");
-        if (wasPlaying) videoElement.play();
-      }
-    });
+    videoElement.addEventListener("click", clickHandler);
+    videoElement.addEventListener("touchend", touchEndHandler);
+    muteBtn.addEventListener("click", muteClickHandler);
+    videoElement.addEventListener("timeupdate", timeUpdateHandler);
+    videoProgress.addEventListener("touchstart", progressTouchStartHandler);
+    videoProgress.addEventListener("touchmove", progressTouchMoveHandler);
+    videoProgress.addEventListener("touchend", progressTouchEndHandler);
+    videoProgress.addEventListener("mousedown", progressMouseDownHandler);
+    videoProgress.addEventListener("mousemove", progressMouseMoveHandler);
+    videoProgress.addEventListener("mouseup", progressMouseUpHandler);
   });
-
-  document.addEventListener("touchstart", (e) => {
-    videoTouchStartY = e.changedTouches[0].screenY;
-  });
-  document.addEventListener(
-    "touchmove",
-    (e) => {
-      if (e.target.closest(".video-container")) {
-        if (e.target.closest(".caption.expanded")) return;
-        e.preventDefault();
-      }
-    },
-    { passive: false },
-  );
-  document.addEventListener("touchend", (e) => {
-    videoTouchEndY = e.changedTouches[0].screenY;
-    const swipeDistance = videoTouchStartY - videoTouchEndY;
-    const minSwipeDistance = 50;
-
-    if (e.target.closest(".caption.expanded")) return;
-
-    if (Math.abs(swipeDistance) > minSwipeDistance) {
-      isSwipeDetected = true;
-      handleSwipe();
-    }
-  });
-
-  if (!keyboardListenersAdded) {
-    keyboardListenersAdded = true;
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp") previousVideo();
-      if (e.key === "ArrowDown") nextVideo();
-      if (e.key === " ") {
-        e.preventDefault();
-        togglePlayPause();
-      }
-    });
-  }
 }
 
 function setupCaptionToggle() {
@@ -277,7 +365,6 @@ function changeVideo(newIndex) {
   prevVideo.pause();
   prevVideo.classList.add("video-paused");
 
-  // Add play overlay to paused video
   if (!prevContainer.querySelector(".play-overlay")) {
     const playIcon = document.createElement("div");
     playIcon.className = "play-overlay";

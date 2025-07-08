@@ -141,8 +141,7 @@ function loadPanelContent(panel, endpoint) {
 function cleanupMenuListeners(menuName) {
   switch (menuName) {
     case 'videos':
-      window.videosMenuActive = false;
-      window.keyboardListenersAdded = false;
+      window.cleanup_video_listeners();
       break;
 
     default:
@@ -167,6 +166,12 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   const content = item.querySelector(".menu--item-content");
   content.style.color = "rgb(156, 9, 255)";
 
+  // menu-specific listener: cleanup 
+  const previousMenu = arr[window.currentActiveMenuIndex];
+  const newMenu = arr[itemIndex];
+  if (previousMenu !== newMenu) {
+    cleanupMenuListeners(previousMenu);
+  }
   window.currentActiveMenuIndex = itemIndex;
 
   if (itemIndex === 0) {
