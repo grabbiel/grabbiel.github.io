@@ -201,9 +201,13 @@ document.addEventListener("DOMContentLoaded", function () {
         target: panel,
         swap: "innerHTML"
       }).then(() => {
-        console.log("Panel loaded successfully:", endpoint);
         panel.classList.remove("loading");
-        panel.dataset.loaded = "true";
+        if (panel.innerHTML.trim()) {
+          panel.dataset.loaded = "true";
+        } else {
+          panel.dataset.loaded = "error";
+          panel.innerHTML = '<div class="error">No content available</div>';
+        }
       }).catch((error) => {
         console.log("Panel load failed:", endpoint, error);
         panel.classList.remove("loading");
