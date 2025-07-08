@@ -256,6 +256,12 @@ function setupVideoControls() {
 
     // Add all event listeners
     videoElement.addEventListener("click", clickHandler);
+    videoElement.addEventListener("touchend", (e) => {
+      if (!window.videoMenuActive) return;
+      e.preventDefault();
+      if (!isSwipeDetected) togglePlayPause();
+      isSwipeDetected = false;
+    }, { passive: false });
     muteBtn.addEventListener("click", muteClickHandler);
     videoElement.addEventListener("timeupdate", timeUpdateHandler);
     videoProgress.addEventListener("touchstart", progressTouchStart);
