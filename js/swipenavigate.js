@@ -130,7 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function navigateToPanel(newIndex) {
-    console.log("navigateToPanel called with:", newIndex);
     window.currentActiveMenuIndex = newIndex;
     updatePanelClasses();
 
@@ -177,12 +176,12 @@ document.addEventListener("DOMContentLoaded", function () {
     indicesToLoad.forEach(index => {
       const panel = document.querySelector(`.content-panel[data-index="${index}"]`);
       if (panel && !panel.dataset.loaded && !panel.classList.contains("loading")) {
-        loadPanelContent(panel, index);
+        loadSwipePanelContent(panel, index);
       }
     });
   }
 
-  function loadPanelContent(panel, indexOrEndpoint) {
+  function loadSwipePanelContent(panel, indexOrEndpoint) {
     panel.classList.add("loading");
     panel.dataset.loaded = "loading";
 
@@ -194,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
       endpoint = indexOrEndpoint;
     }
 
-    console.log("Loading panel:", indexOrEndpoint, "endpoint:", endpoint);
 
     if (endpoint) {
       htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
@@ -209,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
           panel.innerHTML = '<div class="error">No content available</div>';
         }
       }).catch((error) => {
-        console.log("Panel load failed:", endpoint, error);
         panel.classList.remove("loading");
         panel.dataset.loaded = "error";
       });
