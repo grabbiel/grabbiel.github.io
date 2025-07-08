@@ -24,6 +24,7 @@ function videos_handler_touchstart(e) {
   videoTouchStartY = e.changedTouches[0].screenY;
 }
 function videos_handler_touchmove(e) {
+  if (!e.target.closest(".video-container")) return;
   if (e.target.closest(".caption.expanded")) return;
   e.preventDefault();
 }
