@@ -15,44 +15,12 @@ let videoMouseIsDragging = false;
 let keyboardListenersAdded = false;
 
 let videoEventListeners = {
-  touchstart: null,
-  touchmove: null,
-  touchend: null,
   keydown: null
 };
 
-function videos_handler_touchstart(e) {
-  if (!window.videoMenuActive) return;
-  videoTouchStartY = e.changedTouches[0].screenY;
-  videoTouchStartX = e.changedTouches[0].screenX;
-}
-function videos_handler_touchmove(e) {
-  if (!window.videoMenuActive) return;
-  if (e.target.closest(".caption.expanded")) return;
-  if (e.target.closest(".video-progress")) return;
-
-  e.preventDefault();
-}
-function videos_handler_touchend(e) {
-
-  if (!window.videoMenuActive) return;
-
-  videoTouchEndY = e.changedTouches[0].screenY;
-  const swipeDistance = videoTouchStartY - videoTouchEndY;
-  const minSwipeDistance = 50;
-
-  if (e.target.closest(".caption.expanded")) return;
-
-  if (Math.abs(swipeDistance) > minSwipeDistance) {
-    isSwipeDetected = true;
-    if (swipeDistance > 0) {
-      nextVideo();
-    } else {
-      previousVideo();
-    }
-  }
-}
+// Only keep keydown as global, make touch handlers container-specific
 function videos_handler_keydown(e) {
+  if (!window.videoMenuActive) return;
   if (e.key === "ArrowUp") previousVideo();
   if (e.key === "ArrowDown") nextVideo();
   if (e.key === " ") {
@@ -61,155 +29,20 @@ function videos_handler_keydown(e) {
   }
 }
 
-function videos_handler_click(e) {
-  togglePlayPause();
-}
-
-function videos_handler_touchend(e) {
-  e.preventDefault();
-  if (!isSwipeDetected) {
-    togglePlayPause();
-  }
-  isSwipeDetected = false;
-}
-
-function videos_handler_mute_click(e) {
-  e.stopPropagation();
-  toggleMute();
-}
-
-function videos_handler_timeupdate(videoElement, progressFill) {
-  return function () {
-    if (progressFill) {
-      const progress =
-        (videoElement.currentTime / videoElement.duration) * 100;
-      progressFill.style.width = progress + "%";
-    }
-  }
-}
-
-// progress bar event handlers
-function videoprogress_handler_touchstart(e) {
-  progressBarTouchStartX = e.touches[0].clientX;
-  progressBarTouchStartY = e.touches[0].clientY;
-}
-
-function videoprogress_handler_touchmove(videoElement, progressBar, video, videoProgress) {
-  return function (e) {
-    e.preventDefault();
-    const distanceX = Math.abs(e.touches[0].clientX - progressBarTouchStartX);
-
-    if (distanceX > 10) {
-      if (!isScrubbing) {
-        isScrubbing = true;
-        wasPlaying = !videoElement.paused;
-        videoElement.pause();
-        progressBar.classList.add("scrubbing");
-        video.classList.add("scrubbing");
-      }
-
-      const rect = videoProgress.getBoundingClientRect();
-      const touchX = e.touches[0].clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, touchX / rect.width));
-      videoElement.currentTime = percentage * videoElement.duration;
-    }
-  }
-}
-
-
-function videoprogress_handler_touchend(videoElement, progressBar, video, videoProgress) {
-  return function (e) {
-    const rect = videoProgress.getBoundingClientRect();
-
-    if (!isScrubbing) {
-      const touchX = e.changedTouches[0].clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, touchX / rect.width));
-      videoElement.currentTime = percentage * videoElement.duration;
-    } else {
-      isScrubbing = false;
-      progressBar.classList.remove("scrubbing");
-      video.classList.remove("scrubbing");
-      if (wasPlaying) videoElement.play();
-    }
-  }
-}
-
-function videoprogress_handle_mousedown(e) {
-  videoMouseStartX = e.clientX;
-  videoMouseStartY = e.clientY;
-  videoMouseIsDragging = false;
-}
-
-function videoprogress_handle_mousemove(videoElement, progressBar, video, videoProgress) {
-  return function (e) {
-    if (e.buttons == 1) {
-      const distanceX = Math.abs(e.clientX - videoMouseStartX);
-      const distanceY = Math.abs(e.clientY - videoMouseStartY);
-
-      if (distanceX > 5 || distanceY > 5) {
-        if (!videoMouseIsDragging) {
-          videoMouseIsDragging = true;
-          isScrubbing = true;
-          wasPlaying = !videoElement.paused;
-          videoElement.pause();
-          progressBar.classList.add("scrubbing");
-          video.classList.add("scrubbing");
-        }
-      }
-
-      if (isScrubbing) {
-        const rect = videoProgress.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-        videoElement.currentTime = percentage * videoElement.duration;
-      }
-    }
-  }
-}
-
-function videoprogress_handle_mouseup(videoElement, progressBar, video, videoProgress) {
-  return function (e) {
-    if (!videoMouseIsDragging) {
-      const rect = videoProgress.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-      videoElement.currentTime = percentage * videoElement.duration;
-    } else if (isScrubbing) {
-      isScrubbing = false;
-      progressBar.classList.remove("scrubbing");
-      video.classList.remove("scrubbing");
-      if (wasPlaying) videoElement.play();
-    }
-  }
-}
-
 function setup_video_listeners() {
-  if (videoEventListeners.touchstart) return;
+  if (videoEventListeners.keydown) return;
   window.videoMenuActive = true;
-  videoEventListeners.touchstart = videos_handler_touchstart;
-  videoEventListeners.touchmove = videos_handler_touchmove;
-  videoEventListeners.touchend = videos_handler_touchend;
-  videoEventListeners.keydown = videos_handler_keydown;
 
-  document.addEventListener("touchstart", videoEventListeners.touchstart);
-  document.addEventListener("touchmove", videoEventListeners.touchmove, { passive: false });
-  document.addEventListener("touchend", videoEventListeners.touchend);
+  // Only add global keydown listener
+  videoEventListeners.keydown = videos_handler_keydown;
   document.addEventListener("keydown", videoEventListeners.keydown);
 }
 
 function cleanup_video_listeners() {
   window.videoMenuActive = false;
 
-  if (videoEventListeners.touchstart) {
-    document.removeEventListener("touchstart", videoEventListeners.touchstart);
-    document.removeEventListener("touchmove", videoEventListeners.touchmove);
-    document.removeEventListener("touchend", videoEventListeners.touchend);
+  if (videoEventListeners.keydown) {
     document.removeEventListener("keydown", videoEventListeners.keydown);
-
-    // Reset references
-    videoEventListeners.touchstart = null;
-    videoEventListeners.touchmove = null;
-    videoEventListeners.touchend = null;
     videoEventListeners.keydown = null;
   }
 
@@ -240,14 +73,14 @@ document.addEventListener("htmx:afterRequest", function (event) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
     window.loadingMoreVideos = false;
-    setupVideoControls(); // Only setup video-specific controls
+    setupVideoControls();
     setupCaptionToggle();
   } else if (url.includes("/videos")) {
     videos = document.querySelectorAll(".video-container");
     totalVideos = videos.length;
     if (totalVideos > 0) {
       currentVideoIndex = 0;
-      setupVideoControls(); // Only setup video-specific controls
+      setupVideoControls();
       setupCaptionToggle();
     }
   }
@@ -255,7 +88,7 @@ document.addEventListener("htmx:afterRequest", function (event) {
 
 function activateVideosPage() {
   if (videos.length > 0) {
-    setup_video_listeners(); // Setup global listeners only when active
+    setup_video_listeners();
     playCurrentVideo();
   }
 }
@@ -273,28 +106,164 @@ function setupVideoControls() {
     const progressFill = video.querySelector(".progress-fill");
     const videoProgress = video.querySelector(".video-progress");
 
-    // store references for cleanup 
-    const clickHandler = videos_handler_click;
-    const touchEndHandler = videos_handler_touchend;
-    const muteClickHandler = videos_handler_mute_click;
-    const timeUpdateHandler = videos_handler_timeupdate(videoElement, progressFill);
-    const progressTouchStartHandler = videoprogress_handler_touchstart;
-    const progressTouchMoveHandler = videoprogress_handler_touchmove(videoElement, progressBar, video, videoProgress);
-    const progressTouchEndHandler = videoprogress_handler_touchend(videoElement, progressBar, video, videoProgress);
-    const progressMouseDownHandler = videoprogress_handle_mousedown;
-    const progressMouseMoveHandler = videoprogress_handle_mousemove(videoElement, progressBar, video, videoProgress);
-    const progressMouseUpHandler = videoprogress_handle_mouseup(videoElement, progressBar, video, videoProgress);
+    // Container-specific touch handlers for video swipe gestures
+    const containerTouchStart = (e) => {
+      if (!window.videoMenuActive) return;
+      videoTouchStartY = e.changedTouches[0].screenY;
+      videoTouchStartX = e.changedTouches[0].screenX;
+    };
 
+    const containerTouchMove = (e) => {
+      if (!window.videoMenuActive) return;
+      if (e.target.closest(".caption.expanded")) return;
+      if (e.target.closest(".video-progress")) return;
+
+      // Only prevent default for significant vertical movement in video containers
+      const currentY = e.changedTouches[0].screenY;
+      const deltaY = Math.abs(currentY - videoTouchStartY);
+      const deltaX = Math.abs(e.changedTouches[0].screenX - videoTouchStartX);
+
+      if (deltaY > 10 && deltaY > deltaX) {
+        e.preventDefault();
+      }
+    };
+
+    const containerTouchEnd = (e) => {
+      if (!window.videoMenuActive) return;
+
+      videoTouchEndY = e.changedTouches[0].screenY;
+      const swipeDistance = videoTouchStartY - videoTouchEndY;
+      const minSwipeDistance = 50;
+
+      if (e.target.closest(".caption.expanded")) return;
+
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        isSwipeDetected = true;
+        if (swipeDistance > 0) {
+          nextVideo();
+        } else {
+          previousVideo();
+        }
+      } else if (!isSwipeDetected) {
+        togglePlayPause();
+      }
+      isSwipeDetected = false;
+    };
+
+    // Add container-specific touch listeners
+    video.addEventListener("touchstart", containerTouchStart, { passive: true });
+    video.addEventListener("touchmove", containerTouchMove, { passive: false });
+    video.addEventListener("touchend", containerTouchEnd, { passive: true });
+
+    // Video-specific handlers
+    const clickHandler = () => togglePlayPause();
+    const muteClickHandler = (e) => {
+      e.stopPropagation();
+      toggleMute();
+    };
+    const timeUpdateHandler = () => {
+      if (progressFill) {
+        const progress = (videoElement.currentTime / videoElement.duration) * 100;
+        progressFill.style.width = progress + "%";
+      }
+    };
+
+    // Progress bar handlers
+    const progressTouchStart = (e) => {
+      progressBarTouchStartX = e.touches[0].clientX;
+      progressBarTouchStartY = e.touches[0].clientY;
+    };
+
+    const progressTouchMove = (e) => {
+      e.preventDefault();
+      const distanceX = Math.abs(e.touches[0].clientX - progressBarTouchStartX);
+
+      if (distanceX > 10) {
+        if (!isScrubbing) {
+          isScrubbing = true;
+          wasPlaying = !videoElement.paused;
+          videoElement.pause();
+          progressBar.classList.add("scrubbing");
+          video.classList.add("scrubbing");
+        }
+
+        const rect = videoProgress.getBoundingClientRect();
+        const touchX = e.touches[0].clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+        videoElement.currentTime = percentage * videoElement.duration;
+      }
+    };
+
+    const progressTouchEnd = (e) => {
+      const rect = videoProgress.getBoundingClientRect();
+
+      if (!isScrubbing) {
+        const touchX = e.changedTouches[0].clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+        videoElement.currentTime = percentage * videoElement.duration;
+      } else {
+        isScrubbing = false;
+        progressBar.classList.remove("scrubbing");
+        video.classList.remove("scrubbing");
+        if (wasPlaying) videoElement.play();
+      }
+    };
+
+    const progressMouseDown = (e) => {
+      videoMouseStartX = e.clientX;
+      videoMouseStartY = e.clientY;
+      videoMouseIsDragging = false;
+    };
+
+    const progressMouseMove = (e) => {
+      if (e.buttons == 1) {
+        const distanceX = Math.abs(e.clientX - videoMouseStartX);
+        const distanceY = Math.abs(e.clientY - videoMouseStartY);
+
+        if (distanceX > 5 || distanceY > 5) {
+          if (!videoMouseIsDragging) {
+            videoMouseIsDragging = true;
+            isScrubbing = true;
+            wasPlaying = !videoElement.paused;
+            videoElement.pause();
+            progressBar.classList.add("scrubbing");
+            video.classList.add("scrubbing");
+          }
+        }
+
+        if (isScrubbing) {
+          const rect = videoProgress.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+          videoElement.currentTime = percentage * videoElement.duration;
+        }
+      }
+    };
+
+    const progressMouseUp = (e) => {
+      if (!videoMouseIsDragging) {
+        const rect = videoProgress.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+        videoElement.currentTime = percentage * videoElement.duration;
+      } else if (isScrubbing) {
+        isScrubbing = false;
+        progressBar.classList.remove("scrubbing");
+        video.classList.remove("scrubbing");
+        if (wasPlaying) videoElement.play();
+      }
+    };
+
+    // Add all event listeners
     videoElement.addEventListener("click", clickHandler);
-    videoElement.addEventListener("touchend", touchEndHandler);
     muteBtn.addEventListener("click", muteClickHandler);
     videoElement.addEventListener("timeupdate", timeUpdateHandler);
-    videoProgress.addEventListener("touchstart", progressTouchStartHandler);
-    videoProgress.addEventListener("touchmove", progressTouchMoveHandler);
-    videoProgress.addEventListener("touchend", progressTouchEndHandler);
-    videoProgress.addEventListener("mousedown", progressMouseDownHandler);
-    videoProgress.addEventListener("mousemove", progressMouseMoveHandler);
-    videoProgress.addEventListener("mouseup", progressMouseUpHandler);
+    videoProgress.addEventListener("touchstart", progressTouchStart);
+    videoProgress.addEventListener("touchmove", progressTouchMove);
+    videoProgress.addEventListener("touchend", progressTouchEnd);
+    videoProgress.addEventListener("mousedown", progressMouseDown);
+    videoProgress.addEventListener("mousemove", progressMouseMove);
+    videoProgress.addEventListener("mouseup", progressMouseUp);
   });
 }
 
@@ -307,18 +276,15 @@ function setupCaptionToggle() {
 
     if (fullText.length > limit) {
       const truncated = fullText.substring(0, limit);
-      caption.innerHTML =
-        truncated + '... <span class="caption-toggle">more</span>';
-      caption.dataset.full = fullText; // Store only when needed
+      caption.innerHTML = truncated + '... <span class="caption-toggle">more</span>';
+      caption.dataset.full = fullText;
 
       caption.addEventListener("click", function () {
         if (this.classList.contains("expanded")) {
-          this.innerHTML =
-            truncated + '... <span class="caption-toggle">more</span>';
+          this.innerHTML = truncated + '... <span class="caption-toggle">more</span>';
           this.classList.remove("expanded");
         } else {
-          this.innerHTML =
-            fullText + ' <span class="caption-toggle">less</span>';
+          this.innerHTML = fullText + ' <span class="caption-toggle">less</span>';
           this.classList.add("expanded");
         }
       });
@@ -333,7 +299,6 @@ function toggleMute() {
   video.muted = !video.muted;
   muteBtn.textContent = video.muted ? "🔇" : "🔊";
 }
-
 
 function nextVideo() {
   if (currentVideoIndex < totalVideos - 1) {
@@ -369,8 +334,7 @@ function changeVideo(newIndex) {
     const isMobile = window.innerWidth < 768;
     const limit = isMobile ? 95 : 250;
     const truncated = fullText.substring(0, limit);
-    prevCaption.innerHTML =
-      truncated + '... <span class="caption-toggle">more</span>';
+    prevCaption.innerHTML = truncated + '... <span class="caption-toggle">more</span>';
     prevCaption.classList.remove("expanded");
   }
 
@@ -396,21 +360,16 @@ function changeVideo(newIndex) {
 
 function loadMoreVideos() {
   window.loadingMoreVideos = true;
-  htmx.ajax(
-    "GET",
-    `https://server.grabbiel.com/videos-more?offset=${totalVideos}`,
-    {
-      target: ".videos-player",
-      swap: "beforeend",
-    },
-  );
+  htmx.ajax("GET", `https://server.grabbiel.com/videos-more?offset=${totalVideos}`, {
+    target: ".videos-player",
+    swap: "beforeend",
+  });
 }
 
 function playCurrentVideo() {
   const container = videos[currentVideoIndex];
   const video = container.querySelector("video");
 
-  // Clean up paused state
   video.classList.remove("video-paused");
   const playIcon = container.querySelector(".play-overlay");
   if (playIcon) playIcon.remove();
