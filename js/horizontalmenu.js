@@ -137,6 +137,19 @@ function loadPanelContent(panel, endpoint) {
   });
 }
 
+// TODO: Collect all menu-specific listeners
+function cleanupMenuListeners(menuName) {
+  switch (menuName) {
+    case 'videos':
+      window.videosMenuActive = false;
+      window.keyboardListenersAdded = false;
+      break;
+
+    default:
+      break;
+  }
+}
+
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   console.log("focusItem called with:", itemIndex, "endpoint:", endpoint, "arr[itemIndex]:", arr[itemIndex]);
   if (endpoint != null) {
