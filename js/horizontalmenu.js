@@ -147,6 +147,7 @@ function cleanupMenuListeners(menuName) {
 }
 
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
+  console.log("inside focusItem()");
   if (endpoint != null) {
     itemIndex = arr.findIndex(item => item === endpoint);
     if (itemIndex === -1) return;
@@ -191,6 +192,7 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   }
 
   if (triggerRequest) {
+    console.log("focusItem() -> loadPanels");
     // Load current panel and adjacent panels
     const currentPanel = getOrCreatePanel(itemIndex);
     loadPanelContent(currentPanel, arr[itemIndex]);
@@ -258,6 +260,7 @@ window.addEventListener("load", () => {
     sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
+    console.log("/home endpoint called");
     focusItem(0, true);
   }
 });
