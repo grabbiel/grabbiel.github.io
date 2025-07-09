@@ -144,8 +144,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updatePanelClasses() {
     const current = window.currentActiveMenuIndex;
-    const prevIndex = (((current - 1) % (window.menuItemCount + 1)) + (window.menuItemCount + 1)) % (window.menuItemCount + 1);
-    const nextIndex = (((current + 1) % (window.menuItemCount + 1)) + (window.menuItemCount + 1)) % (window.menuItemCount + 1);
+    const prevIndex = (((current - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
+    const nextIndex = (((current + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
 
     // Ensure key panels exist
     const currentPanel = getOrCreatePanel(current);
@@ -165,9 +165,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function preloadAdjacentPanels(centerIndex) {
     const indicesToLoad = [
-      (((centerIndex - 1) % (window.menuItemCount + 1)) + (window.menuItemCount + 1)) % (window.menuItemCount + 1),
+      (((centerIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount),
       centerIndex,
-      (((centerIndex + 1) % (window.menuItemCount + 1)) + (window.menuItemCount + 1)) % (window.menuItemCount + 1)
+      (((centerIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount)
     ];
 
     indicesToLoad.forEach(index => {

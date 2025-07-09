@@ -198,12 +198,12 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
     const currentPanel = getOrCreatePanel(itemIndex);
     loadPanelContent(currentPanel, arr[itemIndex]);
 
-    const prevIndex = (((itemIndex - 1) % (window.menuItemCount + 1)) + (window.menuItemCount + 1)) % (window.menuItemCount + 1);
+    const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
     const prevPanel = getOrCreatePanel(prevIndex);
     if (prevPanel.dataset.loaded !== "true") {
       loadPanelContent(prevPanel, arr[prevIndex]);
     }
-    const nextIndex = (((itemIndex + 1) % (window.menuItemCount + 1)) + (window.menuItemCount + 1)) % (window.menuItemCount + 1);
+    const nextIndex = (((itemIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
     const nextPanel = getOrCreatePanel(nextIndex);
     if (nextPanel.dataset.loaded !== "true") {
       loadPanelContent(nextPanel, arr[nextIndex]);
