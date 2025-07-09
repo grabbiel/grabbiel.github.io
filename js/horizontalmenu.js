@@ -129,14 +129,10 @@ function loadPanelContent(panel, endpoint) {
   htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
     target: panel,
     swap: "afterbegin"
-  }).then((o) => {
-    console.log("received...");
-    console.log(o);
+  }).then(() => {
     panel.classList.remove("loading");
     panel.dataset.loaded = "true";
-  }).catch((e) => {
-    console.log("errored out...");
-    console.log(e);
+  }).catch(() => {
     panel.classList.remove("loading");
     panel.dataset.loaded = "error";
     panel.innerHTML = '<div class="error">Failed to load content</div>';
@@ -204,19 +200,19 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
     const currentPanel = getOrCreatePanel(itemIndex);
     loadPanelContent(currentPanel, arr[itemIndex]);
 
-    const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
-    const prevPanel = getOrCreatePanel(prevIndex);
-    console.log(prevPanel);
-    if (prevPanel.dataset.loaded !== "true") {
-      console.log("prevPanel loaded is not true");
-      loadPanelContent(prevPanel, arr[prevIndex]);
-    }
     const nextIndex = (((itemIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
     const nextPanel = getOrCreatePanel(nextIndex);
     console.log(nextPanel);
     if (nextPanel.dataset.loaded !== "true") {
       console.log("nextPanel loaded is not true");
       loadPanelContent(nextPanel, arr[nextIndex]);
+    }
+    const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
+    const prevPanel = getOrCreatePanel(prevIndex);
+    console.log(prevPanel);
+    if (prevPanel.dataset.loaded !== "true") {
+      console.log("prevPanel loaded is not true");
+      loadPanelContent(prevPanel, arr[prevIndex]);
     }
   }
 
@@ -265,6 +261,7 @@ function render() {
 window.addEventListener("load", () => {
   const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
+    console.log("focusing item because pendingEndpoint");
     sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
