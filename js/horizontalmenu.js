@@ -200,6 +200,11 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
 
     const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
     const prevPanel = getOrCreatePanel(prevIndex);
+    if ("loaded" in prevPanel.dataset) {
+      console.log("prevPanel has attribute loaded");
+    } else {
+      console.log("prevPanel dos not have attribute loaded");
+    }
     if (prevPanel.dataset.loaded !== "true") {
       loadPanelContent(prevPanel, arr[prevIndex]);
     }
