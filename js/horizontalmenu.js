@@ -139,7 +139,6 @@ function loadPanelContent(panel, endpoint) {
   });
 }
 
-// TODO: Collect all menu-specific listeners
 function cleanupMenuListeners(menuName) {
   switch (menuName) {
     case 'videos':
