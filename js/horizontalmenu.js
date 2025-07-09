@@ -104,8 +104,10 @@ window.addEventListener("resize", () => {
 });
 
 function getOrCreatePanel(index) {
+  console.log(`looking for panel[data-index=${index}]`);
   let panel = document.querySelector(`.content-panel[data-index="${index}"]`);
   if (!panel) {
+    console.log('panel not found... creating one');
     panel = document.createElement("div");
     panel.className = "content-panel";
     panel.setAttribute("data-index", index);
@@ -196,16 +198,15 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
     const currentPanel = getOrCreatePanel(itemIndex);
     loadPanelContent(currentPanel, arr[itemIndex]);
 
-    const maxPanels = window.menuItemCount || 26;
-    const prevIndex = (itemIndex - 1 + maxPanels) % maxPanels;
+    const prevIndex = (itemIndex - 1) % window.menuItemCount;
     const prevPanel = getOrCreatePanel(prevIndex);
     if (prevPanel.dataset.loaded !== "true") {
-      loadPanelContent(prevPanel, arr[itemIndex - 1]);
+      loadPanelContent(prevPanel, arr[prevIndex]);
     }
-    const nextIndex = (itemIndex + 1) % maxPanels;
+    const nextIndex = (itemIndex + 1) % window.menuItemCount;
     const nextPanel = getOrCreatePanel(nextIndex);
     if (nextPanel.dataset.loaded !== "true") {
-      loadPanelContent(nextPanel, arr[itemIndex + 1]);
+      loadPanelContent(nextPanel, arr[nextIndex]);
     }
   }
 

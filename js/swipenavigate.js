@@ -221,10 +221,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.updatePanelClasses = updatePanelClasses;
 
-  // Initialize with home panel
-  setTimeout(() => {
-    console.log("preloading adjacent panels...");
-    preloadAdjacentPanels(0);
-    updatePanelClasses();
-  }, 100);
 });
