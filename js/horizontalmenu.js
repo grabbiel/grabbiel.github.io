@@ -104,10 +104,8 @@ window.addEventListener("resize", () => {
 });
 
 function getOrCreatePanel(index) {
-  console.log(`looking for panel[data-index=${index}]`);
   let panel = document.querySelector(`.content-panel[data-index="${index}"]`);
   if (!panel) {
-    console.log('panel not found... creating one');
     panel = document.createElement("div");
     panel.className = "content-panel";
     panel.setAttribute("data-index", index);
@@ -119,9 +117,7 @@ function getOrCreatePanel(index) {
 }
 
 function loadPanelContent(panel, endpoint) {
-  console.log(`attempt to load /${endpoint}`);
   if (panel.dataset.loaded === "true") return Promise.resolve();
-  console.log(`panel[${endpoint}] is not loaded`);
 
   panel.classList.add("loading");
   panel.dataset.loaded = "loading";
@@ -151,7 +147,6 @@ function cleanupMenuListeners(menuName) {
 }
 
 function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
-  console.log("inside focusItem()");
   if (endpoint != null) {
     itemIndex = arr.findIndex(item => item === endpoint);
     if (itemIndex === -1) return;
@@ -196,22 +191,17 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   }
 
   if (triggerRequest) {
-    console.log("focusItem() -> loadPanels");
     const currentPanel = getOrCreatePanel(itemIndex);
     loadPanelContent(currentPanel, arr[itemIndex]).then(() => {
       const adjacentLoads = [];
       const nextIndex = (((itemIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
       const nextPanel = getOrCreatePanel(nextIndex);
-      console.log(nextPanel);
       if (nextPanel.dataset.loaded !== "true") {
-        console.log("nextPanel loaded is not true");
         adjacentLoads.push(() => loadPanelContent(nextPanel, arr[nextIndex]));
       }
       const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
       const prevPanel = getOrCreatePanel(prevIndex);
-      console.log(prevPanel);
       if (prevPanel.dataset.loaded !== "true") {
-        console.log("prevPanel loaded is not true");
         adjacentLoads.push(() => loadPanelContent(prevPanel, arr[prevIndex]));
       }
       adjacentLoads.reduce((promise, loadFn) =>
@@ -267,11 +257,9 @@ function render() {
 window.addEventListener("load", () => {
   const pendingEndpoint = sessionStorage.getItem("pendingEndpoint");
   if (pendingEndpoint) {
-    console.log("focusing item because pendingEndpoint");
     sessionStorage.removeItem("pendingEndpoint");
     window.focusItemByEndpoint(pendingEndpoint);
   } else {
-    console.log("/home endpoint called");
     focusItem(0, true);
   }
 });

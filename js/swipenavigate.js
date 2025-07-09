@@ -164,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function preloadAdjacentPanels(centerIndex) {
-    console.log("preloading adj panels");
     const indicesToLoad = [
       (((centerIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount),
       centerIndex,
