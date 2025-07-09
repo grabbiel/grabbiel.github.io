@@ -215,7 +215,7 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
         adjacentLoads.push(() => loadPanelContent(prevPanel, arr[prevIndex]));
       }
       adjacentLoads.reduce((promise, loadFn) =>
-        promise.then(() => loadFn),
+        promise.then(() => loadFn()),
         Promise.resolve()
       );
     });
