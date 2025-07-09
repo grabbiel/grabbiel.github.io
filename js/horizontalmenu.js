@@ -120,13 +120,13 @@ function getOrCreatePanel(index) {
 
 function loadPanelContent(panel, endpoint) {
   console.log(`attempt to load /${endpoint}`);
-  if (panel.dataset.loaded === "true") return;
+  if (panel.dataset.loaded === "true") return Promise.resolve();
   console.log(`panel[${endpoint}] is not loaded`);
 
   panel.classList.add("loading");
   panel.dataset.loaded = "loading";
 
-  htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
+  return htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
     target: panel,
     swap: "afterbegin"
   }).then(() => {
@@ -198,22 +198,28 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   if (triggerRequest) {
     console.log("focusItem() -> loadPanels");
     const currentPanel = getOrCreatePanel(itemIndex);
-    loadPanelContent(currentPanel, arr[itemIndex]);
+    loadPanelContent(currentPanel, arr[itemIndex]).then(() => {
+      const adjacentLoads = [];
+      const nextIndex = (((itemIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
+      const nextPanel = getOrCreatePanel(nextIndex);
+      console.log(nextPanel);
+      if (nextPanel.dataset.loaded !== "true") {
+        console.log("nextPanel loaded is not true");
+        adjacentLoads.push(() => loadPanelContent(nextPanel, arr[nextIndex]));
+      }
+      const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
+      const prevPanel = getOrCreatePanel(prevIndex);
+      console.log(prevPanel);
+      if (prevPanel.dataset.loaded !== "true") {
+        console.log("prevPanel loaded is not true");
+        adjacentLoads.push(() => loadPanelContent(prevPanel, arr[prevIndex]));
+      }
+      adjacentLoads.reduce((promise, loadFn) =>
+        promise.then(() => loadFn),
+        Promise.resolve()
+      );
+    });
 
-    const nextIndex = (((itemIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
-    const nextPanel = getOrCreatePanel(nextIndex);
-    console.log(nextPanel);
-    if (nextPanel.dataset.loaded !== "true") {
-      console.log("nextPanel loaded is not true");
-      loadPanelContent(nextPanel, arr[nextIndex]);
-    }
-    const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
-    const prevPanel = getOrCreatePanel(prevIndex);
-    console.log(prevPanel);
-    if (prevPanel.dataset.loaded !== "true") {
-      console.log("prevPanel loaded is not true");
-      loadPanelContent(prevPanel, arr[prevIndex]);
-    }
   }
 
   // Scroll to top if not home

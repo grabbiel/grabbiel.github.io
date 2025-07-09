@@ -191,7 +191,6 @@ document.addEventListener("DOMContentLoaded", function () {
       endpoint = indexOrEndpoint;
     }
 
-
     if (endpoint) {
       htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
         target: panel,
