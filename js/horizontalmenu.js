@@ -119,7 +119,9 @@ function getOrCreatePanel(index) {
 }
 
 function loadPanelContent(panel, endpoint) {
+  console.log(`attempt to load /${endpoint}`);
   if (panel.dataset.loaded === "true") return;
+  console.log(`panel[${endpoint}] is not loaded`);
 
   panel.classList.add("loading");
   panel.dataset.loaded = "loading";
@@ -201,12 +203,16 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
 
     const prevIndex = (((itemIndex - 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
     const prevPanel = getOrCreatePanel(prevIndex);
+    console.log(prevPanel);
     if (prevPanel.dataset.loaded !== "true") {
+      console.log("prevPanel loaded is not true");
       loadPanelContent(prevPanel, arr[prevIndex]);
     }
     const nextIndex = (((itemIndex + 1) % (window.menuItemCount)) + (window.menuItemCount)) % (window.menuItemCount);
     const nextPanel = getOrCreatePanel(nextIndex);
+    console.log(nextPanel);
     if (nextPanel.dataset.loaded !== "true") {
+      console.log("nextPanel loaded is not true");
       loadPanelContent(nextPanel, arr[nextIndex]);
     }
   }
