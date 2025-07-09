@@ -187,28 +187,25 @@ function focusItem(itemIndex, triggerRequest = true, endpoint = null) {
   const centerOffset = (menuRect.width - itemRect.width) >> 1;
   scrollY -= itemRect.left - menuRect.left - centerOffset;
 
-  if (typeof window.updatePanelClasses === "function" && !triggerRequest) {
+  if (typeof window.updatePanelClasses === "function") {
     window.updatePanelClasses();
   }
 
   if (triggerRequest) {
     console.log("focusItem() -> loadPanels");
-    // Load current panel and adjacent panels
     const currentPanel = getOrCreatePanel(itemIndex);
     loadPanelContent(currentPanel, arr[itemIndex]);
 
-    // Preload adjacent panels
-    if (itemIndex > 0) {
-      const prevPanel = getOrCreatePanel(itemIndex - 1);
-      if (prevPanel.dataset.loaded !== "true") {
-        loadPanelContent(prevPanel, arr[itemIndex - 1]);
-      }
+    const maxPanels = window.menuItemCount || 26;
+    const prevIndex = (itemIndex - 1 + maxPanels) % maxPanels;
+    const prevPanel = getOrCreatePanel(prevIndex);
+    if (prevPanel.dataset.loaded !== "true") {
+      loadPanelContent(prevPanel, arr[itemIndex - 1]);
     }
-    if (itemIndex < itemCount - 1) {
-      const nextPanel = getOrCreatePanel(itemIndex + 1);
-      if (nextPanel.dataset.loaded !== "true") {
-        loadPanelContent(nextPanel, arr[itemIndex + 1]);
-      }
+    const nextIndex = (itemIndex + 1) % maxPanels;
+    const nextPanel = getOrCreatePanel(nextIndex);
+    if (nextPanel.dataset.loaded !== "true") {
+      loadPanelContent(nextPanel, arr[itemIndex + 1]);
     }
   }
 

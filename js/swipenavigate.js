@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
     indicesToLoad.forEach(index => {
       const panel = document.querySelector(`.content-panel[data-index="${index}"]`);
       if (panel && !panel.dataset.loaded && !panel.classList.contains("loading")) {
-        loadSwipePanelContent(panel, index);
+        loadPanelContent(panel, index);
       }
     });
   }
@@ -219,11 +219,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return isContentPage || (header && header.classList.contains("visible"));
   }
 
-  // Make updatePanelClasses global
   window.updatePanelClasses = updatePanelClasses;
 
   // Initialize with home panel
   setTimeout(() => {
+    console.log("preloading adjacent panels...");
     preloadAdjacentPanels(0);
     updatePanelClasses();
   }, 100);
