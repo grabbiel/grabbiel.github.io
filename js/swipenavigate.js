@@ -198,12 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
         swap: "innerHTML"
       }).then(() => {
         panel.classList.remove("loading");
-        if (panel.innerHTML.trim()) {
-          panel.dataset.loaded = "true";
-        } else {
-          panel.dataset.loaded = "error";
-          panel.innerHTML = '<div class="error">No content available</div>';
-        }
+        panel.dataset.loaded = "true";
       }).catch((error) => {
         panel.classList.remove("loading");
         panel.dataset.loaded = "error";

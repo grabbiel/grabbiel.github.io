@@ -128,11 +128,15 @@ function loadPanelContent(panel, endpoint) {
 
   htmx.ajax("GET", `https://server.grabbiel.com/${endpoint}`, {
     target: panel,
-    swap: "innerHTML"
-  }).then(() => {
+    swap: "afterbegin"
+  }).then((o) => {
+    console.log("received...");
+    console.log(o);
     panel.classList.remove("loading");
     panel.dataset.loaded = "true";
-  }).catch(() => {
+  }).catch((e) => {
+    console.log("errored out...");
+    console.log(e);
     panel.classList.remove("loading");
     panel.dataset.loaded = "error";
     panel.innerHTML = '<div class="error">Failed to load content</div>';
