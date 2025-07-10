@@ -199,50 +199,79 @@ function setupCameraControls(container) {
 }
 
 function loadModel() {
-  const loader = new GLTFLoader();
+  const url = window.currentAssetUrl;
+  const extension = url.split('.').pop().toLowerCase();
 
-  loader.load(
-    window.currentAssetUrl,
-    function (gltf) {
-      model = gltf.scene;
+  if (extension === 'fbx') {
+    // Import and use FBXLoader
+    import('three/addons/loaders/FBXLoader.js').then(({ FBXLoader }) => {
+      const loader = new FBXLoader();
+      loader.load(url, handleModelLoad, handleProgress, handleError);
+    }).catch(error => {
+      console.error('Failed to load FBXLoader:', error);
+      handleError(error);
+    });
+  } else if (extension === 'glb' || extension === 'gltf') {
+    // Use GLTFLoader for .glb/.gltf
+    const loader = new GLTFLoader();
+    loader.load(url, (gltf) => handleModelLoad(gltf.scene, gltf.animations), handleProgress, handleError);
+  } else {
+    handleError(new Error(`Unsupported file format: ${extension}`));
+  }
+}
 
-      // Center and scale model
-      const box = new THREE.Box3().setFromObject(model);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      const maxSize = Math.max(size.x, size.y, size.z);
-      const scale = 2 / maxSize;
+function handleModelLoad(loadedModel, animations = null) {
+  model = loadedModel;
 
-      model.scale.setScalar(scale);
-      model.position.copy(center).multiplyScalar(-scale);
-      model.position.y += (size.y * scale) / 2;
+  // Center and scale model
+  const box = new THREE.Box3().setFromObject(model);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxSize = Math.max(size.x, size.y, size.z);
+  const scale = 2 / maxSize;
 
-      // Enable shadows
-      model.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true;
-        }
-      });
+  model.scale.setScalar(scale);
+  model.position.copy(center).multiplyScalar(-scale);
+  model.position.y += (size.y * scale) / 2;
 
-      scene.add(model);
-
-      // Setup animations
-      if (gltf.animations && gltf.animations.length > 0) {
-        mixer = new THREE.AnimationMixer(model);
-        gltf.animations.forEach((clip) => {
-          mixer.clipAction(clip).play();
-        });
-      }
-    },
-    function (progress) {
-      console.log('Loading progress:', progress);
-    },
-    function (error) {
-      console.error('Error loading model:', error);
-      const container = document.getElementById('three-container');
-      container.innerHTML = '<div class="loading-indicator">Error loading 3D model</div>';
+  // Enable shadows
+  model.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
     }
-  );
+  });
+
+  scene.add(model);
+
+  // Setup animations (works for both GLTF and FBX)
+  if (animations && animations.length > 0) {
+    mixer = new THREE.AnimationMixer(model);
+    animations.forEach((clip) => {
+      mixer.clipAction(clip).play();
+    });
+  } else if (model.animations && model.animations.length > 0) {
+    // FBX animations are typically stored on the model itself
+    mixer = new THREE.AnimationMixer(model);
+    model.animations.forEach((clip) => {
+      mixer.clipAction(clip).play();
+    });
+  }
+}
+
+function handleProgress(progress) {
+  if (progress.lengthComputable) {
+    const percentComplete = (progress.loaded / progress.total) * 100;
+    console.log('Loading progress:', Math.round(percentComplete) + '%');
+  }
+}
+
+function handleError(error) {
+  console.error('Error loading model:', error);
+  const container = document.getElementById('three-container');
+  if (container) {
+    container.innerHTML = '<div class="loading-indicator">Error loading 3D model</div>';
+  }
 }
 
 function animate() {
