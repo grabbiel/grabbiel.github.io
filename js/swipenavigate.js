@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const swipeProgress = document.querySelector(".swipe-progress");
 
   let isDragging = false;
+  let isTouchActive = false;
   let startX = 0;
   let startY = 0;
   let currentX = 0;
@@ -41,17 +42,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const touch = e.touches[0];
     startY = touch.clientY;
-    isDragging = true;
     startX = e.touches[0].clientX;
     currentX = startX;
     startTime = Date.now();
     lastMoveTime = startTime;
     lastMoveX = startX;
 
+    isTouchActive = true;
+    isDragging = false;
   }
 
   function handleTouchMove(e) {
-    if (!isDragging) return;
+    if (!isTouchActive) return;
 
     const target = e.target;
     if (target.closest(".video-overlay") || target.closest(".video-progress") ||
@@ -73,31 +75,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const deltaX = currentX - startX;
 
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      isTouchActive = false;
       isDragging = false;
       return;
     }
 
-    if (Math.abs(deltaX) > 10) {
-      e.preventDefault();
+    if (!isDragging && Math.abs(deltaX) > 10) {
+      isDragging = true;
       swipeProgress.classList.add("active");
     }
 
-    const now = Date.now();
-
-    // Calculate velocity
-    if (now - lastMoveTime > 0) {
-      velocityX = (currentX - lastMoveX) / (now - lastMoveTime);
-      lastMoveTime = now;
-      lastMoveX = currentX;
+    if (isDragging) {
+      const now = Date.now();
+      // Calculate velocity
+      if (now - lastMoveTime > 0) {
+        velocityX = (currentX - lastMoveX) / (now - lastMoveTime);
+        lastMoveTime = now;
+        lastMoveX = currentX;
+      }
+      // Update progress bar
+      const progress = Math.abs(deltaX) / window.innerWidth;
+      swipeProgress.style.transform = `scaleX(${Math.min(progress, 1)})`;
     }
-
-    // Update progress bar
-    const progress = Math.abs(deltaX) / window.innerWidth;
-    swipeProgress.style.transform = `scaleX(${Math.min(progress, 1)})`;
   }
 
   function handleTouchEnd(e) {
-    if (!isDragging) return;
+    if (!isTouchActive) return;
 
     const target = e.target;
     if (target.closest(".video-overlay") || target.closest(".video-progress") ||
@@ -113,9 +116,11 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    isTouchActive = false;
+    if (!isDragging) return;
     isDragging = false;
+
     const deltaX = currentX - startX;
-    const duration = Date.now() - startTime;
     const distance = Math.abs(deltaX);
 
     swipeProgress.classList.remove("active");
