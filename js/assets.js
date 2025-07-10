@@ -134,14 +134,6 @@ window.initAssetViewer = function () {
   scene.add(ground);
   console.log('✅ Ground plane added');
 
-  // Add a test cube to verify rendering works
-  const testGeometry = new THREE.BoxGeometry(1, 1, 1);
-  const testMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-  const testCube = new THREE.Mesh(testGeometry, testMaterial);
-  testCube.position.set(0, 0.5, 0);
-  scene.add(testCube);
-  console.log('✅ Test cube added (should be visible as red wireframe)');
-
   container.innerHTML = '';
   container.appendChild(renderer.domElement);
   container.insertAdjacentHTML('beforeend',
