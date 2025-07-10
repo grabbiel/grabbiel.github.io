@@ -30,7 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
       target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
       target.closest(".game-content-overlay") || target.closest(".caption.expanded") ||
       target.closest(".video-container") || target.closest("#asset-viewer") ||
-      target.closest(".asset-viewer") || target.closest(".asset-card")) {
+      target.closest(".asset-viewer") || target.closest(".asset-card") ||
+      target.closest(".wii-game-block") || target.closest(".forum-group") ||
+      target.closest(".thread-item") || target.closest(".reply-post") ||
+      target.closest(".content-block") || target.closest(".photos-row") ||
+      target.closest(".link-block") || target.closest(".grid-item")
+    ) {
       return;
     }
 
@@ -53,7 +58,12 @@ document.addEventListener("DOMContentLoaded", function () {
       target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
       target.closest(".game-content-overlay") || target.closest(".caption.expanded") ||
       target.closest(".video-container") || target.closest("#asset-viewer") ||
-      target.closest(".asset-viewer") || target.closest(".asset-card")) {
+      target.closest(".asset-viewer") || target.closest(".asset-card") ||
+      target.closest(".wii-game-block") || target.closest(".forum-group") ||
+      target.closest(".thread-item") || target.closest(".reply-post") ||
+      target.closest(".content-block") || target.closest(".photos-row") ||
+      target.closest(".link-block") || target.closest(".grid-item")
+    ) {
       return;
     }
 
@@ -94,7 +104,12 @@ document.addEventListener("DOMContentLoaded", function () {
       target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
       target.closest(".game-content-overlay") || target.closest(".caption.expanded") ||
       target.closest(".video-container") || target.closest("#asset-viewer") ||
-      target.closest(".asset-viewer") || target.closest(".asset-card")) {
+      target.closest(".asset-viewer") || target.closest(".asset-card") ||
+      target.closest(".wii-game-block") || target.closest(".forum-group") ||
+      target.closest(".thread-item") || target.closest(".reply-post") ||
+      target.closest(".content-block") || target.closest(".photos-row") ||
+      target.closest(".link-block") || target.closest(".grid-item")
+    ) {
       return;
     }
 
