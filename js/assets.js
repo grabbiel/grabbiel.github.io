@@ -199,7 +199,7 @@ function setupCameraControls(container) {
 }
 
 function loadModel() {
-  const loader = new THREE.GLTFLoader();
+  const loader = new GLTFLoader();
 
   loader.load(
     window.currentAssetUrl,
