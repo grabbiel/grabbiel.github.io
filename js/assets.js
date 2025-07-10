@@ -303,16 +303,12 @@ function handleModelLoad(loadedModel, animations = null) {
   // Setup animations (works for both GLTF and FBX)
   if (animations && animations.length > 0) {
     mixer = new THREE.AnimationMixer(model);
-    animations.forEach((clip) => {
-      mixer.clipAction(clip).play();
-    });
+    mixer.clipAction(animations[0]).play();
     console.log(`🎬 Started ${animations.length} animations`);
   } else if (model.animations && model.animations.length > 0) {
     // FBX animations are typically stored on the model itself
     mixer = new THREE.AnimationMixer(model);
-    model.animations.forEach((clip) => {
-      mixer.clipAction(clip).play();
-    });
+    mixer.clipAction(model.animations[0]).play();
     console.log(`🎬 Started ${model.animations.length} FBX animations`);
   } else {
     console.log('ℹ️ No animations found');
