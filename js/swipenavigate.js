@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
       target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
       target.closest(".game-content-overlay") || target.closest(".caption.expanded") ||
       target.closest(".video-container") || target.closest("#asset-viewer") ||
-      target.closest(".asset-viewer")) {
+      target.closest(".asset-viewer") || target.closest(".asset-card")) {
       return;
     }
 
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
       target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
       target.closest(".game-content-overlay") || target.closest(".caption.expanded") ||
       target.closest(".video-container") || target.closest("#asset-viewer") ||
-      target.closest(".asset-viewer")) {
+      target.closest(".asset-viewer") || target.closest(".asset-card")) {
       return;
     }
 
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
       target.closest(".horizontal-tabs") || target.closest(".category-tabs") ||
       target.closest(".game-content-overlay") || target.closest(".caption.expanded") ||
       target.closest(".video-container") || target.closest("#asset-viewer") ||
-      target.closest(".asset-viewer")) {
+      target.closest(".asset-viewer") || target.closest(".asset-card")) {
       return;
     }
 
