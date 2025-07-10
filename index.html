@@ -44,7 +44,14 @@
       referrerpolicy="no-referrer"
       cache="force-cache"
     ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.178.0/three.tsl.js" integrity="sha512-CO5CJPx+dRkLZPY3a29xmXHm1K17hJ2e92lZfebAeNgoKGy9wERaDjSFfpmUf9jApezOTv+8fHEP9LBBK15iaA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@v0.178.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.178.0/examples/jsm/"
+      }
+    }
+    </script>
   </head>
   <body>
     <!-- New navbar -->
@@ -183,7 +190,7 @@
     <script src="js/games.js"></script>
     <script src="js/blog.js"></script>
     <script src="js/forum.js"></script>
-    <script src="js/assets.js"></script>
+    <script type="module" src="js/assets.js"></script>
 
     <script>
       const category_buttons =
