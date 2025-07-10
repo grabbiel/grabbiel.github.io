@@ -36,7 +36,6 @@ function openAssetViewer(assetId) {
     target: 'body',
     swap: 'beforeend'
   }).then(() => {
-    isViewerOpen = true;
     setupCloseHandler();
   });
 }
@@ -82,6 +81,8 @@ function closeViewer() {
 window.initAssetViewer = function () {
   console.log('🚀 Initializing asset viewer...');
   console.log('📦 Current asset URL:', window.currentAssetUrl);
+
+  isViewerOpen = true; // Fix: Set this immediately
 
   const container = document.getElementById('three-container');
   if (!container) {
@@ -159,7 +160,7 @@ function setupCameraControls(container) {
   let isMouseDown = false;
   let mouseX = 0, mouseY = 0;
   let phi = 0, theta = 0;
-  const radius = 2;
+  const radius = 8;
 
   function updateCamera() {
     camera.position.x = radius * Math.sin(phi) * Math.cos(theta);
@@ -298,10 +299,6 @@ function handleModelLoad(loadedModel, animations = null) {
 
   scene.add(model);
   console.log('✅ Model added to scene');
-
-  const helper = new THREE.BoxHelper(model, 0xff0000);
-  scene.add(helper);
-  console.log('📦 Added bounding box helper');
 
   // Setup animations (works for both GLTF and FBX)
   if (animations && animations.length > 0) {
